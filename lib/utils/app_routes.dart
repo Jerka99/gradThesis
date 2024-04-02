@@ -1,16 +1,16 @@
-class AppRoutes {
-  final bool isUnknown;
-  final bool isHome;
-  final bool isSecond;
+import 'package:flutter/material.dart';
+import 'package:redux_example/redux/home_container.dart';
 
-  AppRoutes({
-    this.isUnknown = false,
-    this.isHome = false,
-    this.isSecond = false,
-});
-  factory AppRoutes.home() => AppRoutes(isHome: true);
-  factory AppRoutes.second() => AppRoutes(isSecond: true);
-  factory AppRoutes.unknown() => AppRoutes(isUnknown: true);
+import '../redux/login_container.dart';
+
+
+class AppRoutes {
+
+  final Map<String, MaterialPage> unsecuredPages = const {
+    // 'unknown': MaterialPage(child: HomePage(myNavigate: (String ) { },)),
+    'login': MaterialPage(child: LoginContainer()),
+    '/': MaterialPage(child: HomeContainer())
+  };
 }
 
 

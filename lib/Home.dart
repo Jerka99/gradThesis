@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
-  final VoidCallback onNavigateToLogin;
 
-  const HomePage({Key? key, required this.onNavigateToLogin}) : super(key: key);
+  final Function () onNavigateToLogin;
+
+  const HomePage({
+    super.key,
+    required this.onNavigateToLogin
+  });
 
   @override
   Widget build(BuildContext context) {

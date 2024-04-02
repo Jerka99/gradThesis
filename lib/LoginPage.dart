@@ -1,10 +1,12 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:redux_example/globals.dart';
 
 class LoginPage extends StatelessWidget {
-  final VoidCallback onLogin;
+  final Function(String p1, String p2) onLogin;
 
-  const LoginPage({Key? key, required this.onLogin}) : super(key: key);
+  const LoginPage({
+    super.key,
+    required this.onLogin});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +17,8 @@ class LoginPage extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            onLogin();
+            print(routerDelegate);
+            onLogin("aa", "bb");
           },
           child: Text('Logout'),
         ),

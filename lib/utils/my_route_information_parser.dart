@@ -1,14 +1,16 @@
 import 'package:flutter/cupertino.dart';
 
-class MyRouteInformationParser extends RouteInformationParser<RouteInformation> {
+class MyRouteInformationParser extends RouteInformationParser<String> {
   @override
-  Future<RouteInformation> parseRouteInformation(
+  Future<String> parseRouteInformation(
       RouteInformation routeInformation) async {
-    return routeInformation;
+    final Uri uri = Uri.parse(routeInformation.uri.toString());
+    print(uri);
+    return routeInformation.uri.path;
   }
 
   @override
-  RouteInformation restoreRouteInformation(RouteInformation configuration) {
-    return configuration;
+  RouteInformation restoreRouteInformation(String configuration) {
+    return RouteInformation(uri: Uri.parse(configuration));
   }
 }

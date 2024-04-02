@@ -1,39 +1,38 @@
+import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:redux_example/utils/app_routes.dart';
 
-import '../Home.dart';
-import '../LoginPage.dart';
-
-class MyRouterDelegate extends RouterDelegate<RouteInformation>
-    with ChangeNotifier {
-  final GlobalKey<NavigatorState> navigatorKey;
-
-  MyRouterDelegate() : navigatorKey = GlobalKey<NavigatorState>();
+class MyRouterDelegate extends RouterDelegate<String>
+    with ChangeNotifier, PopNavigatorRouterDelegateMixin {
 
   @override
-  RouteInformation get currentConfiguration {
-    if (_loggedIn) {
-      return RouteInformation(uri: Uri.parse('/login'));
-    } else {
-      return RouteInformation(uri: Uri.parse('/home'));
-    }
+  final GlobalKey<NavigatorState> navigatorKey;
+  String? _currentRoute;
+  Map<String, MaterialPage>? unsecuredPages;
+
+  MyRouterDelegate({
+    this.unsecuredPages,
+  }): navigatorKey = GlobalKey<NavigatorState>();
+
+  @override
+  String? get currentConfiguration {
+    return _currentRoute;
   }
 
   @override
   Widget build(BuildContext context) {
+    List<MaterialPage> page = initPages();
     return Navigator(
       key: navigatorKey,
-      pages: [
-        MaterialPage(child: HomePage(onNavigateToLogin: _navigateToLogin)),
-        if (_loggedIn) MaterialPage(child: LoginPage(onLogin: _login)),
-      ],
+      pages: page,
       onPopPage: (route, result) {
         if (!route.didPop(result)) {
           return false;
         }
         // Update the _loggedIn flag if you have a mechanism for tracking user authentication.
-        _loggedIn = false;
         notifyListeners();
         return true;
       },
@@ -41,31 +40,26 @@ class MyRouterDelegate extends RouterDelegate<RouteInformation>
   }
 
   @override
-  Future<void> setNewRoutePath(RouteInformation configuration) async {}
+  Future<void> setNewRoutePath(String configuration) async {
+    // This method should update the route based on the provided configuration.
+    // You can parse the configuration to determine the new route path.
+    // For simplicity, we'll just update the _loggedIn flag based on the path.
 
-  bool _loggedIn = false;
-
-  void _navigateToLogin() {
-    _loggedIn = true;
+    _currentRoute=configuration;
     notifyListeners();
   }
 
-  void _login() {
-    _loggedIn = false;
-    notifyListeners();
+  List<MaterialPage> initPages() {
+    List<MaterialPage> pages = [];
+    // Retrieve the page widgets based on the current route
+    MaterialPage? pageWidget = unsecuredPages?[_currentRoute ?? "home"]!;
+    pages.add(pageWidget!);
+    return pages;
   }
 
-  @override
-  Future<bool> popRoute() {
-    //need this for enabling browsers backward button if popRoute isnt overriden
-    // PopNavigatorRouterDelegateMixin<RouteInformation>
-    // Handle the back button press here
-    if (_loggedIn) {
-      _loggedIn = false;
-      notifyListeners();
-      return SynchronousFuture<bool>(true);
-    }
-    return SynchronousFuture<bool>(false);
+  void myNavigate(String route){
+    _currentRoute = route;
+    notifyListeners();
   }
 
 }
