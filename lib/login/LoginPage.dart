@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:redux_example/globals.dart';
 
 class LoginPage extends StatelessWidget {
   final Function(String p1, String p2) onLogin;
@@ -17,7 +16,6 @@ class LoginPage extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            print(routerDelegate);
             onLogin("aa", "bb");
           },
           child: Text('Logout'),

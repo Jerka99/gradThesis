@@ -1,8 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import 'package:redux_example/LoginPage.dart';
-import 'package:redux_example/utils/app_routes.dart';
+import 'package:redux_example/login/LoginPage.dart';
 
 import '../app_state.dart';
 import '../utils/my_router_delegate.dart';

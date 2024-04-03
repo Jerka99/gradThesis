@@ -1,16 +1,14 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
-import 'package:redux_example/Home.dart';
-import 'package:redux_example/LoginPage.dart';
-import 'package:redux_example/globals.dart';
+import 'package:redux_example/unknown/Unknown.dart';
 
 import '../app_state.dart';
 import '../utils/my_router_delegate.dart';
 
-class HomeContainer extends StatelessWidget{
+class UnknownContainer extends StatelessWidget{
 
-  const HomeContainer({super.key});
+  const UnknownContainer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,9 +17,9 @@ class HomeContainer extends StatelessWidget{
       converter: (Store<AppState> store) => _ViewModel.fromStore(store, Provider
           .of<MyRouterDelegate>(context, listen: false)),
       builder: (BuildContext context, _ViewModel vm) {
-//this will prevent going back to login screen
-        return HomePage(
-            onNavigateToLogin: vm.onNavigateToLogin
+
+        return Unknown(
+            onReturn: vm.onReturn
         );},
     );
   }
@@ -29,17 +27,17 @@ class HomeContainer extends StatelessWidget{
 
 class _ViewModel extends Vm{
 
-  final Function() onNavigateToLogin;
+  final Function() onReturn;
 
   _ViewModel({
-    required this.onNavigateToLogin
+    required this.onReturn
   });
 
   static _ViewModel fromStore(Store<AppState> store, MyRouterDelegate myRouterDelegate) {
     return _ViewModel(
-      onNavigateToLogin: () {
-        myRouterDelegate.myNavigate("login");
-      }
+        onReturn: () {
+          myRouterDelegate.myNavigate("/");
+        }
     );
   }
 }

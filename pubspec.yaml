@@ -37,6 +37,8 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   async_redux: ^21.7.1
+  url_strategy: ^0.2.0
+  google_maps_flutter: ^2.5.3
 
 dev_dependencies:
   flutter_test:

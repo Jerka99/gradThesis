@@ -42,17 +42,20 @@ class MyRouterDelegate extends RouterDelegate<String>
   @override
   Future<void> setNewRoutePath(String configuration) async {
     // This method should update the route based on the provided configuration.
+    // When using browsers backward/forward button setNewRoutePath is called.
     // You can parse the configuration to determine the new route path.
-    // For simplicity, we'll just update the _loggedIn flag based on the path.
+  if(unsecuredPages!.containsKey(configuration) || configuration == "/") {
+    _currentRoute = configuration;
+  } else {
+    _currentRoute = "/unknown";
+  }
 
-    _currentRoute=configuration;
     notifyListeners();
   }
 
   List<MaterialPage> initPages() {
     List<MaterialPage> pages = [];
-    // Retrieve the page widgets based on the current route
-    MaterialPage? pageWidget = unsecuredPages?[_currentRoute ?? "home"]!;
+    MaterialPage? pageWidget = unsecuredPages?[_currentRoute ?? "/"]!;
     pages.add(pageWidget!);
     return pages;
   }

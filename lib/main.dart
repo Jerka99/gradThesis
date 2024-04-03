@@ -4,12 +4,16 @@ import 'package:provider/provider.dart';
 import 'package:redux_example/utils/app_routes.dart';
 import 'package:redux_example/utils/my_route_information_parser.dart';
 import 'package:redux_example/utils/my_router_delegate.dart';
+import 'package:url_strategy/url_strategy.dart';
 
 import 'app_state.dart';
 
 
 late GlobalKey<NavigatorState> navigatorKey;
 void main() {
+  // setPathUrlStrategy(); //enabled normal routing paths without # (hash) in
+  // path and return from undefined page is correct and possible. but with hash
+  // its SPA
   var store = Store<AppState>(initialState: AppState.initialState());
   runApp(MyApp(store: store));
 }
