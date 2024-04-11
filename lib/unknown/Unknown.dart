@@ -9,18 +9,13 @@ class Unknown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Unknown Page 404'),
-      ),
-      body: Center(
+    return Center(
         child: ElevatedButton(
           onPressed: () {
             onReturn();
           },
           child: Text('Return'),
         ),
-      ),
-    );
+      );
   }
 }

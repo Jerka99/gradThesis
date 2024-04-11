@@ -14,8 +14,7 @@ class HomeContainer extends StatelessWidget{
   Widget build(BuildContext context) {
 
     return StoreConnector<AppState, _ViewModel>(
-      converter: (Store<AppState> store) => _ViewModel.fromStore(store, Provider
-          .of<MyRouterDelegate>(context, listen: false)),
+      converter: (Store<AppState> store) => _ViewModel.fromStore(store),
       builder: (BuildContext context, _ViewModel vm) {
 //this will prevent going back to login screen
         return HomePage(
@@ -33,10 +32,10 @@ class _ViewModel extends Vm{
     required this.onNavigateToLogin
   });
 
-  static _ViewModel fromStore(Store<AppState> store, MyRouterDelegate myRouterDelegate) {
+  static _ViewModel fromStore(Store<AppState> store) {
     return _ViewModel(
       onNavigateToLogin: () {
-        myRouterDelegate.myNavigate("/login");
+        store.state.routerDelegate.myNavigate("login");
       }
     );
   }

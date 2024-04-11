@@ -9,18 +9,13 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Login Page'),
-      ),
-      body: Center(
+    return Center(
         child: ElevatedButton(
           onPressed: () {
             onLogin("aa", "bb");
           },
           child: Text('Logout'),
         ),
-      ),
     );
   }
 }

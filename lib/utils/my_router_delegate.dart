@@ -47,7 +47,7 @@ class MyRouterDelegate extends RouterDelegate<String>
   if(unsecuredPages!.containsKey(configuration) || configuration == "/") {
     _currentRoute = configuration;
   } else {
-    _currentRoute = "/unknown";
+    _currentRoute = "unknown";
   }
 
     notifyListeners();
@@ -56,6 +56,7 @@ class MyRouterDelegate extends RouterDelegate<String>
   List<MaterialPage> initPages() {
     List<MaterialPage> pages = [];
     MaterialPage? pageWidget = unsecuredPages?[_currentRoute ?? "/"]!;
+    print(pageWidget);
     pages.add(pageWidget!);
     return pages;
   }

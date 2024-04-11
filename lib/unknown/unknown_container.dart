@@ -14,8 +14,7 @@ class UnknownContainer extends StatelessWidget{
   Widget build(BuildContext context) {
 
     return StoreConnector<AppState, _ViewModel>(
-      converter: (Store<AppState> store) => _ViewModel.fromStore(store, Provider
-          .of<MyRouterDelegate>(context, listen: false)),
+      converter: (Store<AppState> store) => _ViewModel.fromStore(store),
       builder: (BuildContext context, _ViewModel vm) {
 
         return Unknown(
@@ -33,10 +32,10 @@ class _ViewModel extends Vm{
     required this.onReturn
   });
 
-  static _ViewModel fromStore(Store<AppState> store, MyRouterDelegate myRouterDelegate) {
+  static _ViewModel fromStore(Store<AppState> store) {
     return _ViewModel(
         onReturn: () {
-          myRouterDelegate.myNavigate("/");
+          store.state.routerDelegate.myNavigate("/");
         }
     );
   }
