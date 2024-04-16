@@ -4,8 +4,8 @@ class TriangleClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
     final path = Path();
-    print(size.height);
-    print(size.width);
+    // print(size.height);
+    // print(size.width);
     path.moveTo(size.width / 2, size.height - 20); // Move to the
     // bottom-center point
     path.lineTo(size.width, 25.0); // Line to the top-right corner

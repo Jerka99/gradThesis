@@ -1,12 +1,10 @@
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:http/http.dart' as http;
 
-import '../shape/TriangleClipper.dart';
+import 'coordinates_api.dart';
+import 'marker_and_polyline.dart';
 
 class HomePage extends StatefulWidget {
   final Function() onNavigateToLogin;
@@ -18,77 +16,34 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePage extends State<HomePage> {
-  final List<Marker> markers = [];
-  final List<Polyline> polylines = [];
-  int num = 0;
   String? startPoint;
   String? endPoint;
+  List<LatLng> markerCoordinateList = [];
+  List<List<LatLng>> polylinesList = [];
 
   void handleTap(TapPosition pos, LatLng latlng) async {
-    List<dynamic> coordinates = [];
+    var response;
     List<LatLng> coordinatesMapped = [];
-    print("dotenv.env] ${dotenv.env['API_KEY']}");
 
-    if (num == 0) {
+    if (markerCoordinateList.length == 0) {
       startPoint = "${latlng.longitude}, ${latlng.latitude}";
-      print("startPoint $startPoint");
     } else {
       startPoint = endPoint ?? startPoint;
       endPoint = "${latlng.longitude}, ${latlng.latitude}";
+
+      response = await handleCoordinatesCall(startPoint, endPoint);
+      coordinatesMapped = response.map<LatLng>((element) => LatLng(element[1],
+          element[0])).toList();
     }
-
-    print("abracadabraaa ${startPoint} ${endPoint} latlng $latlng");
-
-    String baseurl =
-        "https://api.openrouteservice.org/v2/directions/driving-car";
-    if (num > 0) {
-
-      var response = await http.get(Uri.parse
-        ("$baseurl?api_key=${dotenv
-          .env["API_KEY"]}en&start=$startPoint&end=$endPoint"));
-      var data = jsonDecode(response.body);
-      coordinates = data["features"][0]["geometry"]["coordinates"];
-      // coordinates.forEach((element) {
-      //   coordinatesMapped.add(new LatLng(element[1], element[0]));
-      // });
-      coordinatesMapped =
-          coordinates.map((element) => LatLng(element[1], element[0])).toList();
-      // print("points $coordinates");
-    }
-    num++;
 
     setState(() {
-      markers.add(Marker(
-          point: coordinates.length > 0
-              ? LatLng(coordinates[coordinates.length - 1][1],
-                  coordinates[coordinates.length - 1][0])
-              : latlng,
-          width: 45.0,
-          height: 80.0,
-          builder: (context) => ClipPath(
-                clipper: TriangleClipper(),
-                child: Container(
-                  padding: EdgeInsets.only(bottom: 30),
-                  child: IconButton(
-                    padding: EdgeInsets.zero,
-                    alignment: Alignment.topCenter,
-                    icon: const Icon(
-                      Icons.location_on,
-                      size: 45.0,
-                      color: Colors.red,
-                      shadows: [Shadow(color: Colors.red, blurRadius: 4.0)],
-                    ),
-                    onPressed: () {
-                      print(context);
-                    },
-                  ),
-                ),
-              )));
-      polylines.add(Polyline(
-        strokeWidth: 4,
-        points: coordinatesMapped,
-        color: Colors.blue,
-      ));
+      markerCoordinateList.isEmpty ? markerCoordinateList.add(latlng) :
+      markerCoordinateList.add(coordinatesMapped[coordinatesMapped.length-1]);
+    });
+    setState(() {
+      if(coordinatesMapped.length > 1) {
+            polylinesList.add(coordinatesMapped);
+      }
     });
   }
 
@@ -105,16 +60,41 @@ class _HomePage extends State<HomePage> {
                   onTap: (pos, latlng) => handleTap(pos, latlng),
                   center: LatLng(43.508133, 16.440193),
                   zoom: 13,
-                  maxZoom: 18),
+                  maxZoom: 18,
+                  minZoom: 1
+              ),
               children: [
                 TileLayer(
                   urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                   userAgentPackageName: 'com.example.app',
                 ),
                 PolylineLayer(
-                  polylines: polylines,
+                  polylines: polylinesList.map((points) =>
+                  polylineFun(points)
+                  ).toList(),
                 ),
-                MarkerLayer(markers: markers),
+                MarkerLayer(
+                    markers: markerCoordinateList.asMap().entries.map((markerCoordinate) =>
+                        markerDisplayFun(
+                          markerCoordinate.value,
+                          markerCoordinate.key,
+                            markerCoordinateList.length,
+                          (){
+                              setState(() {
+                                markerCoordinateList.removeAt(markerCoordinate.key);
+                                if(polylinesList.length > 0) {
+                                  polylinesList
+                                      .removeAt(polylinesList.length - 1);
+                                  endPoint = "${markerCoordinateList[markerCoordinateList
+                                      .length -1].longitude}, ${markerCoordinateList[markerCoordinateList
+                                      .length -1].latitude}";
+                              }
+                                if(markerCoordinateList.length == 0) {
+                                      endPoint = null;
+                                    }
+                              });
+                            }
+                        )).toList()),
 
                 // RichAttributionWidget(
                 //   attributions: [
