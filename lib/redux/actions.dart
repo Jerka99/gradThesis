@@ -1,8 +1,8 @@
-class IncrementAction extends ReduxAction<int> {
-  final int amount;
+  import 'dart:async';
 
-  IncrementAction({required this.amount});
+import 'package:async_redux/async_redux.dart';
+import 'package:redux_example/app_state.dart';
 
-  @override
-  int reduce() => state + amount;
+abstract class Action extends ReduxAction<AppState> {
+
 }

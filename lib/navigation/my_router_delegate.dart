@@ -1,9 +1,8 @@
-import 'dart:math';
-
+import 'package:async_redux/async_redux.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:redux_example/utils/app_routes.dart';
+import 'package:redux_example/app_state.dart';
 
 class MyRouterDelegate extends RouterDelegate<String>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
@@ -12,9 +11,11 @@ class MyRouterDelegate extends RouterDelegate<String>
   final GlobalKey<NavigatorState> navigatorKey;
   String? _currentRoute;
   Map<String, MaterialPage>? unsecuredPages;
+  Map<String, MaterialPage>? securedPages;
 
   MyRouterDelegate({
     this.unsecuredPages,
+    this.securedPages
   }): navigatorKey = GlobalKey<NavigatorState>();
 
   @override
@@ -24,7 +25,9 @@ class MyRouterDelegate extends RouterDelegate<String>
 
   @override
   Widget build(BuildContext context) {
-    List<MaterialPage> page = initPages();
+    AppState? state = StoreProvider.state<AppState>(context);
+    print(state);
+    List<MaterialPage> page = initPages(state?.user.email);
     return Navigator(
       key: navigatorKey,
       pages: page,
@@ -42,20 +45,31 @@ class MyRouterDelegate extends RouterDelegate<String>
   @override
   Future<void> setNewRoutePath(String configuration) async {
     // This method should update the route based on the provided configuration.
-    // When using browsers backward/forward button setNewRoutePath is called.
+    // When using browsers backward/forward buttons and on initial app start
+    // setNewRoutePath is called.
     // You can parse the configuration to determine the new route path.
-  if(unsecuredPages!.containsKey(configuration) || configuration == "/") {
-    _currentRoute = configuration;
-  } else {
-    _currentRoute = "unknown";
-  }
+    final BuildContext context = navigatorKey.currentContext!;
+    AppState? state = StoreProvider.state<AppState>(context);
+    if(state?.user.email != null) {
+      _currentRoute = securedPages?.keys.firstWhere((k) =>
+      k == configuration,
+          orElse: () => _currentRoute as String);
+    }
+    else {
+      var route = unsecuredPages?.keys.firstWhere((k) =>
+      k == configuration,
+          orElse: () => "login");
+      _currentRoute = route;
+    }
 
     notifyListeners();
   }
 
-  List<MaterialPage> initPages() {
+  List<MaterialPage> initPages(email) {
     List<MaterialPage> pages = [];
-    MaterialPage? pageWidget = unsecuredPages?[_currentRoute ?? "/"]!;
+    MaterialPage? pageWidget;
+    if(email == null) pageWidget = unsecuredPages?[_currentRoute ?? "login"]!;
+    else pageWidget = securedPages?[_currentRoute ?? "/"]!;
     print(pageWidget);
     pages.add(pageWidget!);
     return pages;

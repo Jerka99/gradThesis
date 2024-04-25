@@ -1,10 +1,8 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
 import 'package:redux_example/unknown/Unknown.dart';
 
 import '../app_state.dart';
-import '../utils/my_router_delegate.dart';
 
 class UnknownContainer extends StatelessWidget{
 

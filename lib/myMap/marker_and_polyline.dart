@@ -25,7 +25,7 @@ Marker markerDisplayFun(coordinate, index, markersNumber, delete) {
                 Icon(
                   Icons.location_on,
                   size: 50.0,
-                  color: index == markersNumber -1 ? Colors.black
+                  color: index == markersNumber -1 ? Colors.indigo[400]
                       : Colors.red,
                   shadows: index == markersNumber -1 ? [const Shadow
                     (color:
@@ -45,19 +45,6 @@ Marker markerDisplayFun(coordinate, index, markersNumber, delete) {
             ),
             onPressed: () {
               delete();
-              // setState(() {
-              //   // print(markers.length);
-              //   if(index == MarkersArray.length -1){
-              //     MarkersArray.remove(coordinate);
-              //     if(index == 0) {
-              //       endPoint = null;
-              //     }else{
-              //       polylines.removeAt(MarkersArray.length - 1);
-              //       endPoint = "${MarkersArray[0].longitude}, "
-              //           "${MarkersArray[0].latitude}";
-              //     }
-              //   }
-              // });
             },
           ),
         ),

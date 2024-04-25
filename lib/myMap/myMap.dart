@@ -15,37 +15,55 @@ class MyMap extends StatefulWidget {
 class _MyMap extends State<MyMap>{
   String? startPoint;
   String? endPoint;
+  String? tempStartPoint;
+  String? tempEndPoint;
   List<LatLng> markerCoordinateList = [];
-  List<List<LatLng>> polylinesList = [];
+  List<List<LatLng>> polylineList = [];
+  bool loading = false;
 
 
   void handleTap(TapPosition pos, LatLng latlng) async {
-    var response;
-    List<LatLng> coordinatesMapped = [];
+    if (!loading) {
+      var response;
+      List<LatLng> coordinatesMapped = [];
 
-    if (markerCoordinateList.length == 0) {
-      startPoint = "${latlng.longitude}, ${latlng.latitude}";
-    } else {
-      startPoint = endPoint ?? startPoint;
-      endPoint = "${latlng.longitude}, ${latlng.latitude}";
-
-      response = await handleCoordinatesCall(startPoint, endPoint);
-      coordinatesMapped = response.map<LatLng>((element) =>
-          LatLng(element[1],
-              element[0])).toList();
-    }
-
-    setState(() {
-      markerCoordinateList.isEmpty ? markerCoordinateList.add(latlng) :
-      markerCoordinateList.add(coordinatesMapped[coordinatesMapped.length - 1]);
-    });
-    setState(() {
-      if (coordinatesMapped.length > 1) {
-        polylinesList.add(coordinatesMapped);
+      if (markerCoordinateList.length == 0) {
+        startPoint = "${latlng.longitude}, ${latlng.latitude}";
+        endPoint = startPoint;
+      } else {
+        tempStartPoint =
+            startPoint; //no wrong polylines if we re clicking on the sea
+        tempEndPoint = endPoint;
+        startPoint = endPoint; //?? startPoint
+        endPoint = "${latlng.longitude}, ${latlng.latitude}";
       }
-    });
-  }
 
+      response = await handleCoordinatesCall(
+          startPoint,
+          endPoint,
+          (bool value) => {loading = value}
+      );
+      if (response.length != 0) {
+        coordinatesMapped = response
+            .map<LatLng>((element) => LatLng(element[1], element[0]))
+            .toList();
+
+        setState(() {
+          markerCoordinateList
+              .add(coordinatesMapped[coordinatesMapped.length - 1]);
+        });
+        setState(() {
+          if (markerCoordinateList.length > 1) {
+            polylineList.add(coordinatesMapped);
+          }
+        });
+      }
+      else {
+        startPoint = tempStartPoint;
+        endPoint = tempEndPoint;
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +87,7 @@ class _MyMap extends State<MyMap>{
                   userAgentPackageName: 'com.example.app',
                 ),
                 PolylineLayer(
-                  polylines: polylinesList.map((points) =>
+                  polylines: polylineList.map((points) =>
                       polylineFun(points)
                   ).toList(),
                 ),
@@ -81,32 +99,22 @@ class _MyMap extends State<MyMap>{
                             markerCoordinateList.length,
                                 (){
                               setState(() {
-                                markerCoordinateList.removeAt(markerCoordinate.key);
-                                if(polylinesList.length > 0) {
-                                  polylinesList
-                                      .removeAt(polylinesList.length - 1);
+                                if(markerCoordinateList.length-1 ==
+                                markerCoordinate.key){
+                                markerCoordinateList.removeAt(
+                                    markerCoordinate.key);
+
+                                if(polylineList.length > 0) {
+                                  polylineList.removeAt(polylineList.length - 1);
                                   endPoint = "${markerCoordinateList[markerCoordinateList
                                       .length -1].longitude}, ${markerCoordinateList[markerCoordinateList
                                       .length -1].latitude}";
-                                }
-                                if(markerCoordinateList.length == 0) {
-                                  endPoint = null;
-                                }
+                                }}
                               });
                             }
                         )).toList()),
-
-                // RichAttributionWidget(
-                //   attributions: [
-                //     TextSourceAttribution(
-                //       'OpenStreetMap contributors',
-                //       onTap: () => launchUrl(Uri.parse('https://openstreetmap.org/copyright')),
-                //     ),
-                //   ],
-                // ),
               ],
             )),
-        // Form(child: child)
       ],
     );
   }

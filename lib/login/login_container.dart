@@ -1,10 +1,9 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
 import 'package:redux_example/login/LoginPage.dart';
+import 'package:redux_example/login/login_action.dart';
 
 import '../app_state.dart';
-import '../utils/my_router_delegate.dart';
 
 class LoginContainer extends StatelessWidget{
 
@@ -34,8 +33,8 @@ class _ViewModel extends Vm{
 
   static _ViewModel fromStore(Store<AppState> store) {
     return _ViewModel(
-        onLogin: (String username, String otp) {
-          store.state.routerDelegate.myNavigate("/");
+        onLogin: (String email, String password) {
+          store.dispatch(LoginAction(email, password));
         },
     );
   }

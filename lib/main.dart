@@ -1,15 +1,10 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:provider/provider.dart';
-import 'package:redux_example/utils/app_routes.dart';
-import 'package:redux_example/utils/my_route_information_parser.dart';
-import 'package:redux_example/utils/my_router_delegate.dart';
-import 'package:url_strategy/url_strategy.dart';
-
-import 'package:flutter/material.dart';
 
 import 'app_state.dart';
+import 'navigation/my_route_information_parser.dart';
+import 'navigation/my_router_delegate.dart';
 
 
 late GlobalKey<NavigatorState> navigatorKey;
@@ -62,9 +57,9 @@ class _MyAppState extends State<MyApp> {
                 return DefaultTabController(
                   length: 3,
               child: Scaffold(
-                appBar: AppBar(
-                  title: const Text("ww"),
-                  bottom:  TabBar(
+                appBar:  AppBar(
+                  title: const Text("BAR"),
+                  bottom: widget.store.state.user.role != null ? TabBar(
                     tabs:const [
                       Tab(icon: Icon(Icons.home), text: 'Home'),
                       Tab(icon: Icon(Icons.favorite), text: 'Unknown'),
@@ -74,8 +69,8 @@ class _MyAppState extends State<MyApp> {
                       final tabs = ["/", "unknown", "login"];
                       _routeDelegate.myNavigate(tabs[index]);
                     },
-                  )
-                ),
+                  ) : null
+                ) ,
                 body: SizedBox(
                     child: Container(
                       padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
