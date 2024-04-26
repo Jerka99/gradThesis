@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -58,7 +60,7 @@ class MyRouterDelegate extends RouterDelegate<String>
     else {
       var route = unsecuredPages?.keys.firstWhere((k) =>
       k == configuration,
-          orElse: () => "login");
+          orElse: () => configuration == "/" ? "login" : _currentRoute as String);
       _currentRoute = route;
     }
 

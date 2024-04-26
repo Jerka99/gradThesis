@@ -33,7 +33,7 @@ class _ViewModel extends Vm{
   static _ViewModel fromStore(Store<AppState> store) {
     return _ViewModel(
       onRegister: (String username, String otp) {
-        store.state.routerDelegate.myNavigate("/something");
+        store.state.routerDelegate.myNavigate("something");
       },
     );
   }
