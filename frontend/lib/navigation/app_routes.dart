@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:redux_example/home/home_container.dart';
-import 'package:redux_example/unknown/unknown_container.dart';
 
-import '../login/login_container.dart';
-import '../register/register_container.dart';
-import '../something/something_container.dart';
+import '../pages/home/home_container.dart';
+import '../pages/login/login_container.dart';
+import '../pages/register/register_container.dart';
+import '../pages/something/something_container.dart';
+import '../pages/unknown/unknown_container.dart';
+
 
 
 class AppRoutes {

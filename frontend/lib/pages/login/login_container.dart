@@ -1,9 +1,10 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:redux_example/login/LoginPage.dart';
-import 'package:redux_example/login/login_action.dart';
+import 'package:redux_example/navigation/navigation_action.dart';
 
-import '../app_state.dart';
+import '../../app_state.dart';
+import 'LoginPage.dart';
+import 'login_action.dart';
 
 class LoginContainer extends StatelessWidget{
 
@@ -16,8 +17,9 @@ return StoreConnector<AppState, _ViewModel>(
 converter: (Store<AppState> store) => _ViewModel.fromStore(store),
 builder: (BuildContext context, _ViewModel vm) {
 //this will prevent going back to login screen
-return LoginPage(
-onLogin: vm.onLogin
+  return LoginPage(
+        onLogin: vm.onLogin,
+        routeChange: vm.routeChange
       );},
     );
   }
@@ -25,17 +27,20 @@ onLogin: vm.onLogin
 
 class _ViewModel extends Vm{
 
-  final Function(String, String) onLogin;
+  final Function(Map<String, dynamic>) onLogin;
+  Function() routeChange;
 
   _ViewModel({
-      required this.onLogin
+      required this.onLogin,
+      required this.routeChange
   });
 
   static _ViewModel fromStore(Store<AppState> store) {
     return _ViewModel(
-        onLogin: (String email, String password) {
-          store.dispatch(LoginAction(email, password));
+        onLogin: (Map<String, dynamic> auth) {
+          store.dispatch(LoginAction(auth["email"], auth["password"]));
         },
+        routeChange: (){ store.dispatch(MyNavigateAction("register"));}
     );
   }
 }

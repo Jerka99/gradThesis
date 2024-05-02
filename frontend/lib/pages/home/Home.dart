@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../myMap/myMap.dart';
+import '../../myMap/myMap.dart';
 
 class HomePage extends StatefulWidget {
   final Function() onNavigateToLogin;

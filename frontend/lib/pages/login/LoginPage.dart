@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:redux_example/app_state.dart';
+import 'package:redux_example/pages/register/register_container.dart';
+
+import '../FormInputs.dart';
 
 class LoginPage extends StatefulWidget {
-  final Function(String p1, String p2) onLogin;
+  final Function(Map<String, dynamic>) onLogin;
+  final Function() routeChange;
 
   const LoginPage({
     super.key,
-    required this.onLogin});
+    required this.onLogin,
+    required this.routeChange
+  });
 
   @override
   State<LoginPage> createState() => _LoginPage();
@@ -13,8 +21,14 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPage extends State<LoginPage> {
   // final TextEditingController _textEditingController = TextEditingController();
-  String _email = "";
-  String _password = "";
+  Map<String, dynamic> inputs = {
+  "email" : "",
+  "password" : ""
+};
+
+  // List<> inputs =[
+  //
+  // ]
 
   @override
   Widget build(BuildContext context) {
@@ -25,35 +39,18 @@ class _LoginPage extends State<LoginPage> {
               // crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextFormField(
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: "E-mail",
-                  ),
-                  onChanged: (value) => setState(() {
-                    _email = value;
-                  }),
-                  // controller: _textEditingController,
-                ),
-                const SizedBox(
-                  height: 50.0,
-                ),
-                TextFormField(
-                  decoration: const InputDecoration(
-                      border: OutlineInputBorder(),
-                      labelText: "Password"
-                  ),
-                  onChanged: (value) => setState(() {
-                    _password = value;
-                  }),
-                ),
-                const SizedBox(
-                  height: 30.0,
-                ),
+                ...inputs.keys.map((element) => FormInputs(
+                    element: element,
+                    inputValueFun: (value) {
+                      setState(() {
+                        inputs[element] = value;
+                      });
+                    },
+                )).toList(),
                 Align(
                   alignment: Alignment.centerRight,
                     child: ElevatedButton(
-                      onPressed: () { widget.onLogin(_email, _password)
+                      onPressed: () { widget.onLogin(inputs)
                       ; },
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.all(18.0),
@@ -69,6 +66,21 @@ class _LoginPage extends State<LoginPage> {
                         ),
                       ),
                   ),
+                ),
+                const SizedBox(
+                  height: 30.0,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    const Text("Don't have an account?"),
+                    const SizedBox(width: 20.0),
+                    ElevatedButton(
+                        onPressed: (){
+                          widget.routeChange();
+                        },
+                        child: Text("Register"))
+                  ],
                 )
               ],
             ),
@@ -76,3 +88,4 @@ class _LoginPage extends State<LoginPage> {
     );
   }
 }
+

@@ -1,9 +1,9 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:redux_example/login/LoginPage.dart';
-import 'package:redux_example/something/SomethingPage.dart';
+import 'package:redux_example/navigation/navigation_action.dart';
 
-import '../app_state.dart';
+import '../../app_state.dart';
+import 'SomethingPage.dart';
 
 class SomethingContainer extends StatelessWidget{
 
@@ -34,7 +34,7 @@ class _ViewModel extends Vm{
   static _ViewModel fromStore(Store<AppState> store) {
     return _ViewModel(
       onSomething: (String username, String otp) {
-        store.state.routerDelegate.myNavigate("something");
+        store.dispatch(MyNavigateAction("something"));
       },
     );
   }

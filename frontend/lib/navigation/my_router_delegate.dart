@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:redux_example/app_state.dart';
+import 'package:redux_example/navigation/navigation_action.dart';
 
 class MyRouterDelegate extends RouterDelegate<String>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {
@@ -60,9 +61,11 @@ class MyRouterDelegate extends RouterDelegate<String>
     else {
       var route = unsecuredPages?.keys.firstWhere((k) =>
       k == configuration,
-          orElse: () => configuration == "/" ? "login" : _currentRoute as String);
+          orElse: () => securedPages!.containsKey(configuration) ? "login" : _currentRoute as
+          String);
       _currentRoute = route;
     }
+    StoreProvider.dispatch<AppState>(context, MyNavigateAction(_currentRoute!));
 
     notifyListeners();
   }
@@ -70,14 +73,19 @@ class MyRouterDelegate extends RouterDelegate<String>
   List<MaterialPage> initPages(email) {
     List<MaterialPage> pages = [];
     MaterialPage? pageWidget;
-    if(email == null) pageWidget = unsecuredPages?[_currentRoute ?? "login"]!;
-    else pageWidget = securedPages?[_currentRoute ?? "/"]!;
+    if(email == null || email == "") {
+      pageWidget = unsecuredPages?[unsecuredPages
+        !.containsKey(_currentRoute) ? _currentRoute : "login"]!;
+    } else {
+      pageWidget = securedPages?[_currentRoute ?? "/"]!;
+    }
     print(pageWidget);
     pages.add(pageWidget!);
     return pages;
   }
 
   void myNavigate(String route){
+    final BuildContext context = navigatorKey.currentContext!;
     _currentRoute = route;
     notifyListeners();
   }
