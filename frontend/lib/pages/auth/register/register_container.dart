@@ -1,14 +1,19 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:redux_example/navigation/navigation_action.dart';
-import 'package:redux_example/pages/register/registerPage.dart';
+import 'package:redux_example/pages/auth/register/registerPage.dart';
+import 'package:redux_example/user_role.dart';
 
-import '../../app_state.dart';
-import '../login/login_action.dart';
+import '../../../app_state.dart';
+import '../auth_action.dart';
 
 class RegisterContainer extends StatelessWidget{
 
-  const RegisterContainer({super.key});
+  UserRole role;
+
+  RegisterContainer({
+    required this.role,
+    super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +24,8 @@ class RegisterContainer extends StatelessWidget{
 //this will prevent going back to Register screen
         return RegisterPage(
             onRegister: vm.onRegister,
-            routeChange: vm.routeChange
+            routeChange: vm.routeChange,
+            role: role
         );},
     );
   }
@@ -28,7 +34,7 @@ class RegisterContainer extends StatelessWidget{
 class _ViewModel extends Vm{
 
   final Function(Map<String, dynamic> x) onRegister;
-  Function() routeChange;
+  Function(String) routeChange;
 
   _ViewModel({
     required this.onRegister,
@@ -38,9 +44,9 @@ class _ViewModel extends Vm{
   static _ViewModel fromStore(Store<AppState> store) {
     return _ViewModel(
       onRegister: (Map<String, dynamic> x) {
-        store.dispatch(LoginAction(x["email"], x["password"]));
+        store.dispatch(RegisterAction(x["email"], x["password"], x["role"]));
       },
-        routeChange: (){ store.dispatch(MyNavigateAction("login"));}
+        routeChange: (path){ store.dispatch(MyNavigateAction(path));}
     );
   }
 }

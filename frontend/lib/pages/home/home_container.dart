@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:nominatim_geocoding/nominatim_geocoding.dart';
 import 'package:redux_example/navigation/navigation_action.dart';
 
 import '../../app_state.dart';
@@ -15,9 +16,9 @@ class HomeContainer extends StatelessWidget{
     return StoreConnector<AppState, _ViewModel>(
       converter: (Store<AppState> store) => _ViewModel.fromStore(store),
       builder: (BuildContext context, _ViewModel vm) {
-//this will prevent going back to login screen
+
         return HomePage(
-            onNavigateToLogin: vm.onNavigateToLogin
+            addressesList: vm.addressesList
         );},
     );
   }
@@ -25,17 +26,26 @@ class HomeContainer extends StatelessWidget{
 
 class _ViewModel extends Vm{
 
-  final Function() onNavigateToLogin;
+  List<Map<Coordinate, String>> addressesList;
 
   _ViewModel({
-    required this.onNavigateToLogin
+    required this.addressesList
   });
 
   static _ViewModel fromStore(Store<AppState> store) {
     return _ViewModel(
-      onNavigateToLogin: () {
-        store.dispatch(MyNavigateAction("login"));
-      }
+      addressesList: store.state.mapData!.addressesList,
     );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      super == other &&
+          other is _ViewModel &&
+          runtimeType == other.runtimeType &&
+          addressesList == other.addressesList;
+
+  @override
+  int get hashCode => super.hashCode ^ addressesList.hashCode;
 }

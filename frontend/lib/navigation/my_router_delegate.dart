@@ -1,8 +1,5 @@
-import 'dart:ui';
 
 import 'package:async_redux/async_redux.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:redux_example/app_state.dart';
 import 'package:redux_example/navigation/navigation_action.dart';
@@ -85,7 +82,6 @@ class MyRouterDelegate extends RouterDelegate<String>
   }
 
   void myNavigate(String route){
-    final BuildContext context = navigatorKey.currentContext!;
     _currentRoute = route;
     notifyListeners();
   }

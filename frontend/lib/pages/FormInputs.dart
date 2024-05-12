@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:redux_example/functions/capitalize.dart';
 
@@ -7,7 +6,7 @@ class FormInputs extends StatelessWidget {
   String? element;
   Function(String)? inputValueFun;
 
-  FormInputs({this.element, this.inputValueFun});
+  FormInputs({super.key, this.element, this.inputValueFun});
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 
@@ -13,7 +12,7 @@ Marker markerDisplayFun(coordinate, index, markersNumber, delete) {
       builder: (context) => ClipPath(
         clipper: TriangleClipper(),
         child: Container(
-          padding: EdgeInsets.only(bottom: 30),
+          padding: const EdgeInsets.only(bottom: 30),
           child: IconButton(
             hoverColor: index == markersNumber -1 ? Colors
                 .blue.withOpacity(0.6) : null,
@@ -32,7 +31,7 @@ Marker markerDisplayFun(coordinate, index, markersNumber, delete) {
                   Colors.red, blurRadius: 6.0)] : null,
                 ),
                 Container(
-                  padding: EdgeInsets.only(top: 12),
+                  padding: const EdgeInsets.only(top: 12),
                   child: Text(
                     index.toString(),
                     style: const TextStyle(

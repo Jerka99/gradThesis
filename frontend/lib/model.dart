@@ -1,7 +1,9 @@
+import 'user_role.dart';
+
 class UserData{
   String? userName;
   String? email;
-  String? role;
+  UserRole? role;
 
   UserData({
     this.userName,
@@ -11,7 +13,7 @@ class UserData{
   UserData copyWith({
     String? userName,
     String? email,
-    String? role
+    UserRole? role
   }){
     return UserData(
         userName: userName ?? this.userName,

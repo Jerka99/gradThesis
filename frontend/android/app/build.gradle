@@ -23,8 +23,8 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "com.example.redux_example"
-    compileSdkVersion flutter.compileSdkVersion
+    namespace "com.example.frontend"
+    compileSdkVersion 33
     ndkVersion flutter.ndkVersion
 
     compileOptions {

@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:redux_example/functions/capitalize.dart';
+import 'package:redux_example/user_role.dart';
 
-import '../FormInputs.dart';
+import '../../FormInputs.dart';
+import '../hyperlink.dart';
+
 
 class RegisterPage extends StatefulWidget {
-  final Function(Map<String, dynamic>) onRegister;
-  final Function() routeChange;
+  Function(Map<String, dynamic>) onRegister;
+  Function(String) routeChange;
+  UserRole role;
 
-  const RegisterPage({
+  RegisterPage({
     super.key,
     required this.onRegister,
-    required this.routeChange
+    required this.routeChange,
+    required this.role
   });
 
   @override
@@ -23,12 +29,8 @@ class _RegisterPage extends State<RegisterPage> {
     "name" : "",
     "email" : "",
     "password" : "",
-    "check password" : ""
+    "check password" : "",
   };
-
-  // List<> inputs =[
-  //
-  // ]
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +41,16 @@ class _RegisterPage extends State<RegisterPage> {
           // crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+             Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  "Register as a ${capitalize(widget.role.name)}",
+                  style: const TextStyle(
+                      fontSize: 35.0,
+                      fontWeight: FontWeight.bold
+                  ),
+                )),
+            const SizedBox(height: 80.0,),
             ...inputs.keys.map((element) => FormInputs(
               element: element,
               inputValueFun: (value) {
@@ -53,7 +65,7 @@ class _RegisterPage extends State<RegisterPage> {
                 onPressed: () { widget.onRegister(inputs)
                 ; },
                 style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.all(18.0),
+                    padding: const EdgeInsets.all(18.0),
                     backgroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.0)
@@ -70,17 +82,24 @@ class _RegisterPage extends State<RegisterPage> {
             const SizedBox(
               height: 30.0,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                const Text("Already have an account?"),
-                const SizedBox(width: 20.0),
-                ElevatedButton(
-                    onPressed: (){
-                      widget.routeChange();
-                    },
-                    child: Text("Login"))
-              ],
+            SizedBox(
+              width: double.maxFinite,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  HyperLink(
+                      text: "Already have an account? ",
+                      linkText: "Login",
+                      link:() => widget.routeChange("login")
+                  ),
+                  const SizedBox(height: 20.0,),
+                  HyperLink(
+                      text: "Sign up as a ${widget.role.name == "customer" ? "Driver" : "Customer"} ",
+                      linkText: "here!",
+                      link:() => widget.routeChange(widget.role.name == "customer" ? "registerDriver" : "registerCustomer")
+                  ),
+                ],
+              ),
             )
           ],
         ),

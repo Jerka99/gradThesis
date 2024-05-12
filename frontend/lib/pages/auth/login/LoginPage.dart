@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:redux_example/app_state.dart';
-import 'package:redux_example/pages/register/register_container.dart';
 
-import '../FormInputs.dart';
+import '../../FormInputs.dart';
+import '../hyperlink.dart';
 
 class LoginPage extends StatefulWidget {
   final Function(Map<String, dynamic>) onLogin;
-  final Function() routeChange;
+  final Function(String) routeChange;
 
   const LoginPage({
     super.key,
@@ -23,12 +21,8 @@ class _LoginPage extends State<LoginPage> {
   // final TextEditingController _textEditingController = TextEditingController();
   Map<String, dynamic> inputs = {
   "email" : "",
-  "password" : ""
+  "password" : "",
 };
-
-  // List<> inputs =[
-  //
-  // ]
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +33,16 @@ class _LoginPage extends State<LoginPage> {
               // crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                        "Login",
+                      style: TextStyle(
+                        fontSize: 35.0,
+                        fontWeight: FontWeight.bold
+                      ),
+                    )),
+                const SizedBox(height: 80.0,),
                 ...inputs.keys.map((element) => FormInputs(
                     element: element,
                     inputValueFun: (value) {
@@ -53,7 +57,7 @@ class _LoginPage extends State<LoginPage> {
                       onPressed: () { widget.onLogin(inputs)
                       ; },
                       style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.all(18.0),
+                        padding: const EdgeInsets.all(18.0),
                           backgroundColor: Colors.white,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0)
@@ -70,16 +74,20 @@ class _LoginPage extends State<LoginPage> {
                 const SizedBox(
                   height: 30.0,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Don't have an account?"),
-                    const SizedBox(width: 20.0),
-                    ElevatedButton(
-                        onPressed: (){
-                          widget.routeChange();
-                        },
-                        child: Text("Register"))
+                    HyperLink(
+                        text: "Don't have an account? Join us as out Driving Partner ",
+                        linkText: "here",
+                        link:() => widget.routeChange("registerDriver")
+                    ),
+                    const SizedBox(height: 20.0,),
+                    HyperLink(
+                        text: "Don't have an account? Sign up as a Customer ",
+                        linkText: "here",
+                        link:() => widget.routeChange("registerCustomer")
+                    ),
                   ],
                 )
               ],
@@ -88,4 +96,6 @@ class _LoginPage extends State<LoginPage> {
     );
   }
 }
+
+
 

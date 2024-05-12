@@ -2,9 +2,10 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:redux_example/navigation/navigation_action.dart';
 
-import '../../app_state.dart';
+import '../../../app_state.dart';
+import '../auth_action.dart';
 import 'LoginPage.dart';
-import 'login_action.dart';
+
 
 class LoginContainer extends StatelessWidget{
 
@@ -28,7 +29,7 @@ builder: (BuildContext context, _ViewModel vm) {
 class _ViewModel extends Vm{
 
   final Function(Map<String, dynamic>) onLogin;
-  Function() routeChange;
+  Function(String) routeChange;
 
   _ViewModel({
       required this.onLogin,
@@ -40,7 +41,7 @@ class _ViewModel extends Vm{
         onLogin: (Map<String, dynamic> auth) {
           store.dispatch(LoginAction(auth["email"], auth["password"]));
         },
-        routeChange: (){ store.dispatch(MyNavigateAction("register"));}
+        routeChange: (path){ store.dispatch(MyNavigateAction(path));}
     );
   }
 }

@@ -14,7 +14,7 @@ class SomethingPage extends StatelessWidget {
         onPressed: () {
           onSomething("aa", "bb");
         },
-        child: Text('Logout'),
+        child: const Text('Logout'),
       ),
     );
   }
