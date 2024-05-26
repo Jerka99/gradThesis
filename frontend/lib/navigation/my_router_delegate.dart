@@ -26,7 +26,7 @@ class MyRouterDelegate extends RouterDelegate<String>
   @override
   Widget build(BuildContext context) {
     AppState? state = StoreProvider.state<AppState>(context);
-    print(state);
+
     List<MaterialPage> page = initPages(state?.user.email);
     return Navigator(
       key: navigatorKey,

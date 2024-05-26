@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nominatim_geocoding/nominatim_geocoding.dart';
+import 'package:redux_example/user_role.dart';
 
 import '../../app_state.dart';
 import 'myMap.dart';
@@ -9,7 +10,12 @@ import 'map_actions.dart';
 
 class MapContainer extends StatelessWidget{
 
-  const MapContainer({super.key});
+  UserRole? role;
+
+  MapContainer({
+    this.role,
+    super.key
+  });
 
   @override
   Widget build(BuildContext context) {

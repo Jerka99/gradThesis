@@ -35,15 +35,9 @@ class _MyMap extends State<MyMap> {
   String? tempEndPoint;
   bool loading = false;
 
-  void handleAddresses(endPoint) async {
-    await handleAddressName(
-        endPoint, (addressResponse) => widget.addAddress(addressResponse));
-  }
 
   void handleTap(TapPosition pos, LatLng latlng) async {
     if (!loading) {
-      List? response;
-      List<LatLng> coordinatesMapped = [];
 
       if (widget.markerCoordinateList.isEmpty) {
         startPoint = "${latlng.longitude}, ${latlng.latitude}";
@@ -57,20 +51,16 @@ class _MyMap extends State<MyMap> {
         startPoint = "${lastMarker.longitude}, ${lastMarker.latitude}"; //?? startPoint
         endPoint = "${latlng.longitude}, ${latlng.latitude}";
       }
-      handleAddresses(endPoint);
-      response = await handleCoordinatesCall(
-          startPoint, endPoint, (bool value) => {loading = value});
+      ResponseData? response = await fetchCoordinates(startPoint, endPoint, (bool value) => {loading = value});
 
-      if (response!.isNotEmpty) {
-        coordinatesMapped = response
-            .map<LatLng>((element) => LatLng(element[1], element[0]))
-            .toList();
-        widget.addMarkerAndPolyFun(
-            coordinatesMapped[coordinatesMapped.length - 1], coordinatesMapped);
+      if (response!.coordinates.isNotEmpty) {
+        widget.addMarkerAndPolyFun(response.coordinates[response.coordinates.length - 1], response.coordinates);
       } else {
         startPoint = tempStartPoint;
         endPoint = tempEndPoint;
       }
+      await fetchAddressName(endPoint, (addressResponse) => widget.addAddress(addressResponse));
+
     }
   }
 
@@ -114,29 +104,7 @@ class _MyMap extends State<MyMap> {
                               if (markerCoordinateList.length - 1 ==
                                   markerCoordinate.key) {
                                  widget.removeLastMarkerFun(markerCoordinate.key);
-                                // else {
-                                //   Future.delayed(const Duration(seconds: 1),
-                                //       () {
-                                //     deleteFun();
-                                //   });
-                                // }
                               }
-                              // setState(() {
-                              //   print(markerCoordinateList.length);
-                              //   if (markerCoordinateList.length - 1 ==
-                              //       markerCoordinate.key) {
-                              //     markerCoordinateList
-                              //         .removeAt(markerCoordinate.key);
-                              //
-                              //     if (polylineList.isNotEmpty) {
-                              //       print("duljinaa ${polylineList.length}");
-                              //       polylineList
-                              //           .removeAt(polylineList.length - 1);
-                              //       endPoint =
-                              //           "${markerCoordinateList[markerCoordinateList.length - 1].longitude}, ${markerCoordinateList[markerCoordinateList.length - 1].latitude}";
-                              //     }
-                              //   }
-                              // });
                             }))
                         .toList()),
               ],

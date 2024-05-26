@@ -2,11 +2,24 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:nominatim_geocoding/nominatim_geocoding.dart';
 import 'package:redux_example/constants.dart';
 
+class ResponseData{
+  List<LatLng> coordinates;
+  double distance;
+  double duration;
 
-Future<List<dynamic>?> handleCoordinatesCall(startPoint, endPoint, callback)
+  ResponseData(
+      this.coordinates,
+      this.distance,
+      this.duration
+      );
+}
+
+
+Future<ResponseData?> fetchCoordinates(startPoint, endPoint, callback)
 async {
 try{
   callback(true);
@@ -14,10 +27,17 @@ try{
       .env["API_KEY"]}&start=$startPoint&end=$endPoint"));
 
     var data = jsonDecode(response.body);
-    // if(data["key"])
-    List<dynamic> coordinates = data["features"][0]["geometry"]["coordinates"];
 
-  return coordinates;
+  List<dynamic> coordinates = data["features"][0]["geometry"]["coordinates"];
+  List<LatLng> coordinatesMapped = coordinates
+      .map<LatLng>((element) => LatLng(element[1], element[0]))
+      .toList();
+  double distance = data["features"][0]["properties"]["summary"]["distance"] ?? 0;
+  double duration = data["features"][0]["properties"]["summary"]["duration"] ?? 0;
+
+  ResponseData responseData = ResponseData(coordinatesMapped, distance, duration);
+
+  return responseData;
   }
 catch(e){
   print("error -> $e");
@@ -25,11 +45,11 @@ catch(e){
 finally{
   callback(false);
 }
-  return [];
+  return null;
 }
 
 
-Future<void> handleAddressName(endPoint, callbackFun) async {
+Future<void> fetchAddressName(endPoint, callbackFun) async {
   Geocoding address;
   try {
     await NominatimGeocoding.init();
@@ -46,9 +66,9 @@ Future<void> handleAddressName(endPoint, callbackFun) async {
   catch(e){
     print("error2 -> $e");
     if(e.toString() == "Exception: can not sent more than 1 request per second") {
-      Future.delayed(const Duration(seconds: 1), () {
+      Future.delayed(const Duration(microseconds: 1000), () {
         print("Calling my own function after 1 second");
-        handleAddressName(endPoint, callbackFun);
+        fetchAddressName(endPoint, callbackFun);
       });
     }
   }

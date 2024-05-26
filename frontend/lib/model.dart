@@ -8,7 +8,8 @@ class UserData{
   UserData({
     this.userName,
     this.email,
-    this.role});
+    this.role
+  });
 
   UserData copyWith({
     String? userName,

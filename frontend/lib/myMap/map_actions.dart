@@ -21,7 +21,9 @@ class MapActionAddMarkerAndPolyline extends ReduxAction<AppState> {
     List<Map<Coordinate, String>> addressesListCopy = [
       ...?store.state.mapData?.addressesList
     ];
-    addressesListCopy.add({});
+    Coordinate loadingKey = const Coordinate(latitude: 0, longitude: 0);
+    String loadingValue = "loading";
+    addressesListCopy.add({loadingKey: loadingValue});
     markersListCopy.add(marker);
     if (state.mapData!.markerCoordinateList.isEmpty) {
       return state.copy(
@@ -54,8 +56,8 @@ class MapActionAddressesManager extends ReduxAction<AppState> {
         "${address.address.road} ${address.address.houseNumber} ${address.address.city == "" ? address.address.district : address.address.city }"; // Value for the entry
     addressData[coordinate] = fullAddress;
 
-    int emptyMapIndex = addressesListCopy.indexWhere((element) => element.isEmpty);
-    addressesListCopy[emptyMapIndex] = addressData;
+    int emptyMapIndex = addressesListCopy.indexWhere((element) => element.containsValue("loading"));
+    if(emptyMapIndex != -1) addressesListCopy[emptyMapIndex] = addressData;
 
     return state.copy(
         mapData: state.mapData?.copyWith(addressesList: addressesListCopy));

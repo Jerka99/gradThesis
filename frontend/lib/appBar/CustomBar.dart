@@ -5,10 +5,10 @@ import '../role_handler.dart';
 
 class CustomBar extends StatefulWidget {
   final Function(String) routeChange;
-  String? route;
-  UserRole? userHasRole;
+  final String? route;
+  final UserRole? userHasRole;
 
-  CustomBar({
+  const CustomBar({
     required this.routeChange,
     this.userHasRole,
     this.route,
@@ -28,7 +28,7 @@ class _CustomBarState extends State<CustomBar> {
   int current = 0;
 
   double changePosition(width, String? route) {
-    int index = tabs.keys.toList().indexOf(route!);
+    int index = tabs.keys.contains(route) ? tabs.keys.toList().indexOf(route!) : 0;
     switch (index) {
       case 0:
         return 0;
