@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class SomethingPage extends StatelessWidget {
+class AllRidesPage extends StatelessWidget {
   final Function(String p1, String p2) onSomething;
 
-  const SomethingPage({
+  const AllRidesPage({
     super.key,
     required this.onSomething});
 

@@ -22,7 +22,7 @@ class CustomBar extends StatefulWidget {
 class _CustomBarState extends State<CustomBar> {
   Map<String, String> tabs = {
     "/": "home",
-    "something": "something",
+    "allRides": "allRides",
     "unknown": "unknown"
   };
   int current = 0;

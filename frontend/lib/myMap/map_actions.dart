@@ -46,14 +46,13 @@ class MapActionAddressesManager extends ReduxAction<AppState> {
 
   @override
   AppState? reduce() {
-    int? markersLength =  store.state.mapData?.addressesList.length;
     List<Map<Coordinate, String>> addressesListCopy = [
       ...?store.state.mapData?.addressesList
     ];
     Map<Coordinate, String> addressData = {};
     Coordinate coordinate = address.coordinate;
     String fullAddress =
-        "${address.address.road} ${address.address.houseNumber} ${address.address.city == "" ? address.address.district : address.address.city }"; // Value for the entry
+        "${address.address.road} ${address.address.houseNumber} ${address.address.city == "" ? (address.address.district == "" ? "Unknown Station Name" : address.address.district) : address.address.city }"; // Value for the entry
     addressData[coordinate] = fullAddress;
 
     int emptyMapIndex = addressesListCopy.indexWhere((element) => element.containsValue("loading"));

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:redux_example/pages/auth/login/login_connector.dart';
+import 'package:redux_example/pages/auth/register/register_connector.dart';
+import 'package:redux_example/pages/allRides//all_rides_connector.dart';
 
-import '../pages/auth/login/login_container.dart';
-import '../pages/auth/register/register_container.dart';
-import '../pages/home/home_container.dart';
-import '../pages/something/something_container.dart';
+import '../pages/home/home_connector.dart';
 import '../pages/unknown/unknown_container.dart';
 import '../user_role.dart';
 
@@ -11,15 +11,15 @@ import '../user_role.dart';
 
 class AppRoutes {
   final Map<String, MaterialPage> unsecuredPages = {
-    'login': const MaterialPage(child: LoginContainer()),
-    'registerDriver': MaterialPage(child: RegisterContainer(role: UserRole.driver)),
-    'registerCustomer': MaterialPage(child: RegisterContainer(role: UserRole.customer,)),
+    'login': const MaterialPage(child: LoginConnector()),
+    'registerDriver': MaterialPage(child: RegisterConnector(role: UserRole.driver)),
+    'registerCustomer': MaterialPage(child: RegisterConnector(role: UserRole.customer,)),
   };
 
   final Map<String, MaterialPage> securedPages = const {
-    '/': MaterialPage(child: HomeContainer()),
+    '/': MaterialPage(child: HomeConnector()),
     'unknown': MaterialPage(child: UnknownContainer()),
-    'something': MaterialPage(child: SomethingContainer()),
+    'allRides': MaterialPage(child: AllRidesConnector()),
   };
 }
 

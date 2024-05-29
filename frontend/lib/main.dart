@@ -2,7 +2,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:redux_example/appBar/customBar_container.dart';
+import 'package:redux_example/appBar/customBar_connector.dart';
 import 'package:redux_example/redux/myStateObserver.dart';
 
 import 'app_state.dart';
@@ -66,7 +66,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
                           children: [
                             Container(
                                 color: Colors.cyan[50],
-                                child: const CustomBarContainer()),
+                                child: const CustomBarConnector()),
                             Expanded(
                               child: Container(
                                   width: size.width,

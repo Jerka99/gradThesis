@@ -3,7 +3,7 @@ import 'package:nominatim_geocoding/nominatim_geocoding.dart';
 import 'package:redux_example/role_handler.dart';
 import 'package:redux_example/user_role.dart';
 
-import '../../myMap/map_container.dart';
+import '../../myMap/map_connector.dart';
 
 class HomePage extends StatefulWidget {
   List<Map<Coordinate, String>> addressesList;
@@ -54,7 +54,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
       WidgetWithRole(
           role: UserRole.customer,
           widgetName: "Map",
-          child: MapContainer(
+          child: MapConnector(
             role: widget.role,
           )),
       const SizedBox(
