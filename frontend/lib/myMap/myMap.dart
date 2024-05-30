@@ -9,6 +9,7 @@ import 'marker_and_polyline.dart';
 class MyMap extends StatefulWidget {
   final Function(LatLng, List<LatLng>) addMarkerAndPolyFun;
   final Function(Geocoding) addAddress;
+  final Function(LatLng) addMapData;
   final Function(int) removeLastMarkerFun;
   final List<LatLng> markerCoordinateList;
   final List<List<LatLng>> polylineList;
@@ -18,6 +19,7 @@ class MyMap extends StatefulWidget {
     super.key,
     required this.addMarkerAndPolyFun,
     required this.addAddress,
+    required this.addMapData,
     required this.removeLastMarkerFun,
     required this.markerCoordinateList,
     required this.polylineList,
@@ -36,39 +38,10 @@ class _MyMap extends State<MyMap> {
   bool loading = false;
 
 
-  void handleTap(TapPosition pos, LatLng latlng) async {
-    if (!loading) {
-
-      if (widget.markerCoordinateList.isEmpty) {
-        startPoint = "${latlng.longitude}, ${latlng.latitude}";
-        endPoint = startPoint;
-      } else {
-        LatLng lastMarker =
-            widget.markerCoordinateList[widget.markerCoordinateList.length - 1];
-        tempStartPoint =
-            startPoint; //no wrong polylines if we re clicking on the sea
-        tempEndPoint = endPoint;
-        startPoint = "${lastMarker.longitude}, ${lastMarker.latitude}"; //?? startPoint
-        endPoint = "${latlng.longitude}, ${latlng.latitude}";
-      }
-      ResponseData? response = await fetchCoordinates(startPoint, endPoint, (bool value) => {loading = value});
-
-      if (response!.coordinates.isNotEmpty) {
-        widget.addMarkerAndPolyFun(response.coordinates[response.coordinates.length - 1], response.coordinates);
-      } else {
-        startPoint = tempStartPoint;
-        endPoint = tempEndPoint;
-      }
-      await fetchAddressName(endPoint, (addressResponse) => widget.addAddress(addressResponse));
-
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     List<LatLng> markerCoordinateList = widget.markerCoordinateList;
     List<List<LatLng>> polylineList = widget.polylineList;
-    List<Map<Coordinate, String>> addressesList = widget.addressesList;
 
     return Column(
       children: [
@@ -78,7 +51,7 @@ class _MyMap extends State<MyMap> {
                 border: Border.all(color: Colors.green, width: 2.0)),
             child: FlutterMap(
               options: MapOptions(
-                  onTap: (pos, latlng) => handleTap(pos, latlng),
+                  onTap: (pos, latlng) => widget.addMapData(latlng),
                   center: LatLng(43.508133, 16.440193),
                   zoom: 13,
                   maxZoom: 18,

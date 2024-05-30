@@ -12,6 +12,9 @@ class Factory extends VmFactory<AppState, MapConnector, ViewModel> {
   @override
   ViewModel fromStore() =>
       ViewModel(
+          addMapData: (latlng) {
+            dispatch(InitFetch(latlng: latlng));
+          },
           addMarkerAndPolyFun: (marker, polyline) {
             dispatch(MapActionAddMarkerAndPolyline(marker, polyline));
           },
@@ -29,6 +32,7 @@ class ViewModel extends Vm{
 
   Function(LatLng, List<LatLng>) addMarkerAndPolyFun;
   Function(Geocoding) addAddress;
+  Function(LatLng) addMapData;
   Function(int) removeLastMarkerFun;
   List<LatLng> markerCoordinateList = [];
   List<List<LatLng>> polylineList = [];
@@ -37,6 +41,7 @@ class ViewModel extends Vm{
   ViewModel({
     required this.addMarkerAndPolyFun,
     required this.addAddress,
+    required this.addMapData,
     required this.removeLastMarkerFun,
     required this.markerCoordinateList,
     required this.polylineList,
@@ -50,6 +55,7 @@ class ViewModel extends Vm{
               other is ViewModel &&
               runtimeType == other.runtimeType &&
               addMarkerAndPolyFun == other.addMarkerAndPolyFun &&
+              addMapData == other.addMapData &&
               addAddress == other.addAddress &&
               removeLastMarkerFun == other.removeLastMarkerFun &&
               markerCoordinateList == other.markerCoordinateList &&
@@ -61,6 +67,7 @@ class ViewModel extends Vm{
       super.hashCode ^
       addMarkerAndPolyFun.hashCode ^
       addAddress.hashCode ^
+      addMapData.hashCode ^
       removeLastMarkerFun.hashCode ^
       markerCoordinateList.hashCode ^
       polylineList.hashCode ^
@@ -87,6 +94,7 @@ class MapConnector extends StatelessWidget{
         return MyMap(
           addMarkerAndPolyFun: vm.addMarkerAndPolyFun,
           addAddress: vm.addAddress,
+          addMapData: vm.addMapData,
           removeLastMarkerFun: vm.removeLastMarkerFun,
           markerCoordinateList: vm.markerCoordinateList,
           polylineList: vm.polylineList,
