@@ -76,7 +76,6 @@ class MyRouterDelegate extends RouterDelegate<String>
     } else {
       pageWidget = securedPages?[_currentRoute ?? "/"]!;
     }
-    print(pageWidget);
     pages.add(pageWidget!);
     return pages;
   }

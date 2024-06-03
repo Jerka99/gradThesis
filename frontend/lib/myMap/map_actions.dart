@@ -1,22 +1,22 @@
 import 'package:async_redux/async_redux.dart';
+import 'package:http/http.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nominatim_geocoding/nominatim_geocoding.dart';
 import 'package:redux_example/app_state.dart';
+import 'package:redux_example/myMap/address_class.dart';
 
 import 'coordinates_api.dart';
 
-
-
 class InitFetch extends ReduxAction<AppState> {
-  String? startPoint;
-  String? endPoint;
-  LatLng latlng;
+  static String? startPoint;
+  static String? endPoint;
+  LatLng latLng;
+  bool loading = false;
   String? tempStartPoint;
   String? tempEndPoint;
-  bool loading = false;
 
   InitFetch({
-    required this.latlng
+    required this.latLng
 });
 
   void handleApiPath() {
@@ -25,42 +25,55 @@ class InitFetch extends ReduxAction<AppState> {
     if (!loading) {
 
       if (markerCoordinateList.isEmpty) {
-        startPoint = "${latlng.longitude}, ${latlng.latitude}";
+        startPoint = "${latLng.longitude}, ${latLng.latitude}";
         endPoint = startPoint;
       } else {
         LatLng lastMarker = markerCoordinateList[markerCoordinateList.length - 1];
         tempStartPoint = startPoint; //no wrong polylines if we re clicking on the sea
         tempEndPoint = endPoint;
         startPoint = "${lastMarker.longitude}, ${lastMarker.latitude}"; //?? startPoint
-        endPoint = "${latlng?.longitude}, ${latlng?.latitude}";
+        endPoint = "${latLng.longitude}, ${latLng.latitude}";
       }
     }
   }
 
   @override
   Future<AppState?> reduce() async {
-
+    ResponseData? coordinatesResponse;
     handleApiPath();
-    ResponseData? coordinatesResponse = await fetchCoordinates(startPoint, endPoint, (bool value) => {loading = value});
+      coordinatesResponse = await fetchCoordinates(startPoint, endPoint, (bool value) => {loading = value});
+
+      if (coordinatesResponse != null && coordinatesResponse.coordinates.isNotEmpty) {
+      LatLng? lastElement = coordinatesResponse.coordinates[coordinatesResponse.coordinates.length-1];
+
+      Coordinate lastElementCoordinates = Coordinate(latitude: lastElement!.latitude, longitude: lastElement.longitude);
+      DataBetweenTwoAddresses dataBetweenTwoAddresses = DataBetweenTwoAddresses(coordinatesResponse!.duration, coordinatesResponse.distance);
 
 
-    if (coordinatesResponse!.coordinates.isNotEmpty) {
-      dispatch(MapActionAddMarkerAndPolyline(coordinatesResponse.coordinates[coordinatesResponse.coordinates.length - 1], coordinatesResponse.coordinates));
-      await fetchAddressName(endPoint, (addressResponse) => dispatch(MapActionAddressesManager(addressResponse, coordinatesResponse.duration, coordinatesResponse.distance)), true);
-    } else {
+        dispatch(MapActionAddMarkerAndPolyline(lastElement, coordinatesResponse.coordinates, coordinatesResponse.duration, coordinatesResponse.distance));
+        await fetchAddressName(lastElementCoordinates, dataBetweenTwoAddresses, true, (address) => dispatch(MapActionAddressesManager(address)));
+
+      } else {
         startPoint = tempStartPoint;
         endPoint = tempEndPoint;
       }
-    return null;
+      return null;
+    }
     }
 
-  }
 
 class MapActionAddMarkerAndPolyline extends ReduxAction<AppState> {
   LatLng marker;
   List<LatLng> polyline = [];
+  double duration;
+  double distance;
 
-  MapActionAddMarkerAndPolyline(this.marker, this.polyline);
+  MapActionAddMarkerAndPolyline(
+      this.marker,
+      this.polyline,
+      this.duration,
+      this.distance,
+  );
 
   @override
   AppState? reduce() {
@@ -71,12 +84,14 @@ class MapActionAddMarkerAndPolyline extends ReduxAction<AppState> {
     List<LatLng> markersListCopy = [
       ...?store.state.mapData?.markerCoordinateList
     ];
-    List<Map<Coordinate, String>> addressesListCopy = [
+    List<AddressClass> addressesListCopy = [
       ...?store.state.mapData?.addressesList
     ];
-    Coordinate loadingKey = const Coordinate(latitude: 0, longitude: 0);
-    String loadingValue = "loading";
-    addressesListCopy.add({loadingKey: loadingValue});
+
+    Coordinate latLng = Coordinate(latitude: marker.latitude, longitude: marker.longitude);
+    DataBetweenTwoAddresses dataBetweenTwoAddresses = DataBetweenTwoAddresses(duration, distance);
+
+    addressesListCopy.add(AddressClass(latLng, "loading", "loading", dataBetweenTwoAddresses));
     markersListCopy.add(marker);
     if (state.mapData!.markerCoordinateList.isEmpty) {
       return state.copy(
@@ -93,30 +108,22 @@ class MapActionAddMarkerAndPolyline extends ReduxAction<AppState> {
 }
 
 class MapActionAddressesManager extends ReduxAction<AppState> {
-  Geocoding address;
-  double duration;
-  double distance;
+  AddressClass address;
 
   MapActionAddressesManager(
       this.address,
-      this.duration,
-      this.distance
       );
 
   @override
-  AppState? reduce() {
-    List<Map<Coordinate, String>> addressesListCopy = [
+  Future<AppState?> reduce() async{
+
+    List<AddressClass> addressesListCopy = [
       ...?store.state.mapData?.addressesList
     ];
-    Map<Coordinate, String> addressData = {};
-    Coordinate coordinate = address.coordinate;
-    String fullAddress =
-        "${address.address.road} ${address.address.houseNumber} ${address.address.city == "" ? (address.address.district == "" ? "Unknown Station Name" : address.address.district) : address.address.city}"; // Value for the entry
-    addressData[coordinate] = fullAddress;
 
     int emptyMapIndex = addressesListCopy
-        .indexWhere((element) => element.containsValue("loading"));
-    if (emptyMapIndex != -1) addressesListCopy[emptyMapIndex] = addressData;
+        .indexWhere((element) => element.city == "loading");
+    if (emptyMapIndex != -1) addressesListCopy[emptyMapIndex] = address;
 
     return state.copy(
         mapData: state.mapData?.copyWith(addressesList: addressesListCopy));
@@ -136,7 +143,7 @@ class RemoveLastMarker extends ReduxAction<AppState> {
     List<LatLng> markersListCopy = [
       ...?store.state.mapData?.markerCoordinateList
     ];
-    List<Map<Coordinate, String>> addressesListCopy = [
+    List<AddressClass> addressesListCopy = [
       ...?store.state.mapData?.addressesList
     ];
 

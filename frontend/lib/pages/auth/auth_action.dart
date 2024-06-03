@@ -18,7 +18,7 @@ class LoginAction extends ReduxAction<AppState>{
   @override
   AppState reduce() {
     if(email != "") store.dispatch(MyNavigateAction("/"));
-    return store.state.copy(user: state.user.copyWith(email: email, role: UserRole.customer));
+    return store.state.copy(user: state.user.copyWith(email: email, role: email == "customer" ? UserRole.customer : UserRole.driver));
   }
 }
 
@@ -36,8 +36,7 @@ class RegisterAction extends ReduxAction<AppState>{
   @override
   AppState reduce() {
     if(email != "") store.dispatch(MyNavigateAction("/"));
-    return store.state.copy(user: state.user.copyWith(email: email, role:
-    userRoleFromJson(role)));
+    return store.state.copy(user: state.user.copyWith(email: email, role: userRoleFromJson(role)));
   }
 }
 

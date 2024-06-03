@@ -2,6 +2,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nominatim_geocoding/nominatim_geocoding.dart';
+import 'package:redux_example/myMap/address_class.dart';
 import 'package:redux_example/user_role.dart';
 
 import '../../app_state.dart';
@@ -12,14 +13,8 @@ class Factory extends VmFactory<AppState, MapConnector, ViewModel> {
   @override
   ViewModel fromStore() =>
       ViewModel(
-          addMapData: (latlng) {
-            dispatch(InitFetch(latlng: latlng));
-          },
-          addMarkerAndPolyFun: (marker, polyline) {
-            dispatch(MapActionAddMarkerAndPolyline(marker, polyline));
-          },
-          addAddress: (address) {
-            dispatch(MapActionAddressesManager(address));
+          addMapData: (latLng) {
+            dispatch(InitFetch(latLng: latLng));
           },
           removeLastMarkerFun : (key) {dispatch(RemoveLastMarker(key));},
           markerCoordinateList: state.mapData!.markerCoordinateList,
@@ -30,17 +25,13 @@ class Factory extends VmFactory<AppState, MapConnector, ViewModel> {
 
 class ViewModel extends Vm{
 
-  Function(LatLng, List<LatLng>) addMarkerAndPolyFun;
-  Function(Geocoding) addAddress;
   Function(LatLng) addMapData;
   Function(int) removeLastMarkerFun;
   List<LatLng> markerCoordinateList = [];
   List<List<LatLng>> polylineList = [];
-  List<Map<Coordinate, String>> addressesList;
+  List<AddressClass> addressesList;
 
   ViewModel({
-    required this.addMarkerAndPolyFun,
-    required this.addAddress,
     required this.addMapData,
     required this.removeLastMarkerFun,
     required this.markerCoordinateList,
@@ -54,9 +45,7 @@ class ViewModel extends Vm{
           super == other &&
               other is ViewModel &&
               runtimeType == other.runtimeType &&
-              addMarkerAndPolyFun == other.addMarkerAndPolyFun &&
               addMapData == other.addMapData &&
-              addAddress == other.addAddress &&
               removeLastMarkerFun == other.removeLastMarkerFun &&
               markerCoordinateList == other.markerCoordinateList &&
               polylineList == other.polylineList &&
@@ -65,8 +54,6 @@ class ViewModel extends Vm{
   @override
   int get hashCode =>
       super.hashCode ^
-      addMarkerAndPolyFun.hashCode ^
-      addAddress.hashCode ^
       addMapData.hashCode ^
       removeLastMarkerFun.hashCode ^
       markerCoordinateList.hashCode ^
@@ -92,8 +79,6 @@ class MapConnector extends StatelessWidget{
       builder: (BuildContext context, ViewModel vm) {
 
         return MyMap(
-          addMarkerAndPolyFun: vm.addMarkerAndPolyFun,
-          addAddress: vm.addAddress,
           addMapData: vm.addMapData,
           removeLastMarkerFun: vm.removeLastMarkerFun,
           markerCoordinateList: vm.markerCoordinateList,

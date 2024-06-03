@@ -5,6 +5,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nominatim_geocoding/nominatim_geocoding.dart';
 import 'package:redux_example/constants.dart';
+import 'package:redux_example/myMap/address_class.dart';
 
 class ResponseData {
   List<LatLng> coordinates;
@@ -22,6 +23,9 @@ Future<ResponseData?> fetchCoordinates(startPoint, endPoint, callback) async {
 
     var data = jsonDecode(response.body);
 
+    if (data.containsKey("error") && data["error"]["code"] == 2010) {
+      throw Exception(data["error"]["message"]);
+    }
     List<dynamic> coordinates = data["features"][0]["geometry"]["coordinates"];
     List<LatLng> coordinatesMapped = coordinates
         .map<LatLng>((element) => LatLng(element[1], element[0]))
@@ -43,39 +47,45 @@ Future<ResponseData?> fetchCoordinates(startPoint, endPoint, callback) async {
   return null;
 }
 
-List<String> endpointsToBeFetched = [];
+List<AddressClass> endpointsToBeFetched = [];
+bool isFetching = false;
 
-Future<void> fetchAddressName(endPoint, callbackFun, boolean) async {
-  Geocoding address;
-
+Future<void> fetchAddressName(Coordinate endPoint, DataBetweenTwoAddresses dataBetweenTwoAddresses, bool boolean, void Function(AddressClass) callback) async {
   if (boolean) {
-    endpointsToBeFetched.add(endPoint!);
+    AddressClass coordinateAndData = AddressClass(endPoint, null, null, dataBetweenTwoAddresses);
+    endpointsToBeFetched.add(coordinateAndData);
   }
-  if (endpointsToBeFetched.length == 1) {
-    while (endpointsToBeFetched.isNotEmpty) {
-      String firstElement = endpointsToBeFetched[0];
-      try {
-        await Future.delayed(Duration(milliseconds: 1000));
-        await NominatimGeocoding.init();
-        double lng = double.parse(firstElement.split(",")[0]);
-        double lat = double.parse(firstElement.split(",")[1]);
 
-        address = await NominatimGeocoding.to.reverseGeoCoding(Coordinate(
-          latitude: lat,
-          longitude: lng,
+  if (!isFetching && endpointsToBeFetched.isNotEmpty) {
+    isFetching = true;
+    while (endpointsToBeFetched.isNotEmpty) {
+      AddressClass firstElement = endpointsToBeFetched.first;
+      try {
+        await NominatimGeocoding.init();
+        Geocoding address = await NominatimGeocoding.to.reverseGeoCoding(Coordinate(
+          latitude: firstElement.coordinate.latitude,
+          longitude: firstElement.coordinate.longitude,
         ));
 
+        Coordinate coordinate = address.coordinate;
+        String fullAddress = "${address.address.road} ${address.address.houseNumber}";
+        String cityOrDistrict = address.address.city == ""
+            ? (address.address.district == "" ? "Unknown Station Name" : address.address.district)
+            : address.address.city;
+
+        AddressClass addressClass = AddressClass(coordinate, fullAddress, cityOrDistrict, firstElement.dataBetweenTwoAddresses);
         endpointsToBeFetched.removeAt(0);
-        address ?? "unknown";
-        callbackFun(address);
-      } catch (e) {
-        if (e.toString() ==
-            "Exception: can not sent more than 1 request per second") {
-          Future.delayed(const Duration(milliseconds: 1000), () async {
-            await fetchAddressName(endPoint, callbackFun, false);
-          });
+        callback(addressClass);
+        await Future.delayed(const Duration(milliseconds: 2000));
+
+      } catch (error) {
+        print("object");
+        if (error.toString() == "Exception: can not sent more than 1 request per second") {
+          fetchAddressName(endPoint, dataBetweenTwoAddresses, false, callback);
         }
       }
     }
+    isFetching = false;
   }
 }
+

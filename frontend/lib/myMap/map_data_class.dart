@@ -1,11 +1,11 @@
 
 import 'package:latlong2/latlong.dart';
-import 'package:nominatim_geocoding/nominatim_geocoding.dart';
+import 'package:redux_example/myMap/address_class.dart';
 
 class MapData{
   List<LatLng> markerCoordinateList;
   List<List<LatLng>> polylineList;
-  List<Map<Coordinate, String>> addressesList;
+  List<AddressClass> addressesList;
 
   MapData({
     this.markerCoordinateList = const [],
@@ -16,12 +16,13 @@ class MapData{
   MapData copyWith({
     List<LatLng>? markerCoordinateList,
     List<List<LatLng>>? polylineList,
-    List<Map<Coordinate, String>>? addressesList
+    List<AddressClass>? addressesList
   }){
     return MapData(
         markerCoordinateList: markerCoordinateList ?? this.markerCoordinateList,
         polylineList: polylineList ?? this.polylineList,
-        addressesList: addressesList ?? this.addressesList);
+        addressesList: addressesList ?? this.addressesList)
+    ;
   }
 
   @override
