@@ -57,8 +57,8 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
               return Scaffold(
                 resizeToAvoidBottomInset: true,
                 // Set to true to resize the UI to avoid bottom overflow
-                body: SafeArea(
-                  child: SingleChildScrollView(
+                body: SingleChildScrollView(
+                  child: SafeArea(
                     child: SizedBox(
                         width: size.width,
                         height: size.height,
@@ -71,8 +71,6 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
                               child: Container(
                                   width: size.width,
                                   height: size.height * 0.88,
-                                  padding: const EdgeInsets.only(
-                                      left: 20, right: 20, top: 10),
                                   color: Colors.cyan[50],
                                   child: child),
                             ),

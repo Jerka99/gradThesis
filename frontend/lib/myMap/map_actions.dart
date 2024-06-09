@@ -1,5 +1,4 @@
 import 'package:async_redux/async_redux.dart';
-import 'package:http/http.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nominatim_geocoding/nominatim_geocoding.dart';
 import 'package:redux_example/app_state.dart';
