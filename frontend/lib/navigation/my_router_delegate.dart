@@ -1,8 +1,8 @@
 
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
-import 'package:redux_example/app_state.dart';
-import 'package:redux_example/navigation/navigation_action.dart';
+import 'package:travel_mate/app_state.dart';
+import 'package:travel_mate/navigation/navigation_action.dart';
 
 class MyRouterDelegate extends RouterDelegate<String>
     with ChangeNotifier, PopNavigatorRouterDelegateMixin {

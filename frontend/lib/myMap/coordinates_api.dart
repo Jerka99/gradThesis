@@ -4,8 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nominatim_geocoding/nominatim_geocoding.dart';
-import 'package:redux_example/constants.dart';
-import 'package:redux_example/myMap/address_class.dart';
+import 'package:travel_mate/constants.dart';
+import 'package:travel_mate/myMap/address_class.dart';
 
 class ResponseData {
   List<LatLng> coordinates;

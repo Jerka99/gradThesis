@@ -1,6 +1,6 @@
 
 import 'package:async_redux/async_redux.dart';
-import 'package:redux_example/app_state.dart';
+import 'package:travel_mate/app_state.dart';
 
 class MyNavigateAction extends ReduxAction<AppState>{
   String route;

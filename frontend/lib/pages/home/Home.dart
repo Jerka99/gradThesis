@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:redux_example/myMap/address_class.dart';
-import 'package:redux_example/role_handler.dart';
-import 'package:redux_example/user_role.dart';
+import 'package:travel_mate/myMap/address_class.dart';
+import 'package:travel_mate/role_handler.dart';
+import 'package:travel_mate/user_role.dart';
 
+import '../../AutoScrollingText.dart';
 import '../../Calendar.dart';
 import '../../myMap/map_connector.dart';
 
@@ -32,49 +33,82 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
     super.initState();
   }
 
+  Widget loading(){
+    return const Center(
+        child: CircularProgressIndicator(
+        color: Colors.black,
+    ));
+  }
+
   Widget fromToElement(index, AddressClass value) {
     return Container(
       height: 80,
-      padding: const EdgeInsets.only(top: 10, left: 20, right: 20, bottom: 0),
+      padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 0),
       decoration: const BoxDecoration(
           border: Border(
         bottom: BorderSide(color: Colors.black),
       )),
       child: value.fullAddress.toString() == "loading"
-          ? const Center(
-              child: CircularProgressIndicator(
-              color: Colors.black,
-            ))
+          ? loading()
           : Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
                   child: Align(
-                    alignment: Alignment.bottomCenter,
+                    alignment: Alignment.centerLeft,
                     child: Padding(
-                      padding: const EdgeInsets.all(8.0),
+                      padding: const EdgeInsets.all(2.0),
+                      child:
+                      // AutoScrollingText(
+                      //     text: " ${widget.addressesList[index - 1].fullAddress ?? "-"}",
+                      //     fontSize: 14,
+                      //     fontWeight: FontWeight.bold,
+                      //     offset: Offset(100, 100))
+                      Text(
+                        "${widget.addressesList[index - 1].fullAddress} ${widget.addressesList[index - 1].city}" ?? "-",
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 20),
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Padding(
+                      padding: const EdgeInsets.all(2.0),
                       child: Text(
-                          widget.addressesList[index - 1].fullAddress ?? "-"),
+                        value.fullAddress ?? "-",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ),
                 ),
                 const SizedBox(width: 20),
                 Expanded(
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(value.fullAddress ?? "-"),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 20),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(sumDrivingDurations(index)),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 6.0),
+                    child: Column(
+                      children: [
+                        Expanded(
+                            flex: 2,
+                            child: Align(
+                                alignment: Alignment.bottomLeft,
+                                child: Text(
+                                  "${sumDrivingDurations(index)?.hour}:${sumDrivingDurations(index)?.minute.toString().padLeft(2, '0')}",
+                                  style: const TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.bold),
+                                ))),
+                        Expanded(
+                          child: Align(
+                              alignment: Alignment.bottomRight,
+                              child: Text(
+                                "${sumDrivingDurations(index)?.day}.${sumDrivingDurations(index)?.month}.${sumDrivingDurations(index)?.year}",
+                                style: TextStyle(fontSize: 13),
+                              )),
+                        ),
+                      ],
                     ),
                   ),
                 ),
@@ -84,34 +118,47 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   }
 
   List<Container> listViewHeader() {
+    List<String> titles = ["From", "To", "Arrival"];
     return [
       Container(
-        height: 90,
+        height: 100,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                Expanded(
-                    child: Align(
-                        child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Text(
-                              "${widget.addressesList.isNotEmpty ? widget.addressesList.first.fullAddress : ""}",
-                              style: const TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                            )))),
-                const Text("-"),
-                Expanded(
-                    child: Align(
-                        child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            child: Text(
-                              " ${widget.addressesList.isNotEmpty ? widget.addressesList.last.fullAddress : ""}",
-                              style: const TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                            )))),
-              ],
+            Container(
+              height: 40,
+              margin: EdgeInsets.only(bottom: 10),
+              child: Row(
+                children: [
+                  Expanded(
+                      child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: widget.addressesList.isNotEmpty && widget.addressesList.first.fullAddress == "loading" ? loading() : AutoScrollingText(
+                        text:
+                            " ${widget.addressesList.isNotEmpty ? "${widget.addressesList.first.fullAddress} ${widget.addressesList.first.city}" : ""}",
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        offset: Offset(100, 0))
+                      )),
+                  const Padding(
+                    padding: EdgeInsets.only(left: 25.0, right: 25),
+                    child: Text(
+                      "-",
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Expanded(
+                      child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: widget.addressesList.length > 1 && widget.addressesList.last.fullAddress == "loading" ? loading() : AutoScrollingText(
+                        text:
+                            " ${widget.addressesList.length > 1 ? "${widget.addressesList.last.fullAddress} ${widget.addressesList.last.city}" : ""} ",
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        offset: Offset(100, 0))
+                      )),
+                ],
+              ),
             ),
             Expanded(
               child: Row(
@@ -119,8 +166,8 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Starts at: ${formatDate(widget.dateTime)}",
-                    style: const TextStyle(fontSize: 18),
+                    "Starts at: ${widget.dateTime?.day}.${widget.dateTime?.month}.${widget.dateTime?.year} ${widget.dateTime?.hour}:${widget.dateTime?.minute.toString().padLeft(2, '0')}",
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(
                     width: 20,
@@ -152,36 +199,27 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
       ),
       Container(
         decoration: const BoxDecoration(
+            color: Color(0x1A2196F3),
             border: Border(
-          bottom: BorderSide(color: Colors.black, width: 2),
-        )),
+              top: BorderSide(width: 1),
+              bottom: BorderSide(color: Colors.black, width: 2),
+            )),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(
-                child: Container(
-                    padding: const EdgeInsets.all(5),
-                    child: const Center(
-                        child: Text(
-                      "From:",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    )))),
-            Expanded(
-                child: Container(
-                    padding: const EdgeInsets.all(5),
-                    child: const Center(
-                        child: Text(
-                      "To",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    )))),
-            Expanded(
-                child: Container(
-                    padding: const EdgeInsets.all(5),
-                    child: const Center(
-                        child: Text(
-                      "Drive Duration:",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    )))),
+            ...titles
+                .map(
+                  (title) => Expanded(
+                      child: Container(
+                          padding: const EdgeInsets.all(5),
+                          child: Center(
+                              child: Text(
+                            title,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          )))),
+                )
+                .toList()
           ],
         ),
       )
@@ -227,7 +265,8 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                           return Padding(
                             padding: const EdgeInsets.only(right: 12, left: 12),
                             child: index > 0
-                                ? fromToElement(index, widget.addressesList[index])
+                                ? fromToElement(
+                                    index, widget.addressesList[index])
                                 : const SizedBox.shrink(),
                           );
                         }),
@@ -239,21 +278,13 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  String sumDrivingDurations(int index) {
+  DateTime? sumDrivingDurations(int index) {
     double sum = 0;
     for (int i = 0; i <= index; i++) {
       sum += widget.addressesList[i].dataBetweenTwoAddresses!.duration;
     }
     DateTime? newDateTime =
         widget.dateTime?.add(Duration(seconds: sum.toInt()));
-    return formatDate(newDateTime);
-  }
-
-  String formatDate(DateTime? dateTime) {
-    if (dateTime != null) {
-      return '${dateTime.day}.${dateTime.month}.${dateTime.year} ${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}';
-    } else {
-      return "-";
-    }
+    return newDateTime;
   }
 }

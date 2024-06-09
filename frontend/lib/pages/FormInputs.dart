@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:redux_example/functions/capitalize.dart';
+import 'package:travel_mate/functions/capitalize.dart';
 
 class FormInputs extends StatelessWidget {
 

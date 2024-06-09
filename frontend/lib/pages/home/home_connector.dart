@@ -1,7 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:nominatim_geocoding/nominatim_geocoding.dart';
-import 'package:redux_example/myMap/address_class.dart';
+import 'package:travel_mate/myMap/address_class.dart';
 
 import '../../app_state.dart';
 import '../../myMap/map_actions.dart';

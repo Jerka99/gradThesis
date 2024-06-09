@@ -1,6 +1,6 @@
 {
-    "name": "redux_example",
-    "short_name": "redux_example",
+    "name": "travel_mate",
+    "short_name": "travel_mate",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

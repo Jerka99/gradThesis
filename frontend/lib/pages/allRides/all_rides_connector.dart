@@ -1,8 +1,8 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:redux_example/app_state.dart';
-import 'package:redux_example/navigation/navigation_action.dart';
-import 'package:redux_example/pages/allRides/all_rides_page.dart';
+import 'package:travel_mate/app_state.dart';
+import 'package:travel_mate/navigation/navigation_action.dart';
+import 'package:travel_mate/pages/allRides/all_rides_page.dart';
 
 
 class Factory extends VmFactory<AppState, AllRidesConnector, ViewModel> {

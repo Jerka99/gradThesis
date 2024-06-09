@@ -1,8 +1,8 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nominatim_geocoding/nominatim_geocoding.dart';
-import 'package:redux_example/app_state.dart';
-import 'package:redux_example/myMap/address_class.dart';
+import 'package:travel_mate/app_state.dart';
+import 'package:travel_mate/myMap/address_class.dart';
 
 import 'coordinates_api.dart';
 

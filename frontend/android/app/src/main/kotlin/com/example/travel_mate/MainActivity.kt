@@ -1,4 +1,4 @@
-package com.example.redux_example
+package com.example.travel_mate
 
 import io.flutter.embedding.android.FlutterActivity
 

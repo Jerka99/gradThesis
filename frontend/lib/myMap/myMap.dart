@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:redux_example/myMap/address_class.dart';
-import 'package:redux_example/user_role.dart';
+import 'package:travel_mate/myMap/address_class.dart';
+import 'package:travel_mate/user_role.dart';
 
 import 'marker_and_polyline.dart';
 
@@ -53,7 +53,9 @@ class _MyMap extends State<MyMap> {
                     center: LatLng(43.508133, 16.440193),
                     zoom: 13,
                     maxZoom: 18,
-                    minZoom: 1),
+                    minZoom: 1,
+                    interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag
+                ),
                 children: [
                   TileLayer(
                     urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',

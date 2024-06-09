@@ -1,5 +1,5 @@
-import 'package:redux_example/model.dart';
-import 'package:redux_example/user_role.dart';
+import 'package:travel_mate/model.dart';
+import 'package:travel_mate/user_role.dart';
 
 import 'myMap/map_data_class.dart';
 import 'navigation/app_routes.dart';

@@ -1,8 +1,8 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:redux_example/navigation/navigation_action.dart';
-import 'package:redux_example/pages/auth/register/registerPage.dart';
-import 'package:redux_example/user_role.dart';
+import 'package:travel_mate/navigation/navigation_action.dart';
+import 'package:travel_mate/pages/auth/register/registerPage.dart';
+import 'package:travel_mate/user_role.dart';
 
 import '../../../app_state.dart';
 import '../auth_action.dart';

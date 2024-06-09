@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:redux_example/user_role.dart';
+import 'package:travel_mate/user_role.dart';
 import '../functions/capitalize.dart';
 import '../role_handler.dart';
 

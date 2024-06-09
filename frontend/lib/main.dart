@@ -2,8 +2,8 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:redux_example/appBar/customBar_connector.dart';
-import 'package:redux_example/redux/myStateObserver.dart';
+import 'package:travel_mate/appBar/customBar_connector.dart';
+import 'package:travel_mate/redux/myStateObserver.dart';
 
 import 'app_state.dart';
 import 'navigation/my_route_information_parser.dart';
@@ -57,26 +57,24 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
               return Scaffold(
                 resizeToAvoidBottomInset: true,
                 // Set to true to resize the UI to avoid bottom overflow
-                body: SingleChildScrollView(
-                  child: SafeArea(
-                    child: SizedBox(
-                        width: size.width,
-                        height: size.height,
-                        child: Column(
-                          children: [
-                            Container(
+                body: SafeArea(
+                  child: SizedBox(
+                      width: size.width,
+                      height: size.height,
+                      child: Column(
+                        children: [
+                          Container(
+                              color: Colors.cyan[50],
+                              child: const CustomBarConnector()),
+                          Expanded(
+                            child: Container(
+                                width: size.width,
+                                height: size.height * 0.88,
                                 color: Colors.cyan[50],
-                                child: const CustomBarConnector()),
-                            Expanded(
-                              child: Container(
-                                  width: size.width,
-                                  height: size.height * 0.88,
-                                  color: Colors.cyan[50],
-                                  child: child),
-                            ),
-                          ],
-                        )),
-                  ),
+                                child: child),
+                          ),
+                        ],
+                      )),
                 ),
               );
             }));

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:redux_example/user_role.dart';
+import 'package:travel_mate/user_role.dart';
 
 class WidgetWithRole extends StatefulWidget {
 

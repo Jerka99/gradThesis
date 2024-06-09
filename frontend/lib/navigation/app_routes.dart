@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:redux_example/pages/auth/login/login_connector.dart';
-import 'package:redux_example/pages/auth/register/register_connector.dart';
-import 'package:redux_example/pages/allRides//all_rides_connector.dart';
+import 'package:travel_mate/pages/auth/login/login_connector.dart';
+import 'package:travel_mate/pages/auth/register/register_connector.dart';
+import 'package:travel_mate/pages/allRides//all_rides_connector.dart';
 
 import '../pages/home/home_connector.dart';
 import '../pages/unknown/unknown_container.dart';
