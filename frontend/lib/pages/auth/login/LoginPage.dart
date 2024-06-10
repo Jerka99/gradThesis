@@ -29,7 +29,7 @@ class _LoginPage extends State<LoginPage> {
     var size = MediaQuery.of(context).size;
     return SingleChildScrollView(
       child: Container(
-        height: size.height,
+        height: size.height - 106,
         constraints: const BoxConstraints(
           minHeight: 700.0,
         ),
