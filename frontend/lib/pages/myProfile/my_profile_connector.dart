@@ -3,11 +3,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:travel_mate/navigation/navigation_action.dart';
 
 import '../../app_state.dart';
-import 'Unknown.dart';
+import 'my_profile.dart';
 
-class UnknownContainer extends StatelessWidget{
+class MyProfileContainer extends StatelessWidget{
 
-  const UnknownContainer({super.key});
+  const MyProfileContainer({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +16,7 @@ class UnknownContainer extends StatelessWidget{
       converter: (Store<AppState> store) => _ViewModel.fromStore(store),
       builder: (BuildContext context, _ViewModel vm) {
 
-        return Unknown(
+        return MyProfile(
             onReturn: vm.onReturn
         );},
     );

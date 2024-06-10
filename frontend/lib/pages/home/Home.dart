@@ -78,8 +78,8 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                     child: Padding(
                       padding: const EdgeInsets.all(2.0),
                       child: Text(
-                        value.fullAddress ?? "-",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        "${value.fullAddress} ${value.city}" ?? "-",
+                        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                       ),
                     ),
                   ),

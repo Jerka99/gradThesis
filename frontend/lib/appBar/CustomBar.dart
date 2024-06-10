@@ -22,8 +22,8 @@ class CustomBar extends StatefulWidget {
 class _CustomBarState extends State<CustomBar> {
   Map<String, String> tabs = {
     "/": "home",
-    "allRides": "allRides",
-    "unknown": "unknown"
+    "allRides": "All Rides",
+    "myProfile": "My Profile"
   };
   int current = 0;
 

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class Unknown extends StatelessWidget {
+class MyProfile extends StatelessWidget {
   final Function() onReturn;
 
-  const Unknown({
+  const MyProfile({
     super.key,
     required this.onReturn});
 
