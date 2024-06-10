@@ -228,53 +228,60 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.maxFinite,
-      padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 20),
-      child: Column(children: [
-        Expanded(
-          child: WidgetWithRole(
-              role: UserRole.customer,
-              widgetName: "Map",
-              child: MapConnector(
-                role: widget.role,
-              )),
+    var size = MediaQuery.of(context).size;
+    return SingleChildScrollView(
+      child: Container(
+        height: size.height - 106,
+        constraints: const BoxConstraints(
+          minHeight: 700.0,
         ),
-        SizedBox(
-          child: Container(
-            height: 10,
+        width: double.maxFinite,
+        padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 20),
+        child: Column(children: [
+          Expanded(
+            child: WidgetWithRole(
+                role: UserRole.customer,
+                widgetName: "Map",
+                child: MapConnector(
+                  role: widget.role,
+                )),
           ),
-        ),
-        Expanded(
-          child: Container(
-              width: double.maxFinite,
-              padding: const EdgeInsets.all(5.0),
-              decoration: BoxDecoration(
-                  color: Colors.cyanAccent[50],
-                  border: Border.all(width: 1.0),
-                  borderRadius: const BorderRadius.all(Radius.circular(10.0))),
-              child: Column(children: [
-                ...listViewHeader(),
-                Expanded(
-                  child: Container(
-                    color: Colors.white,
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: widget.addressesList.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 12, left: 12),
-                            child: index > 0
-                                ? fromToElement(
-                                    index, widget.addressesList[index])
-                                : const SizedBox.shrink(),
-                          );
-                        }),
-                  ),
-                )
-              ])),
-        )
-      ]),
+          SizedBox(
+            child: Container(
+              height: 10,
+            ),
+          ),
+          Expanded(
+            child: Container(
+                width: double.maxFinite,
+                padding: const EdgeInsets.all(5.0),
+                decoration: BoxDecoration(
+                    color: Colors.cyanAccent[50],
+                    border: Border.all(width: 1.0),
+                    borderRadius: const BorderRadius.all(Radius.circular(10.0))),
+                child: Column(children: [
+                  ...listViewHeader(),
+                  Expanded(
+                    child: Container(
+                      color: Colors.white,
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: widget.addressesList.length,
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 12, left: 12),
+                              child: index > 0
+                                  ? fromToElement(
+                                      index, widget.addressesList[index])
+                                  : const SizedBox.shrink(),
+                            );
+                          }),
+                    ),
+                  )
+                ])),
+          )
+        ]),
+      ),
     );
   }
 

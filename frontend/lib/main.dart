@@ -69,7 +69,7 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
                           Expanded(
                             child: Container(
                                 width: size.width,
-                                height: size.height * 0.88,
+                                height: size.height - 106,
                                 color: Colors.cyan[50],
                                 child: child),
                           ),

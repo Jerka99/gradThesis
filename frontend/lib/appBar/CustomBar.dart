@@ -50,7 +50,7 @@ class _CustomBarState extends State<CustomBar> {
       child: Column(
         children: [
           SizedBox(
-            height: size.height * 0.06,
+            height: 53,
             child: Container(
               width: size.width,
               color: Colors.blue,
@@ -66,7 +66,7 @@ class _CustomBarState extends State<CustomBar> {
             decoration: const BoxDecoration(
               border: Border(bottom: BorderSide(color: Colors.black, width: 1.0)),
             ),
-            height: size.height * 0.06,
+            height: 53,
             child: MouseRegion(
               cursor: SystemMouseCursors.click,
               child: Stack(
