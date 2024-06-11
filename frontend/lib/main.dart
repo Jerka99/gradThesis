@@ -68,6 +68,8 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
                               child: const CustomBarConnector()),
                           Expanded(
                             child: Container(
+                                padding: const EdgeInsets.only(
+                                    left: 20, right: 20, top: 10, bottom: 20),
                                 width: size.width,
                                 height: size.height - 106,
                                 color: Colors.cyan[50],

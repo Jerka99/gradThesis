@@ -241,8 +241,6 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                     minHeight: 700.0,
                   ),
                   width: double.maxFinite,
-                  padding: const EdgeInsets.only(
-                      left: 20, right: 20, top: 10, bottom: 20),
                   child: Column(children: [
                     Expanded(
                       child: WidgetWithRole(
