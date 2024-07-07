@@ -4,22 +4,23 @@ import 'package:travel_mate/role_handler.dart';
 import 'package:travel_mate/user_role.dart';
 
 import '../../AutoScrollingText.dart';
-import '../../Calendar.dart';
+import '../../calendar/Calendar.dart';
+import '../../main.dart';
 import '../../myMap/map_connector.dart';
 
 class HomePage extends StatefulWidget {
   List<AddressClass> addressesList;
   UserRole? role;
   final Function(AddressClass) addAddress;
-  late DateTime? dateTime;
+  final DateTime? dateTime;
 
   HomePage({
     super.key,
     required this.addressesList,
     this.role,
     required this.addAddress,
-    DateTime? dateTime,
-  }) : dateTime = dateTime ?? DateTime.now();
+    this.dateTime,
+  });
 
   @override
   State<HomePage> createState() => _HomePage();
@@ -27,6 +28,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   late AnimationController controller;
+  late DateTime? dateTime;
 
   @override
   void initState() {
@@ -118,6 +120,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   }
 
   List<Container> listViewHeader() {
+    AppViewportState? controller = context.findAncestorStateOfType<AppViewportState>();
     List<String> titles = ["From", "To", "Arrival"];
     return [
       Container(
@@ -173,20 +176,9 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                     width: 20,
                   ),
                   IconButton(
-                      onPressed: () => {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return const Calendar();
-                              },
-                            ).then((selectedDateTime) {
-                              if (selectedDateTime != null) {
-                                setState(() {
-                                  widget.dateTime = selectedDateTime;
-                                });
-                              }
-                            })
-                          },
+                      onPressed: () async{
+                        await controller?.showLoadingDialog();
+                  },
                       icon: const Icon(
                         Icons.edit_calendar,
                         size: 30,
@@ -300,7 +292,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
       sum += widget.addressesList[i].dataBetweenTwoAddresses!.duration;
     }
     DateTime? newDateTime =
-        widget.dateTime?.add(Duration(seconds: sum.toInt()));
+    widget.dateTime?.add(Duration(seconds: sum.toInt()));
     return newDateTime;
   }
 }

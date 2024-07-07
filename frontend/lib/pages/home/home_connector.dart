@@ -12,10 +12,11 @@ class Factory extends VmFactory<AppState, HomeConnector, ViewModel> {
    ViewModel fromStore() =>
      ViewModel(
       addressesList: state.mapData!.addressesList,
-       addAddress: (AddressClass address) {
+      addAddress: (AddressClass address) {
          dispatch(MapActionAddressesManager(address));
        },
       role: state.user.role,
+      dateTime: state.dateTime,
     );
 }
 
@@ -24,11 +25,13 @@ class ViewModel extends Vm{
   final List<AddressClass> addressesList;
   Function(AddressClass) addAddress;
   UserRole? role;
+  DateTime? dateTime;
 
   ViewModel({
     required this.addressesList,
     required this.addAddress,
     this.role,
+    this.dateTime,
   });
 
   @override
@@ -37,12 +40,18 @@ class ViewModel extends Vm{
       super == other &&
           other is ViewModel &&
           runtimeType == other.runtimeType &&
-          addAddress == other.addAddress &&
           addressesList == other.addressesList &&
-          role == other.role;
+          addAddress == other.addAddress &&
+          role == other.role &&
+          dateTime == other.dateTime;
 
   @override
-  int get hashCode => super.hashCode ^ addressesList.hashCode ^ addAddress.hashCode ^ role.hashCode;
+  int get hashCode =>
+      super.hashCode ^
+      addressesList.hashCode ^
+      addAddress.hashCode ^
+      role.hashCode ^
+      dateTime.hashCode;
 }
 
 
@@ -61,7 +70,8 @@ class HomeConnector extends StatelessWidget{
         return HomePage(
             addressesList: vm.addressesList,
             addAddress: vm.addAddress,
-            role: vm.role
+            role: vm.role,
+            dateTime: vm.dateTime,
         );},
     );
   }

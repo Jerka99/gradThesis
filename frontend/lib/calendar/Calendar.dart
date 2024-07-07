@@ -2,34 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class Date {
-  double? year;
-  double? month;
-  double? day;
-  double? hour;
-  double? minute;
-
-  Date({this.year, this.month, this.day, this.hour, this.minute});
-
-  Date copyWith({
-    double? year,
-    double? month,
-    double? day,
-    double? hour,
-    double? minute,
-  }) {
-    return Date(
-      year: year ?? this.year,
-      month: month ?? this.month,
-      day: day ?? this.day,
-      hour: hour ?? this.hour,
-      minute: minute ?? this.minute,
-    );
-  }
-}
 
 class Calendar extends StatefulWidget {
-  const Calendar({super.key});
+  DateTime dateTime;
+  Function(DateTime dateTime) setDateTime;
+
+  Calendar({
+    required this.dateTime,
+    required this.setDateTime
+  });
 
   @override
   State<Calendar> createState() => _CalendarState();
@@ -37,11 +18,17 @@ class Calendar extends StatefulWidget {
 
 class _CalendarState extends State<Calendar> {
   TimeOfDay _selectedTime = TimeOfDay.now();
-  DateTime _selectedDay = DateTime.now();
+  late DateTime _selectedDay;
   DateTime _focusedDay = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.month;
 
-  Future<void> _selectTime(BuildContext context) async {
+  @override
+  void initState() {
+    super.initState();
+    _selectedDay = widget.dateTime;
+  }
+
+    Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
       initialTime: _selectedTime,
@@ -127,7 +114,7 @@ class _CalendarState extends State<Calendar> {
                   Expanded(
                       child: Align(
                     child: Text(
-                      "${_selectedTime.hour} : ${_selectedTime.minute}",
+                      "${_selectedTime.hour.toString().padLeft(2, '0')} : ${_selectedTime.minute.toString().padLeft(2, '0')}",
                       style: const TextStyle(fontSize: 25),
                     ),
                   )),
@@ -163,7 +150,8 @@ class _CalendarState extends State<Calendar> {
                     _selectedTime.hour,
                     _selectedTime.minute,
                   );
-                  Navigator.of(context).pop(selectedDateTime);
+                  widget.setDateTime(selectedDateTime);
+                  Navigator.of(context).pop();
                 },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,

@@ -6,44 +6,50 @@ import 'navigation/app_routes.dart';
 import 'navigation/my_router_delegate.dart';
 
 class AppState {
-   final MyRouterDelegate routerDelegate;
-   UserData user;
-   String? route;
-   MapData? mapData;
+  final MyRouterDelegate routerDelegate;
+  UserData user;
+  String? route;
+  MapData? mapData;
+  DateTime dateTime;
 
   AppState({
-     required this.routerDelegate,
-     required this.user,
+    required this.routerDelegate,
+    required this.user,
     required this.route,
-    required this.mapData
+    required this.mapData,
+    required this.dateTime
   });
 
   static AppState initialState() =>
-    AppState(
-     routerDelegate: MyRouterDelegate(
-        unsecuredPages:AppRoutes().unsecuredPages,
-        securedPages:AppRoutes().securedPages
-     ),
-      user: UserData(userName: null, email: null, role: userRoleFromJson(null)),
-      route: null,
-      mapData: MapData()
-    );
+      AppState(
+          routerDelegate: MyRouterDelegate(
+              unsecuredPages: AppRoutes().unsecuredPages,
+              securedPages: AppRoutes().securedPages
+          ),
+          user: UserData(
+              userName: null, email: null, role: userRoleFromJson(null)),
+          route: null,
+          mapData: MapData(),
+          dateTime: DateTime.now()
+      );
 
   AppState copy({
     MyRouterDelegate? routerDelegate,
     UserData? user,
     String? route,
-    MapData? mapData
-  }){
+    MapData? mapData,
+    DateTime? dateTime
+  }) {
     return AppState(
-        routerDelegate: routerDelegate ?? this.routerDelegate,
-        user: user ?? this.user,
-        route: route ?? this.route,
-        mapData: mapData ?? this.mapData,
+      routerDelegate: routerDelegate ?? this.routerDelegate,
+      user: user ?? this.user,
+      route: route ?? this.route,
+      mapData: mapData ?? this.mapData,
+      dateTime: dateTime ?? this.dateTime,
     );
-}
+  }
 
-   @override
+  @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is AppState &&
@@ -51,12 +57,22 @@ class AppState {
           routerDelegate == other.routerDelegate &&
           user == other.user &&
           route == other.route &&
-          mapData == other.mapData;
+          mapData == other.mapData &&
+          dateTime == other.dateTime;
 
   @override
   int get hashCode =>
       routerDelegate.hashCode ^
       user.hashCode ^
       route.hashCode ^
-      mapData.hashCode;
+      mapData.hashCode ^
+      dateTime.hashCode;
+
+  DateTime setDateTime(AppState state) => state.dateTime.copyWith(
+    year: dateTime.year,
+    month: dateTime.month,
+    hour: dateTime.hour,
+    minute: dateTime.minute,
+  )!;
+
 }
