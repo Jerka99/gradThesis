@@ -84,6 +84,17 @@ class _MyMap extends State<MyMap> {
                                 }
                               }))
                           .toList()),
+                  Align(
+                    alignment: Alignment.bottomRight,
+                      child: Container(
+                        
+                        margin: EdgeInsets.all(5.0),
+                          child: FloatingActionButton(
+                            backgroundColor: Colors.blue,
+                              onPressed: (){},
+                            child: const Text("Save",
+                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                            ))))
                 ],
               )),
         ),

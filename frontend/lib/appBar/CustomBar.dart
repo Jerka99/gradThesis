@@ -56,8 +56,8 @@ class _CustomBarState extends State<CustomBar> {
               color: Colors.blue,
               child: const Center(
                 child: Text(
-                  "MY APP",
-                  style: TextStyle(fontSize: 20.0),
+                  "TravelMate",
+                  style: TextStyle(fontSize: 20.0, color: Colors.white, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
