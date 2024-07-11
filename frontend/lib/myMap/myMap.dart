@@ -7,21 +7,22 @@ import 'package:travel_mate/user_role.dart';
 import 'marker_and_polyline.dart';
 
 class MyMap extends StatefulWidget {
-  final Function(LatLng) addMapData;
-  final Function(int) removeLastMarkerFun;
+
   final List<LatLng> markerCoordinateList;
   final List<List<LatLng>> polylineList;
-  final List<AddressClass> addressesList;
+  final Function()? saveMapData;
+  final Function(int)? removeLastMarkerFun;
+  final Function(LatLng)? addMapData;
   final UserRole? userRole;
 
   const MyMap({
     super.key,
-    required this.addMapData,
-    required this.removeLastMarkerFun,
     required this.markerCoordinateList,
     required this.polylineList,
-    required this.addressesList,
-    required this.userRole,
+    this.saveMapData,
+    this.addMapData,
+    this.removeLastMarkerFun,
+    this.userRole,
   });
 
   @override
@@ -29,12 +30,6 @@ class MyMap extends StatefulWidget {
 }
 
 class _MyMap extends State<MyMap> {
-  String? startPoint;
-  String? endPoint;
-  String? tempStartPoint;
-  String? tempEndPoint;
-  bool loading = false;
-
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +44,11 @@ class _MyMap extends State<MyMap> {
                   border: Border.all(color: Colors.black, width: 1.0)),
               child: FlutterMap(
                 options: MapOptions(
-                    onTap: (pos, latLng) => widget.addMapData(latLng),
+                    onTap: (pos, latLng) {
+                      if (widget.addMapData != null) {
+                        widget.addMapData!(latLng);
+                      }
+                    },
                     center: LatLng(43.508133, 16.440193),
                     zoom: 13,
                     maxZoom: 18,
@@ -76,7 +75,9 @@ class _MyMap extends State<MyMap> {
                                   markerCoordinateList.length, () {
                                 if (markerCoordinateList.length - 1 ==
                                     markerCoordinate.key) {
-                                  widget.removeLastMarkerFun(markerCoordinate.key);
+                                  if(widget.removeLastMarkerFun != null){
+                                  widget.removeLastMarkerFun!(markerCoordinate.key);
+                                  }
                                 }
                                 else{
                                   // widget.chooseTwoStations();
@@ -91,7 +92,11 @@ class _MyMap extends State<MyMap> {
                         margin: EdgeInsets.all(5.0),
                           child: FloatingActionButton(
                             backgroundColor: Colors.blue,
-                              onPressed: (){},
+                              onPressed: (){
+                              if(widget.saveMapData != null){
+                              widget.saveMapData!();
+                              }
+                              },
                             child: const Text("Save",
                               style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                             ))))

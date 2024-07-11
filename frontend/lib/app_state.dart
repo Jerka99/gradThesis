@@ -49,6 +49,7 @@ class AppState {
     );
   }
 
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

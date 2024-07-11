@@ -156,3 +156,14 @@ class RemoveLastMarker extends ReduxAction<AppState> {
             addressesList: addressesListCopy));
   }
 }
+
+class SaveMapData extends ReduxAction<AppState> {
+
+  SaveMapData();
+
+  @override
+  AppState? reduce() {
+
+
+  }
+}

@@ -4,7 +4,6 @@ import 'package:travel_mate/role_handler.dart';
 import 'package:travel_mate/user_role.dart';
 
 import '../../AutoScrollingText.dart';
-import '../../calendar/Calendar.dart';
 import '../../main.dart';
 import '../../myMap/map_connector.dart';
 
