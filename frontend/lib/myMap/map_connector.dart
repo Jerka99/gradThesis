@@ -18,7 +18,7 @@ class Factory extends VmFactory<AppState, MapConnector, ViewModel> {
             dispatch(InitFetch(latLng: latLng));
           },
           removeLastMarkerFun : (key) {dispatch(RemoveLastMarker(key));},
-          saveMapData: () {dispatch(MainApiClass.SaveMapData());},
+          saveMapData: () {dispatch(SaveMapData());},
           userRole: state.user.role,
       );
 }

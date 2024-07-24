@@ -50,9 +50,14 @@ Future<ResponseData?> fetchCoordinates(startPoint, endPoint, callback) async {
 List<AddressClass> endpointsToBeFetched = [];
 bool isFetching = false;
 
-Future<void> fetchAddressName(Coordinate endPoint, DataBetweenTwoAddresses dataBetweenTwoAddresses, bool boolean, void Function(AddressClass) callback) async {
+Future<void> fetchAddressName(
+    Coordinate endPoint,
+    DataBetweenTwoAddresses dataBetweenTwoAddresses,
+    bool boolean,
+    void Function(AddressClass) callback) async {
   if (boolean) {
-    AddressClass coordinateAndData = AddressClass(endPoint, null, null, dataBetweenTwoAddresses);
+    AddressClass coordinateAndData =
+        AddressClass(endPoint, null, null, dataBetweenTwoAddresses);
     endpointsToBeFetched.add(coordinateAndData);
   }
 
@@ -62,26 +67,20 @@ Future<void> fetchAddressName(Coordinate endPoint, DataBetweenTwoAddresses dataB
       AddressClass firstElement = endpointsToBeFetched.first;
       try {
         await NominatimGeocoding.init();
-        Geocoding address = await NominatimGeocoding.to.reverseGeoCoding(Coordinate(
-          latitude: firstElement.coordinate.latitude,
-          longitude: firstElement.coordinate.longitude,
+        Geocoding address =
+            await NominatimGeocoding.to.reverseGeoCoding(Coordinate(
+          latitude: firstElement.coordinate!.latitude,
+          longitude: firstElement.coordinate!.longitude,
         ));
-
-        Coordinate coordinate = address.coordinate;
-        String fullAddress = "${address.address.road} ${address.address.houseNumber}";
-        String cityOrDistrict = address.address.city == ""
-            ? (address.address.district == "" ? "Unknown Station Name" : address.address.district)
-            : address.address.city;
-
-        AddressClass addressClass = AddressClass(coordinate, fullAddress, cityOrDistrict, firstElement.dataBetweenTwoAddresses);
-        endpointsToBeFetched.removeAt(0);
-        callback(addressClass);
-        await Future.delayed(const Duration(milliseconds: 2000));
-
+        await createAddressObject(address, callback, firstElement);
       } catch (error) {
-        print("object");
-        if (error.toString() == "Exception: can not sent more than 1 request per second") {
-          fetchAddressName(endPoint, dataBetweenTwoAddresses, false, callback);
+        print("error fetching location name");
+        if (error.toString() ==
+            "Expected a value of type 'Geocoding', but got one of type 'String'") {
+          await createAddressObject(null, callback, firstElement);
+        }
+        if (error.toString() ==
+            "Exception: can not sent more than 1 request per second") {
         }
       }
     }
@@ -89,3 +88,22 @@ Future<void> fetchAddressName(Coordinate endPoint, DataBetweenTwoAddresses dataB
   }
 }
 
+Future<void> createAddressObject(address, callback, firstElement) async {
+  Coordinate? coordinate = address?.coordinate;
+  String fullAddress = address != null
+      ? "${address?.address.road} ${address?.address.houseNumber}"
+      : "No data for this country";
+  String? cityOrDistrict = address?.address.city == null
+      ? null
+      : address.address.city == ""
+          ? (address.address.district == ""
+              ? "Unknown Station Name"
+              : address.address.district)
+          : address.address.city;
+
+  AddressClass addressClass = AddressClass(coordinate, fullAddress,
+      cityOrDistrict, firstElement.dataBetweenTwoAddresses);
+  endpointsToBeFetched.removeAt(0);
+  await Future.delayed(const Duration(milliseconds: 2000));
+  callback(addressClass);
+}

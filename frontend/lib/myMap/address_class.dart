@@ -9,7 +9,7 @@ class DataBetweenTwoAddresses{
 }
 
 class AddressClass{
-  Coordinate coordinate;
+  Coordinate? coordinate;
   String? fullAddress;
   String? city;
   DataBetweenTwoAddresses? dataBetweenTwoAddresses;
