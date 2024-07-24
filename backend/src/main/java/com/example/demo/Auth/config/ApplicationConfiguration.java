@@ -17,6 +17,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 public class ApplicationConfiguration {
     private final UserRepository userRepository;
 
+    //When you define the UserDetailsService bean with a lambda expression, you are essentially providing
+    // an implementation for the loadUserByUsername method.
+    // Spring will manage this bean, and you can inject and use it wherever needed in your application.
     @Bean
     UserDetailsService userDetailsService() {
         return username -> userRepository.findByEmail(username)
@@ -33,6 +36,8 @@ public class ApplicationConfiguration {
         return config.getAuthenticationManager();
     }
 
+    //one of ProviderManagers instances is AuthenticationProvider, and it performs a specific
+// type of authentication e.g. UsernamePasswordAuthenticationToken
     @Bean
     AuthenticationProvider authenticationProvider() {
         //AuthenticationProvider: This interface has a single method authenticate
@@ -45,6 +50,7 @@ public class ApplicationConfiguration {
         // AuthenticationProvider performs a specific type of authentication. For example,
         // DaoAuthenticationProvider supports username/password-based authentication, while
         // JwtAuthenticationProvider supports authenticating a JWT token.
+//https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/dao-authentication-provider.html#servlet-authentication-daoauthenticationprovider
 
         //AuthenticationManager is the API that defines how Spring Security’s Filters perform
         // authentication. The Authentication that is returned is then set on the SecurityContextHolder
@@ -53,6 +59,9 @@ public class ApplicationConfiguration {
         // it is required to use an AuthenticationManager.
         // While the implementation of AuthenticationManager could be anything, the most common
         // implementation is ProviderManager.
+
+        //DaoAuthenticationProvider is an AuthenticationProvider implementation that
+        // uses a UserDetailsService and PasswordEncoder to authenticate a username and password.
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
         authProvider.setUserDetailsService(userDetailsService());

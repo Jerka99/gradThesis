@@ -44,6 +44,7 @@ public class AuthService {
         //IMPORTANT
 //one of ProviderManagers instances is AuthenticationProvider, and it performs a specific
 // type of authentication e.g. UsernamePasswordAuthenticationToken
+        //important https://docs.spring.io/spring-security/reference/servlet/authentication/passwords/dao-authentication-provider.html#servlet-authentication-daoauthenticationprovider
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginDto.getEmail(),
                 loginDto.getPassword()

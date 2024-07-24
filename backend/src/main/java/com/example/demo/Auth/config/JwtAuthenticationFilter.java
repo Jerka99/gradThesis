@@ -32,6 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 //    If the token is valid, extract the username, find the related user in the database, and set it in the authentication context so you can access it in any application layer.
 //    https://medium.com/@tericcabrel/implement-jwt-authentication-in-a-spring-boot-3-application-5839e4fd8fac
     @Override
+    //The doFilterInternal method is an overridden method from the OncePerRequestFilter class
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
 //            Represents the client's request to the server. It allows you to retrieve information from the request, such as headers, parameters, and body content
@@ -53,17 +54,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             //IMPORTANT https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html#servlet-authentication-authentication
 //At the heart of Spring Security’s authentication model is the SecurityContextHolder. It contains the SecurityContext.
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
+//The SecurityContextHolder is where Spring Security stores the details of who is authenticated. Spring Security does not care how the SecurityContextHolder is populated. If it contains a value, it is used as the currently authenticated user.
             if (userEmail != null && authentication == null) {
+                //this is related to
+                // @Bean
+                //    UserDetailsService userDetailsService() {
+                //        return username -> userRepository.findByEmail(username)
+                //                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                //    }
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
                 if (jwtService.isTokenValid(jwt, userDetails)) {
+                    //Next, we create a new Authentication object via UsernamePasswordAuthenticationToken. Spring Security does not care what type of Authentication
+                    //https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html#servlet-authentication-authentication
+                    // implementation is set on the SecurityContext. This Authentication object is stored in the SecurityContext by SecurityContextHolder.
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
                             null,
                             userDetails.getAuthorities()
                     );
-
+//It has a single responsibility to convert an instance of HttpServletRequest class into an instance of the WebAuthenticationDetails class. You can think of it as a simple converter.
+                    //https://stackoverflow.com/questions/69816689/what-does-webauthenticationdetailssource
                     authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
