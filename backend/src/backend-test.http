@@ -1,0 +1,37 @@
+### users
+# eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJteWVtYWlsIiwiaWF0IjoxNzIxNjY5MjE2LCJleHAiOjE3MjIyNzQwMTZ9.4UojmlivA98bqdK8R6u9tg5mqMvV5MpHqoDvqakmu90
+GET http://localhost:8080/users/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJteWVtYWlsIiwiaWF0IjoxNzIxNzUzNDY0LCJleHAiOjE3MjE3NTM1MjR9.vP6I22Ez0WDQexyzA50wE4plgOwTkqtft3eCBUlMawc
+
+<> 2024-07-23T185904.403.json
+<> 2024-07-23T185852.403.json
+
+
+
+### login
+POST http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+  "email": "myemail",
+  "password": "mypass"
+}
+
+<> 2024-07-23T185105.200.json
+
+
+
+### register
+POST http://localhost:8080/auth/signup
+Content-Type: application/json
+
+{
+  "name": "myname",
+  "email": "myemail",
+  "password": "mypass",
+  "role": [
+    {
+      "name": "ROLE_ADMIN"
+    }
+  ]
+}
