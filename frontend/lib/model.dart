@@ -1,23 +1,23 @@
 import 'user_role.dart';
 
 class UserData{
-  String? userName;
+  String? name;
   String? email;
   UserRole? role;
 
   UserData({
-    this.userName,
+    this.name,
     this.email,
     this.role
   });
 
   UserData copyWith({
-    String? userName,
+    String? name,
     String? email,
     UserRole? role
   }){
     return UserData(
-        userName: userName ?? this.userName,
+        name: name ?? this.name,
         email: email ?? this.email,
         role: role ?? this.role);
     }
@@ -27,15 +27,29 @@ class UserData{
       identical(this, other) ||
       other is UserData &&
           runtimeType == other.runtimeType &&
-          userName == other.userName &&
+          name == other.name &&
           email == other.email &&
           role == other.role;
 
   @override
-  int get hashCode => userName.hashCode ^ email.hashCode ^ role.hashCode;
+  int get hashCode => name.hashCode ^ email.hashCode ^ role.hashCode;
 
   @override
   String toString() {
-    return 'UserData{userName: $userName, email: $email, role: $role}';
+    return 'UserData{name: $name, email: $email, role: $role}';
   }
+
+  factory UserData.fromJson(Map<String, dynamic> json) {
+    return UserData(
+      name: json['name'] as String,
+      email: json['email'] as String,
+      role: userRoleFromJson(json['roles'][0]['name'] as String?),
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+        'name': name,
+        'email': email,
+        'role': role,
+      };
 }

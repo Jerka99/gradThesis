@@ -7,11 +7,11 @@ enum UserRole {
 
   UserRole? userRoleFromJson(String? role) {
     switch (role) {
-      case "admin":
+      case "ADMIN":
         return UserRole.admin;
-      case "driver":
+      case "DRIVER":
         return UserRole.driver;
-      case "customer":
+      case "CUSTOMER":
         return UserRole.customer;
       default:
         return null;

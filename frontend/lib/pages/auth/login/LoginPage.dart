@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:travel_mate/model.dart';
+import 'package:travel_mate/pages/auth/auth_dto.dart';
 
 import '../../FormInputs.dart';
 import '../hyperlink.dart';
 
 class LoginPage extends StatefulWidget {
-  final Function(Map<String, dynamic>) onLogin;
+  final Function(AuthDto) onLogin;
   final Function(String) routeChange;
 
   const LoginPage({
@@ -19,10 +21,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPage extends State<LoginPage> {
   // final TextEditingController _textEditingController = TextEditingController();
-  Map<String, dynamic> inputs = {
-  "email" : "",
-  "password" : "",
-};
+  AuthDto inputData = AuthDto(email: "", password: "");
 
   @override
   Widget build(BuildContext context) {
@@ -49,18 +48,26 @@ class _LoginPage extends State<LoginPage> {
                         ),
                       )),
                   const SizedBox(height: 80.0,),
-                  ...inputs.keys.map((element) => FormInputs(
-                      element: element,
+                  FormInputs(
+                      element: "email",
                       inputValueFun: (value) {
                         setState(() {
-                          inputs[element] = value;
+                          inputData = inputData.copyWith(email: value);
                         });
                       },
-                  )).toList(),
+                  ),
+                  FormInputs(
+                    element: "password",
+                    inputValueFun: (value) {
+                      setState(() {
+                        inputData = inputData.copyWith(password: value);
+                      });
+                    },
+                  ),
                   Align(
                     alignment: Alignment.centerRight,
                       child: ElevatedButton(
-                        onPressed: () { widget.onLogin(inputs)
+                        onPressed: () { widget.onLogin(inputData)
                         ; },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.all(18.0),

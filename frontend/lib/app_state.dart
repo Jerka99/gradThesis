@@ -27,7 +27,7 @@ class AppState {
               securedPages: AppRoutes().securedPages
           ),
           user: UserData(
-              userName: null, email: null, role: userRoleFromJson(null)),
+              name: null, email: null, role: userRoleFromJson(null)),
           route: null,
           mapData: MapData(),
           dateTime: DateTime.now()

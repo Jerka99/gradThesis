@@ -1,6 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:travel_mate/navigation/navigation_action.dart';
+import 'package:travel_mate/pages/auth/auth_dto.dart';
 
 import '../../../app_state.dart';
 import '../auth_action.dart';
@@ -10,8 +11,8 @@ class Factory extends VmFactory<AppState, LoginConnector, ViewModel> {
   @override
   ViewModel fromStore() =>
       ViewModel(
-          onLogin: (Map<String, dynamic> auth) {
-            dispatch(LoginAction(auth["email"], auth["password"]));
+          onLogin: (AuthDto auth) {
+            dispatch(LoginAction(auth));
           },
           routeChange: (path){dispatch(MyNavigateAction(path));}
       );
@@ -20,7 +21,7 @@ class Factory extends VmFactory<AppState, LoginConnector, ViewModel> {
 
 class ViewModel extends Vm{
 
-  final Function(Map<String, dynamic>) onLogin;
+  final Function(AuthDto) onLogin;
   Function(String) routeChange;
 
   ViewModel({
