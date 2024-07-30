@@ -1,8 +1,7 @@
 ### users
 # eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJteWVtYWlsIiwiaWF0IjoxNzIxNjY5MjE2LCJleHAiOjE3MjIyNzQwMTZ9.4UojmlivA98bqdK8R6u9tg5mqMvV5MpHqoDvqakmu90
 GET http://localhost:8080/users/me
-Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJteWVtYWlsIiwiaWF0IjoxNzIxNjY5MjE2LCJleHAiOjE3MjIyNzQwMTZ9.4UojmlivA98bqdK8R6u9tg5mqMvV5MpHqoDvqakmu90
-
+Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJteWVtYWlsIiwiaWF0IjoxNzIyMjY4MTE2LCJleHAiOjE3MjIyNjgxNzZ9.Dq-fjVRdDFFfvEY0xmkob6CWaGeUVsGUywaPSj0HtOw
 
 <> 2024-07-23T185904.403.json
 <> 2024-07-23T185852.403.json
@@ -32,7 +31,7 @@ Content-Type: application/json
   "password": "mypass",
   "role": [
     {
-      "name": "ROLE_ADMIN"
+      "name": "ADMIN"
     }
   ]
 }
