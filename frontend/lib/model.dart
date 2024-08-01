@@ -43,7 +43,7 @@ class UserData{
     return UserData(
       name: json['name'] as String,
       email: json['email'] as String,
-      role: userRoleFromJson(json['roles'][0]['name'] as String?),
+      role: userRoleFromJson(json['role']['name'] as String?),
     );
   }
 

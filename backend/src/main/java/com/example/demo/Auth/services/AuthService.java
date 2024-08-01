@@ -55,15 +55,11 @@ public class AuthService {
     }
 
     public User signup(RegisterDto registerDto) {
-        Set<Role> role = registerDto.getRole().stream()
-                .map(roleName -> roleRepository.findByName(roleName.getName())
-                        .orElseThrow(() -> new RuntimeException("Role not found: " + roleName)))
-                .collect(Collectors.toSet());
 
         User user = User.builder()
                 .name(registerDto.getName())
                 .email(registerDto.getEmail())
-                .roles(role)
+                .role(registerDto.getRole())
                 .password(passwordEncoder.encode(registerDto.getPassword()))
                 .build();
 

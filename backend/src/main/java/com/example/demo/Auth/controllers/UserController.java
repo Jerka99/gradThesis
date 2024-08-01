@@ -32,7 +32,7 @@ public class UserController {
 
         User user = User.builder()
                 .name(currentUser.getName())
-                .roles(currentUser.getRoles())
+                .role(currentUser.getRole())
                 .email(currentUser.getEmail())
                 .id(currentUser.getId())
                 .build();

@@ -58,6 +58,7 @@ class _LoginPage extends State<LoginPage> {
                   ),
                   FormInputs(
                     element: "password",
+                    obscureText: true,
                     inputValueFun: (value) {
                       setState(() {
                         inputData = inputData.copyWith(password: value);

@@ -5,14 +5,14 @@ import 'package:travel_mate/pages/auth/auth_dto.dart';
 
 import '../../../app_state.dart';
 import '../auth_action.dart';
-import 'LoginPage.dart';
+import 'login_page.dart';
 
 class Factory extends VmFactory<AppState, LoginConnector, ViewModel> {
   @override
   ViewModel fromStore() =>
       ViewModel(
           onLogin: (AuthDto auth) {
-            dispatch(LoginAction(auth));
+            dispatch(LoginAction(authDto: auth));
           },
           routeChange: (path){dispatch(MyNavigateAction(path));}
       );

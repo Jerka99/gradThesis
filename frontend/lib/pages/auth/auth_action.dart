@@ -22,20 +22,21 @@ Future<String?> getToken() async {
 
 
 class LoginAction extends ReduxAction<AppState>{
-  AuthDto authDto;
+  AuthDto? authDto;
 
-  LoginAction(this.authDto);
+  LoginAction({this.authDto});
 
   @override
   Future<AppState?> reduce() async {
     String? token = await getToken();
 
-    if(JwtDecoder.isExpired(token!)) {
-      await dispatch(GetTokenAction(authDto));
-    } else {
+    if(authDto == null && token != null && !JwtDecoder.isExpired(token)){
       await dispatch(GetUserData(token));
     }
-    return null;
+    else if(authDto != null){
+      await dispatch(GetTokenAction(authDto!));
+    }
+    return store.state.copy(appLoader: false);
   }
 }
 
@@ -73,9 +74,8 @@ Future<AppState?> reduce() async {
   // return store.state.copy(user: state.user.copyWith(email: email, role: email == "customer" ? UserRole.customer : UserRole.driver));
   UserData? user = await MainApiClass().logIn(token);
   if (user != null) {
-    // return store.state.user.copyWith(
-    //   email: decodedToken[]
-    // )
+    dispatch(MyNavigateAction("/"));
+    return store.state.copy(user: user, appLoader: false);
   } else {
     print('Login failed. Invalid credentials.');
   }
@@ -83,20 +83,17 @@ Future<AppState?> reduce() async {
 }
 
 class RegisterAction extends ReduxAction<AppState>{
-  String email;
-  String password;
-  String role;
+  AuthDto authDto;
 
   RegisterAction(
-      this.email,
-      this.password,
-      this.role
+      this.authDto
       );
 
   @override
-  AppState reduce() {
-    if(email != "") store.dispatch(MyNavigateAction("/"));
-    return store.state.copy(user: state.user.copyWith(email: email, role: userRoleFromJson(role)));
+  Future<AppState?> reduce() async {
+    await MainApiClass().register(authDto);
+
+    return null;
   }
 }
 

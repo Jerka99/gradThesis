@@ -50,11 +50,24 @@ class MainApiClass{
   }
 
 
-  Future register() async {
-    // const String url;
-    // final Response<Map<String, dynamic>> response =
-    // await client.get(environment.appServerUrl + url);
-    // return MarketingConsent.fromJson(response.data as Map<String, dynamic>);
+  Future register(AuthDto authDto) async {
+    String x = jsonEncode(authDto.toJson());
+    Response response = await http.post(Uri.parse("${AppConstants.backendUrl}/auth/signup"),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(authDto.toJson()));
+
+    if (response.statusCode == 200) {
+      var responseData = jsonDecode(response.body);
+      return responseData["token"];
+    } else {
+      // Handle errors
+      var responseData = jsonDecode(response.body);
+      print('Failed to login. Status code: ${response.statusCode}');
+      return null;
+    }
+
   }
 
   Future fetchAllRides() async {

@@ -1,7 +1,8 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:travel_mate/navigation/navigation_action.dart';
-import 'package:travel_mate/pages/auth/register/registerPage.dart';
+import 'package:travel_mate/pages/auth/auth_dto.dart';
+import 'package:travel_mate/pages/auth/register/register_page.dart';
 import 'package:travel_mate/user_role.dart';
 
 import '../../../app_state.dart';
@@ -11,8 +12,8 @@ class Factory extends VmFactory<AppState, RegisterConnector, ViewModel> {
   @override
   ViewModel fromStore() =>
       ViewModel(
-          onRegister: (Map<String, dynamic> x) {
-            dispatch(RegisterAction(x["email"], x["password"], x["role"]));
+          onRegister: (AuthDto authDto) {
+            dispatch(RegisterAction(authDto));
           },
           routeChange: (path){dispatch(MyNavigateAction(path));}
       );
@@ -20,7 +21,7 @@ class Factory extends VmFactory<AppState, RegisterConnector, ViewModel> {
 
 class ViewModel extends Vm{
 
-  final Function(Map<String, dynamic> x) onRegister;
+  final Function(AuthDto) onRegister;
   Function(String) routeChange;
 
   ViewModel({

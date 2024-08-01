@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:travel_mate/appBar/customBar_connector.dart';
 import 'package:travel_mate/calendar/calendar_connector.dart';
+import 'package:travel_mate/pages/auth/auth_action.dart';
 import 'package:travel_mate/redux/myStateObserver.dart';
 
 import 'calendar/Calendar.dart';
@@ -36,16 +37,21 @@ class MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   final MyRouteInformationParser _routeInformationParser =
       MyRouteInformationParser();
   late final MyRouterDelegate _routeDelegate;
-  late TabController tabController;
+  bool loading = true;
 
   @override
   void initState() {
     super.initState();
     _routeDelegate = widget.store.state.routerDelegate;
-    tabController = TabController(length: 3, vsync: this);
+    widget.store.dispatch(LoginAction());
+    Future.microtask(() async {
+      await widget.store.dispatch(LoginAction());
+      setState(() {
+        loading = false;
+      });
+    });
     navigatorKey = GlobalKey<NavigatorState>();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -61,12 +67,32 @@ class MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
               return Navigator(
                 key: navigatorKey,
                 onGenerateRoute: (_) => MaterialPageRoute(
-                  builder: (context) => AppViewport(child: child),
+                  builder: (context) => loading ? LoadingScreen() : AppViewport(child: child),
                 ),
               );
             }));
   }
 }
+
+class LoadingScreen extends StatelessWidget {
+  const LoadingScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        color: Colors.cyan[50],
+        child: const Center(
+            child: Text(
+          "TravelMate",
+          style: TextStyle(
+              color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 40),
+        )),
+      ),
+    );
+  }
+}
+
 class AppViewport extends StatefulWidget {
   Widget? child;
 
@@ -81,7 +107,7 @@ class AppViewport extends StatefulWidget {
 
 class AppViewportState extends State<AppViewport> {
 
-  Future<DateTime?>? showLoadingDialog() {
+  Future<DateTime?>? showCalendarDialog() {
     return showDialog(
       context: context,
       builder: (BuildContext context) {

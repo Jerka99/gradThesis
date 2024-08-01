@@ -16,12 +16,5 @@ public class RegisterDto {
     private String name;
     private String email;
     private String password;
-    private Set<RoleDto> role; // Roles as set of RoleDto objects
-
-    @Getter
-    @Setter
-    public static class RoleDto {
-        private Long id;
-        private String name;
-    }
+    private Role role; // Roles as set of RoleDto objects
 }

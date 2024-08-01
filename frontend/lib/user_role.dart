@@ -17,3 +17,8 @@ enum UserRole {
         return null;
     }
   }
+
+Map<String, String>? userRoleToJson(UserRole? role) {
+  return {"name": role.toString().split('.').last.toUpperCase()};
+}
+

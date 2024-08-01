@@ -26,12 +26,12 @@ POST http://localhost:8080/auth/signup
 Content-Type: application/json
 
 {
-  "name": "myname",
-  "email": "myemail",
+  "name": "driver",
+  "email": "driver",
   "password": "mypass",
-  "role": [
+  "role":
     {
-      "name": "ADMIN"
+      "name": "DRIVER"
     }
-  ]
+
 }

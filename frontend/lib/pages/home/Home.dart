@@ -176,7 +176,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                   ),
                   IconButton(
                       onPressed: () async{
-                        await controller?.showLoadingDialog();
+                        await controller?.showCalendarDialog();
                   },
                       icon: const Icon(
                         Icons.edit_calendar,

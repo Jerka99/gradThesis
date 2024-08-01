@@ -11,13 +11,15 @@ class AppState {
   String? route;
   MapData? mapData;
   DateTime dateTime;
+  bool appLoader;
 
   AppState({
     required this.routerDelegate,
     required this.user,
     required this.route,
     required this.mapData,
-    required this.dateTime
+    required this.dateTime,
+    required this.appLoader
   });
 
   static AppState initialState() =>
@@ -30,7 +32,8 @@ class AppState {
               name: null, email: null, role: userRoleFromJson(null)),
           route: null,
           mapData: MapData(),
-          dateTime: DateTime.now()
+          dateTime: DateTime.now(),
+          appLoader: true,
       );
 
   AppState copy({
@@ -38,7 +41,8 @@ class AppState {
     UserData? user,
     String? route,
     MapData? mapData,
-    DateTime? dateTime
+    DateTime? dateTime,
+    bool? appLoader,
   }) {
     return AppState(
       routerDelegate: routerDelegate ?? this.routerDelegate,
@@ -46,6 +50,7 @@ class AppState {
       route: route ?? this.route,
       mapData: mapData ?? this.mapData,
       dateTime: dateTime ?? this.dateTime,
+      appLoader: appLoader ?? this.appLoader,
     );
   }
 
@@ -59,7 +64,8 @@ class AppState {
           user == other.user &&
           route == other.route &&
           mapData == other.mapData &&
-          dateTime == other.dateTime;
+          dateTime == other.dateTime &&
+          appLoader == other.appLoader;
 
   @override
   int get hashCode =>
@@ -67,7 +73,8 @@ class AppState {
       user.hashCode ^
       route.hashCode ^
       mapData.hashCode ^
-      dateTime.hashCode;
+      dateTime.hashCode ^
+      appLoader.hashCode;
 
   DateTime setDateTime(AppState state) => state.dateTime.copyWith(
     year: dateTime.year,
