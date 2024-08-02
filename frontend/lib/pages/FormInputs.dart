@@ -5,18 +5,23 @@ class FormInputs extends StatelessWidget {
 
   String? element;
   Function(String)? inputValueFun;
+  String? Function(String?)? checkValidity;
   bool obscureText;
+  String? errorText;
 
-  FormInputs({super.key, this.element, this.inputValueFun, this.obscureText = false});
+  FormInputs({super.key, this.element, this.inputValueFun, this.checkValidity, this.obscureText = false, this.errorText});
 
   @override
   Widget build(BuildContext context) {
     return Column(
-        children: [TextFormField(
+        children: [
+          TextFormField(
           obscureText: obscureText,
+            validator: checkValidity,
             decoration: InputDecoration(
                 border: const OutlineInputBorder(),
-                labelText: capitalize(element!)
+                labelText: capitalize(element!),
+              errorText: errorText,
             ),
             onChanged: (value) => inputValueFun!(value)
         ),

@@ -1,7 +1,7 @@
 enum UserRole {
   admin,
-  driver,
   customer,
+  driver,
 }
 
 
@@ -19,6 +19,7 @@ enum UserRole {
   }
 
 Map<String, String>? userRoleToJson(UserRole? role) {
-  return {"name": role.toString().split('.').last.toUpperCase()};
+  return {"name": role.toString().split('.').last.toUpperCase(),
+  };
 }
 

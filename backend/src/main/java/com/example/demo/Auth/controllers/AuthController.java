@@ -3,10 +3,9 @@ package com.example.demo.Auth.controllers;
 import com.example.demo.Auth.DTO.LoginDto;
 import com.example.demo.Auth.DTO.LoginResponse;
 import com.example.demo.Auth.DTO.RegisterDto;
-import com.example.demo.Auth.repository.RoleRepository;
+import com.example.demo.Auth.exceptions.InputValidator;
 import com.example.demo.Auth.services.JwtService;
 import com.example.demo.Auth.services.AuthService;
-import com.example.demo.User.Role;
 import com.example.demo.User.User;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +25,8 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginDto loginDto){
+//        new InputValidator().validateEmail(loginDto.getEmail());
+//        new InputValidator().validatePassword(loginDto.getPassword());
         User authenticatedUser = authService.authenticate(loginDto);
 
         String jwtToken = jwtService.generateToken(authenticatedUser);
@@ -39,10 +40,14 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<User> register(@RequestBody RegisterDto registerDto) {
-        User registeredUser = authService.signup(registerDto);
+    public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
+        new InputValidator().validateEmail(registerDto.getEmail());
+        new InputValidator().validatePassword(registerDto.getPassword());
+        new InputValidator().validateName(registerDto.getName());
 
-        return ResponseEntity.ok(registeredUser);
+        authService.signup(registerDto);
+
+        return ResponseEntity.ok("Successfully Registered");
     }
 
 }

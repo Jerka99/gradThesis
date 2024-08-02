@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:travel_mate/myMap/address_class.dart';
 import 'package:travel_mate/role_handler.dart';
 import 'package:travel_mate/user_role.dart';
-
-import '../../AutoScrollingText.dart';
-import '../../main.dart';
-import '../../myMap/map_connector.dart';
+import 'package:travel_mate/AutoScrollingText.dart';
+import 'package:travel_mate/main.dart';
+import 'package:travel_mate/myMap/map_connector.dart';
 
 class HomePage extends StatefulWidget {
   List<AddressClass> addressesList;

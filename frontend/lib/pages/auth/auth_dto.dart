@@ -47,7 +47,7 @@ class AuthDto{
 
   @override
   String toString() {
-    return 'UserData{name: $name, email: $email, password: $password, checkPassword: $checkPassword, role: $role}';
+    return 'AuthDto{name: $name, email: $email, password: $password, checkPassword: $checkPassword, role: $role}';
   }
 
   AuthDto.fromJson(Map<String, dynamic> json)

@@ -107,6 +107,23 @@ class AppViewport extends StatefulWidget {
 
 class AppViewportState extends State<AppViewport> {
 
+  void informUser(message) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+       var snackBar = SnackBar(
+        content: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16.0),
+          child: Text(
+            message,
+            style: const TextStyle(fontSize: 18.0),
+          ),
+        ),
+        duration: const Duration(seconds: 4),
+        backgroundColor: Colors.green,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    });
+  }
+
   Future<DateTime?>? showCalendarDialog() {
     return showDialog(
       context: context,
@@ -120,6 +137,30 @@ class AppViewportState extends State<AppViewport> {
       return null;
     });
   }
+
+  Future<void> showSuccessDialog(BuildContext context) {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Registration Successful'),
+          content: const Text('Your account has been created successfully!'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    ).then((_) {
+      // After the dialog is dismissed, navigate to login
+      Navigator.of(context).pushNamed('/login');
+    });
+  }
+
 
 
   @override

@@ -1,6 +1,6 @@
 import 'package:travel_mate/model.dart';
+import 'package:travel_mate/pages/auth/response_handler_dto.dart';
 import 'package:travel_mate/user_role.dart';
-
 import 'myMap/map_data_class.dart';
 import 'navigation/app_routes.dart';
 import 'navigation/my_router_delegate.dart';
@@ -11,7 +11,7 @@ class AppState {
   String? route;
   MapData? mapData;
   DateTime dateTime;
-  bool appLoader;
+  ResponseHandler? responseHandler;
 
   AppState({
     required this.routerDelegate,
@@ -19,7 +19,7 @@ class AppState {
     required this.route,
     required this.mapData,
     required this.dateTime,
-    required this.appLoader
+    required this.responseHandler,
   });
 
   static AppState initialState() =>
@@ -33,7 +33,7 @@ class AppState {
           route: null,
           mapData: MapData(),
           dateTime: DateTime.now(),
-          appLoader: true,
+          responseHandler: ResponseHandler.init(),
       );
 
   AppState copy({
@@ -42,7 +42,7 @@ class AppState {
     String? route,
     MapData? mapData,
     DateTime? dateTime,
-    bool? appLoader,
+    ResponseHandler? responseHandler
   }) {
     return AppState(
       routerDelegate: routerDelegate ?? this.routerDelegate,
@@ -50,7 +50,7 @@ class AppState {
       route: route ?? this.route,
       mapData: mapData ?? this.mapData,
       dateTime: dateTime ?? this.dateTime,
-      appLoader: appLoader ?? this.appLoader,
+      responseHandler: responseHandler ?? this.responseHandler
     );
   }
 
@@ -65,7 +65,7 @@ class AppState {
           route == other.route &&
           mapData == other.mapData &&
           dateTime == other.dateTime &&
-          appLoader == other.appLoader;
+          responseHandler == other.responseHandler;
 
   @override
   int get hashCode =>
@@ -74,7 +74,7 @@ class AppState {
       route.hashCode ^
       mapData.hashCode ^
       dateTime.hashCode ^
-      appLoader.hashCode;
+      responseHandler.hashCode;
 
   DateTime setDateTime(AppState state) => state.dateTime.copyWith(
     year: dateTime.year,

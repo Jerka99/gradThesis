@@ -4,7 +4,7 @@ import 'package:nominatim_geocoding/nominatim_geocoding.dart';
 import 'package:travel_mate/app_state.dart';
 import 'package:travel_mate/myMap/address_class.dart';
 
-import '../mainApi.dart';
+import '../main_api.dart';
 import 'coordinates_api.dart';
 
 class InitFetch extends ReduxAction<AppState> {

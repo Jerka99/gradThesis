@@ -6,6 +6,7 @@ import 'package:travel_mate/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:travel_mate/model.dart';
 import 'package:travel_mate/pages/auth/auth_dto.dart';
+import 'package:travel_mate/pages/auth/response_handler_dto.dart';
 
 import 'myMap/address_class.dart';
 
@@ -22,7 +23,6 @@ class MainApiClass{
       var responseData = jsonDecode(response.body);
       return responseData["token"];
     } else {
-      // Handle errors
       var responseData = jsonDecode(response.body);
       print('Failed to login. Status code: ${response.statusCode}');
       return null;
@@ -50,8 +50,7 @@ class MainApiClass{
   }
 
 
-  Future register(AuthDto authDto) async {
-    String x = jsonEncode(authDto.toJson());
+  Future<dynamic>? register(AuthDto authDto) async {
     Response response = await http.post(Uri.parse("${AppConstants.backendUrl}/auth/signup"),
         headers: <String, String>{
           'Content-Type': 'application/json',
@@ -59,13 +58,11 @@ class MainApiClass{
         body: jsonEncode(authDto.toJson()));
 
     if (response.statusCode == 200) {
-      var responseData = jsonDecode(response.body);
-      return responseData["token"];
+      return ResponseHandler(detail: response.body);
     } else {
-      // Handle errors
-      var responseData = jsonDecode(response.body);
+      var responseData = ResponseHandler.fromJson(jsonDecode(response.body));
       print('Failed to login. Status code: ${response.statusCode}');
-      return null;
+      return responseData;
     }
 
   }

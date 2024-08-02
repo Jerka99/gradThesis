@@ -2,20 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:travel_mate/functions/capitalize.dart';
 import 'package:travel_mate/user_role.dart';
 
+import '../../../main.dart';
 import '../../FormInputs.dart';
 import '../auth_dto.dart';
 import '../hyperlink.dart';
+import 'package:travel_mate/pages/auth/response_handler_dto.dart';
 
 class RegisterPage extends StatefulWidget {
   Function(AuthDto) onRegister;
   Function(String) routeChange;
   UserRole role;
+  ResponseHandler? responseHandler;
 
-  RegisterPage(
-      {super.key,
-      required this.onRegister,
-      required this.routeChange,
-      required this.role});
+  RegisterPage({
+    super.key,
+    required this.onRegister,
+    required this.routeChange,
+    required this.role,
+    required this.responseHandler,
+  });
 
   @override
   State<RegisterPage> createState() => _RegisterPage();
@@ -23,14 +28,30 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPage extends State<RegisterPage> {
   late AuthDto inputData;
+  late ResponseHandler responseHandler;
+
   @override
   void initState() {
     inputData = AuthDto(
         email: "",
         name: "",
         password: "",
+        checkPassword: "",
         role: userRoleFromJson(widget.role.name.toUpperCase()));
+    responseHandler = ResponseHandler.init();
     super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant RegisterPage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    responseHandler = widget.responseHandler!;
+    if (responseHandler.detail == "Successfully Registered") {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.findAncestorStateOfType<AppViewportState>()?.informUser('Successfully Registered');
+        widget.routeChange("login");
+      });
+    }
   }
 
   @override
@@ -54,6 +75,7 @@ class _RegisterPage extends State<RegisterPage> {
             ),
             FormInputs(
               element: "name",
+              errorText: checkError("name"),
               inputValueFun: (value) {
                 setState(() {
                   inputData = inputData.copyWith(name: value);
@@ -62,6 +84,7 @@ class _RegisterPage extends State<RegisterPage> {
             ),
             FormInputs(
               element: "email",
+              errorText: checkError("email"),
               inputValueFun: (value) {
                 setState(() {
                   inputData = inputData.copyWith(email: value);
@@ -71,6 +94,7 @@ class _RegisterPage extends State<RegisterPage> {
             FormInputs(
               element: "password",
               obscureText: true,
+              errorText: checkError("password"),
               inputValueFun: (value) {
                 setState(() {
                   inputData = inputData.copyWith(password: value);
@@ -80,6 +104,7 @@ class _RegisterPage extends State<RegisterPage> {
             FormInputs(
               element: "check password",
               obscureText: true,
+              errorText: checkError("password"),
               inputValueFun: (value) {
                 setState(() {
                   inputData = inputData.copyWith(checkPassword: value);
@@ -90,9 +115,19 @@ class _RegisterPage extends State<RegisterPage> {
               alignment: Alignment.centerRight,
               child: ElevatedButton(
                 onPressed: () {
-                  if(inputData.checkPassword == inputData.password) {
+                  setState(() {
+                    responseHandler = responseHandler.copyWith(
+                        detail: "", description: "");
+                  });
+                  if (inputData.checkPassword == inputData.password) {
                     inputData = inputData.copyWith(checkPassword: null);
                     widget.onRegister(inputData);
+                  } else {
+                    setState(() {
+                      responseHandler = responseHandler.copyWith(
+                          detail: "Passwords do not match",
+                          description: "Passwords do not match");
+                    });
                   }
                 },
                 style: ElevatedButton.styleFrom(
@@ -139,5 +174,13 @@ class _RegisterPage extends State<RegisterPage> {
         ),
       ),
     );
+  }
+
+  String? checkError(identifier) {
+    if (responseHandler.detail != null &&
+        responseHandler.detail!.toLowerCase().contains(identifier)) {
+      return responseHandler.detail;
+    }
+    return null;
   }
 }
