@@ -1,4 +1,4 @@
-package com.example.demo.User;
+package com.example.demo.Auth.entities;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -15,8 +15,7 @@ import lombok.Setter;
 public class Role {
 
     @Id
-    @SequenceGenerator(name="seq", sequenceName="role_seq", allocationSize = 1)
-    @GeneratedValue(strategy=GenerationType.SEQUENCE, generator="seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
 }

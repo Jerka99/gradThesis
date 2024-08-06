@@ -1,20 +1,31 @@
 import 'package:flutter/material.dart';
 
-class AllRidesPage extends StatelessWidget {
-  final Function(String p1, String p2) onSomething;
+class AllRidesPage extends StatefulWidget {
+  Function fetchAllRides;
 
-  const AllRidesPage({
-    super.key,
-    required this.onSomething});
+  AllRidesPage({
+    required this.fetchAllRides,
+    super.key});
+
+  @override
+  State<AllRidesPage> createState() => _AllRidesPageState();
+}
+
+class _AllRidesPageState extends State<AllRidesPage> {
+
+  @override
+  void initState() {
+    super.initState();
+    widget.fetchAllRides();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Center(
       child: ElevatedButton(
         onPressed: () {
-          onSomething("aa", "bb");
         },
-        child: const Text('Logout'),
+        child: const Text('nothing'),
       ),
     );
   }

@@ -1,12 +1,12 @@
 package com.example.demo.Auth.controllers;
 
-import com.example.demo.Auth.DTO.LoginDto;
-import com.example.demo.Auth.DTO.LoginResponse;
-import com.example.demo.Auth.DTO.RegisterDto;
+import com.example.demo.Auth.dto.LoginDto;
+import com.example.demo.Auth.dto.LoginResponse;
+import com.example.demo.Auth.dto.RegisterDto;
 import com.example.demo.Auth.exceptions.InputValidator;
 import com.example.demo.Auth.services.JwtService;
 import com.example.demo.Auth.services.AuthService;
-import com.example.demo.User.User;
+import com.example.demo.Auth.entities.User;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -49,7 +49,6 @@ public class AuthController {
 
         return ResponseEntity.ok("Successfully Registered");
     }
-
 }
 
 //The process begins when a user sends a sign-in request to the Service. An Authentication object called UsernamePasswordAuthenticationToken is then generated, using the provided username and password.

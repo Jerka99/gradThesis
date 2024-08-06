@@ -17,7 +17,6 @@ class Calendar extends StatefulWidget {
 }
 
 class _CalendarState extends State<Calendar> {
-  TimeOfDay _selectedTime = TimeOfDay.now();
   late DateTime _selectedDay;
   DateTime _focusedDay = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.month;
@@ -31,7 +30,7 @@ class _CalendarState extends State<Calendar> {
     Future<void> _selectTime(BuildContext context) async {
     final TimeOfDay? picked = await showTimePicker(
       context: context,
-      initialTime: _selectedTime,
+      initialTime: TimeOfDay(hour: _selectedDay.hour, minute: _selectedDay.minute),
       initialEntryMode: TimePickerEntryMode.input,
       builder: (BuildContext context, Widget? child) {
         return Theme(
@@ -47,9 +46,15 @@ class _CalendarState extends State<Calendar> {
         );
       },
     );
-    if (picked != null && picked != _selectedTime) {
+    if (picked != null) {
       setState(() {
-        _selectedTime = picked;
+        _selectedDay = DateTime(
+          _selectedDay.year,
+          _selectedDay.month,
+          _selectedDay.day,
+          picked.hour,
+          picked.minute,
+        );
       });
     }
   }
@@ -88,7 +93,15 @@ class _CalendarState extends State<Calendar> {
                 calendarFormat: _calendarFormat,
                 onDaySelected: (selectedDay, focusedDay) {
                   setState(() {
-                    _selectedDay = selectedDay;
+                    setState(() {
+                      _selectedDay = DateTime(
+                        selectedDay.year,
+                        selectedDay.month,
+                        selectedDay.day,
+                        _selectedDay.hour,
+                        _selectedDay.minute,
+                      );
+                    });
                     _focusedDay =
                         focusedDay; // update `_focusedDay` here as well
                   });
@@ -113,9 +126,12 @@ class _CalendarState extends State<Calendar> {
                 children: [
                   Expanded(
                       child: Align(
-                    child: Text(
-                      "${_selectedTime.hour.toString().padLeft(2, '0')} : ${_selectedTime.minute.toString().padLeft(2, '0')}",
-                      style: const TextStyle(fontSize: 25),
+                    child: GestureDetector(
+                      onTap: () => _selectTime(context),
+                      child: Text(
+                        "${_selectedDay.hour.toString().padLeft(2, '0')} : ${_selectedDay.minute.toString().padLeft(2, '0')}",
+                        style: const TextStyle(fontSize: 25),
+                      ),
                     ),
                   )),
                   Expanded(
@@ -147,8 +163,8 @@ class _CalendarState extends State<Calendar> {
                     _selectedDay.year,
                     _selectedDay.month,
                     _selectedDay.day,
-                    _selectedTime.hour,
-                    _selectedTime.minute,
+                    _selectedDay.hour,
+                    _selectedDay.minute,
                   );
                   widget.setDateTime(selectedDateTime);
                   Navigator.of(context).pop();

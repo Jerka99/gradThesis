@@ -105,7 +105,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
                               alignment: Alignment.bottomRight,
                               child: Text(
                                 "${sumDrivingDurations(index)?.day}.${sumDrivingDurations(index)?.month}.${sumDrivingDurations(index)?.year}",
-                                style: TextStyle(fontSize: 13),
+                                style: const TextStyle(fontSize: 13),
                               )),
                         ),
                       ],

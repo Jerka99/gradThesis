@@ -1,7 +1,6 @@
 package com.example.demo.Auth.controllers;
 import com.example.demo.Auth.services.UserService;
-import com.example.demo.User.Role;
-import com.example.demo.User.User;
+import com.example.demo.Auth.entities.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import java.util.List;
-import java.util.Set;
 
 @RequestMapping("/users")
 @RestController

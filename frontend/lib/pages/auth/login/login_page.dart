@@ -8,13 +8,13 @@ import '../hyperlink.dart';
 class LoginPage extends StatefulWidget {
   final Function(AuthDto) onLogin;
   final Function(String) routeChange;
-  ResponseHandler? responseHandler;
+  AuthResponseHandler? authResponseHandler;
 
   LoginPage({
     super.key,
     required this.onLogin,
     required this.routeChange,
-    required this.responseHandler,
+    required this.authResponseHandler,
   });
 
   @override
@@ -22,17 +22,17 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPage extends State<LoginPage> {
-  late ResponseHandler responseHandler;
+  late AuthResponseHandler authResponseHandler;
 
   @override
   void initState() {
-    responseHandler = ResponseHandler.init();
+    authResponseHandler = AuthResponseHandler.init();
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant LoginPage oldWidget) {
-    responseHandler = widget.responseHandler!;
+    authResponseHandler = widget.authResponseHandler!;
     super.didUpdateWidget(oldWidget);
   }
 
@@ -70,31 +70,30 @@ class _LoginPage extends State<LoginPage> {
                 FormInputs(
                   element: "email",
                   errorText:
-                      responseHandler.detail == "" ? null : responseHandler.detail,
+                  authResponseHandler.message == "" ? null : authResponseHandler.message,
                   inputValueFun: (value) {
                     setState(() {
                       inputData = inputData.copyWith(email: value);
                     });
                   },
+                  submitOnKey: formSubmit,
                 ),
                 FormInputs(
                   element: "password",
                   obscureText: true,
                   errorText:
-                      responseHandler.detail == "" ? null : responseHandler.detail,
+                  authResponseHandler.message == "" ? null : authResponseHandler.message,
                   inputValueFun: (value) {
                     setState(() {
                       inputData = inputData.copyWith(password: value);
                     });
                   },
+                  submitOnKey: formSubmit,
                 ),
                 Align(
                   alignment: Alignment.centerRight,
                   child: ElevatedButton(
-                    onPressed: () {
-                      _formKey.currentState?.validate();
-                      widget.onLogin(inputData);
-                    },
+                    onPressed: formSubmit,
                     style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.all(18.0),
                         backgroundColor: Colors.white,
@@ -135,5 +134,9 @@ class _LoginPage extends State<LoginPage> {
         ),
       ),
     );
+  }
+  void formSubmit() {
+    _formKey.currentState?.validate();
+    widget.onLogin(inputData);
   }
 }

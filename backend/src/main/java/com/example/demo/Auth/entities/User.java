@@ -1,5 +1,6 @@
-package com.example.demo.User;
+package com.example.demo.Auth.entities;
 
+import com.example.demo.Map.entities.RidesTable;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -37,6 +38,15 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
     private Role role;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_ride_relation", // The junction table name
+            joinColumns = @JoinColumn(name = "user_id"), // The column in the junction table that references the User entity
+            inverseJoinColumns = @JoinColumn(name = "ride_id") // The column in the junction table that references the AddressTable entity
+    )
+    private Set<RidesTable> ridesTableSet;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

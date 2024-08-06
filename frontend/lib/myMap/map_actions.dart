@@ -1,8 +1,11 @@
+import 'dart:html';
+
 import 'package:async_redux/async_redux.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nominatim_geocoding/nominatim_geocoding.dart';
 import 'package:travel_mate/app_state.dart';
 import 'package:travel_mate/myMap/address_class.dart';
+import 'package:travel_mate/myMap/map_data_class.dart';
 
 import '../main_api.dart';
 import 'coordinates_api.dart';
@@ -51,7 +54,7 @@ class InitFetch extends ReduxAction<AppState> {
 
 
         dispatch(MapActionAddMarkerAndPolyline(lastElement, coordinatesResponse.coordinates, coordinatesResponse.duration, coordinatesResponse.distance));
-        await fetchAddressName(lastElementCoordinates, dataBetweenTwoAddresses, true, (address) => dispatch(MapActionAddressesManager(address)));
+        await fetchAddressName(lastElementCoordinates, dataBetweenTwoAddresses, true, (address) => dispatch(MapActionAddressesManager(address)), state.mapData!.markerCoordinateList.length);
 
       } else {
         startPoint = tempStartPoint;
@@ -90,8 +93,7 @@ class MapActionAddMarkerAndPolyline extends ReduxAction<AppState> {
 
     Coordinate latLng = Coordinate(latitude: marker.latitude, longitude: marker.longitude);
     DataBetweenTwoAddresses dataBetweenTwoAddresses = DataBetweenTwoAddresses(duration, distance);
-
-    addressesListCopy.add(AddressClass(latLng, "loading", "loading", dataBetweenTwoAddresses));
+    addressesListCopy.add(AddressClass(coordinates: latLng, fullAddress: "loading", city: "loading", dataBetweenTwoAddresses: dataBetweenTwoAddresses));
     markersListCopy.add(marker);
     if (state.mapData!.markerCoordinateList.isEmpty) {
       return state.copy(
@@ -163,11 +165,24 @@ class SaveMapData extends ReduxAction<AppState> {
   SaveMapData();
 
   @override
-  AppState? reduce() {
-    MainApiClass().saveMapData(
-      state.mapData!.addressesList,
-      state.mapData!.markerCoordinateList
+  Future<AppState?> reduce() async {
+    DateTime startTime = state.dateTime;
+    double startTimeInSeconds = startTime.millisecondsSinceEpoch.toDouble() /
+        1000.0;
+    state.mapData!.addressesList.first.dataBetweenTwoAddresses?.duration =
+        startTimeInSeconds;
+    await MainApiClass().saveMapData(
+        state.mapData!.addressesList,
+        state.mapData!.markerCoordinateList
     );
+  }
+}
 
+class FetchMapData extends ReduxAction<AppState> {
+  FetchMapData();
+
+  @override
+  Future<AppState?> reduce() async {
+    MapData? mapData = await MainApiClass().fetchAllRides();
   }
 }

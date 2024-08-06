@@ -18,7 +18,7 @@ class Factory extends VmFactory<AppState, LoginConnector, ViewModel> {
           routeChange: (path) {
             dispatch(MyNavigateAction(path));
             },
-        responseHandler: state.responseHandler
+        authResponseHandler: state.authResponseHandler
       );
 }
 
@@ -27,17 +27,17 @@ class ViewModel extends Vm{
 
   final Function(AuthDto) onLogin;
   Function(String) routeChange;
-  ResponseHandler? responseHandler;
+  AuthResponseHandler? authResponseHandler;
 
   ViewModel({
     required this.onLogin,
     required this.routeChange,
-    required this.responseHandler
+    required this.authResponseHandler
   });
 
   @override
   String toString() {
-    return 'ViewModel{onLogin: $onLogin, routeChange: $routeChange, responseHandler: $responseHandler}';
+    return 'ViewModel{onLogin: $onLogin, routeChange: $routeChange, authResponseHandler: $authResponseHandler}';
   }
 
   @override
@@ -48,14 +48,14 @@ class ViewModel extends Vm{
           runtimeType == other.runtimeType &&
           onLogin == other.onLogin &&
           routeChange == other.routeChange &&
-          responseHandler == other.responseHandler;
+          authResponseHandler == other.authResponseHandler;
 
   @override
   int get hashCode =>
       super.hashCode ^
       onLogin.hashCode ^
       routeChange.hashCode ^
-      responseHandler.hashCode;
+      authResponseHandler.hashCode;
 }
 
 class LoginConnector extends StatelessWidget{
@@ -72,7 +72,7 @@ builder: (BuildContext context, ViewModel vm) {
   return LoginPage(
         onLogin: vm.onLogin,
         routeChange: vm.routeChange,
-        responseHandler: vm.responseHandler
+        authResponseHandler: vm.authResponseHandler
       );},
     );
   }

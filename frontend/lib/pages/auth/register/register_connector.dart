@@ -19,7 +19,8 @@ class Factory extends VmFactory<AppState, RegisterConnector, ViewModel> {
           routeChange: (path){
             dispatch(MyNavigateAction(path));
           },
-          responseHandler: state.responseHandler
+          authResponseHandler: state.authResponseHandler,
+          isInformed: state.authResponseHandler?.isInformed
       );
 }
 
@@ -27,13 +28,21 @@ class ViewModel extends Vm{
 
   final Function(AuthDto) onRegister;
   Function(String) routeChange;
-  final ResponseHandler? responseHandler;
+  final AuthResponseHandler? authResponseHandler;
+  Event<bool>? isInformed;
+
 
   ViewModel({
     required this.onRegister,
     required this.routeChange,
-    required this.responseHandler
+    required this.authResponseHandler,
+    required this.isInformed,
   });
+
+  @override
+  String toString() {
+    return 'ViewModel{onRegister: $onRegister, routeChange: $routeChange, authResponseHandler: $authResponseHandler, isInformed: $isInformed}';
+  }
 
   @override
   bool operator ==(Object other) =>
@@ -43,19 +52,16 @@ class ViewModel extends Vm{
           runtimeType == other.runtimeType &&
           onRegister == other.onRegister &&
           routeChange == other.routeChange &&
-          responseHandler == other.responseHandler;
+          authResponseHandler == other.authResponseHandler &&
+          isInformed == other.isInformed;
 
   @override
   int get hashCode =>
       super.hashCode ^
       onRegister.hashCode ^
       routeChange.hashCode ^
-      responseHandler.hashCode;
-
-  @override
-  String toString() {
-    return 'ViewModel{onRegister: $onRegister, routeChange: $routeChange, responseHandler: $responseHandler}';
-  }
+      authResponseHandler.hashCode ^
+      isInformed.hashCode;
 }
 
 
@@ -73,12 +79,12 @@ class RegisterConnector extends StatelessWidget{
     return StoreConnector<AppState, ViewModel>(
       vm: () => Factory(),
       builder: (BuildContext context, ViewModel vm) {
-//this will prevent going back to Register screen
         return RegisterPage(
             onRegister: vm.onRegister,
             routeChange: vm.routeChange,
             role: role,
-            responseHandler: vm.responseHandler,
+            authResponseHandler: vm.authResponseHandler,
+            isInformed: vm.isInformed
         );},
     );
   }

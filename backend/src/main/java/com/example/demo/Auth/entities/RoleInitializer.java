@@ -1,9 +1,8 @@
-package com.example.demo.User;
+package com.example.demo.Auth.entities;
 
 import com.example.demo.Auth.repository.RoleRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;

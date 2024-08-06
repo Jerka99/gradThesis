@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:travel_mate/navigation/navigation_action.dart';
 
 import '../../app_state.dart';
+import '../auth/auth_action.dart';
 import 'my_profile.dart';
 
 class MyProfileContainer extends StatelessWidget{
@@ -17,7 +18,7 @@ class MyProfileContainer extends StatelessWidget{
       builder: (BuildContext context, _ViewModel vm) {
 
         return MyProfile(
-            onReturn: vm.onReturn
+            logOut: vm.logOut
         );},
     );
   }
@@ -25,16 +26,16 @@ class MyProfileContainer extends StatelessWidget{
 
 class _ViewModel extends Vm{
 
-  final Function() onReturn;
+  final Function() logOut;
 
   _ViewModel({
-    required this.onReturn
+    required this.logOut
   });
 
   static _ViewModel fromStore(Store<AppState> store) {
     return _ViewModel(
-        onReturn: () {
-          store.dispatch(MyNavigateAction("/"));
+        logOut: () {
+          store.dispatch(LogOutAction());
         }
     );
   }

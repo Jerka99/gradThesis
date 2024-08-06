@@ -1,27 +1,19 @@
 package com.example.demo.Auth.services;
 
-import com.example.demo.Auth.DTO.LoginDto;
-import com.example.demo.Auth.DTO.RegisterDto;
+import com.example.demo.Auth.dto.LoginDto;
+import com.example.demo.Auth.dto.RegisterDto;
 import com.example.demo.Auth.repository.RoleRepository;
 import com.example.demo.Auth.repository.UserRepository;
-import com.example.demo.User.Role;
-import com.example.demo.User.User;
+import com.example.demo.Auth.entities.Role;
+import com.example.demo.Auth.entities.User;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @Service
 @AllArgsConstructor
@@ -39,6 +31,10 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     private final AuthenticationManager authenticationManager;
+
+    public Authentication getCurrentAuthentication() {
+        return SecurityContextHolder.getContext().getAuthentication();
+    }
 
     public User authenticate(LoginDto loginDto) {
         //IMPORTANT
@@ -69,5 +65,4 @@ public class AuthService {
 
         return userRepository.save(user);
     }
-
 }

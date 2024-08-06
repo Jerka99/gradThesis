@@ -6,8 +6,6 @@ import 'package:travel_mate/appBar/customBar_connector.dart';
 import 'package:travel_mate/calendar/calendar_connector.dart';
 import 'package:travel_mate/pages/auth/auth_action.dart';
 import 'package:travel_mate/redux/myStateObserver.dart';
-
-import 'calendar/Calendar.dart';
 import 'app_state.dart';
 import 'navigation/my_route_information_parser.dart';
 import 'navigation/my_router_delegate.dart';
@@ -137,30 +135,6 @@ class AppViewportState extends State<AppViewport> {
       return null;
     });
   }
-
-  Future<void> showSuccessDialog(BuildContext context) {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Registration Successful'),
-          content: const Text('Your account has been created successfully!'),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-              },
-              child: const Text('OK'),
-            ),
-          ],
-        );
-      },
-    ).then((_) {
-      // After the dialog is dismissed, navigate to login
-      Navigator.of(context).pushNamed('/login');
-    });
-  }
-
 
 
   @override

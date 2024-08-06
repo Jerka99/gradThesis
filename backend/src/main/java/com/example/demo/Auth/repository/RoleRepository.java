@@ -1,7 +1,7 @@
 package com.example.demo.Auth.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.example.demo.User.Role;
+import com.example.demo.Auth.entities.Role;
 
 import java.util.Optional;
 

@@ -44,4 +44,20 @@ class MapData{
   String toString() {
     return 'MapData{markerCoordinateList2: $markerCoordinateList, polylineList2: $polylineList, addressesList: $addressesList}';
   }
+
+  factory MapData.fromJson(Map<String, dynamic> json) {
+    var markerCoordinates = (json['markerCoordinateList'] as List)
+        .map((item) => LatLng.fromJson(item))
+        .toList();
+
+    var addresses = (json['addressesList'] as List)
+        .map((item) => AddressClass.fromJson(item))
+        .toList();
+
+    return MapData(
+      markerCoordinateList: markerCoordinates,
+      polylineList: [],
+      addressesList: addresses,
+    );
+  }
 }

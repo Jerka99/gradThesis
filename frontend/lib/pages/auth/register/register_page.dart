@@ -1,25 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:travel_mate/functions/capitalize.dart';
 import 'package:travel_mate/user_role.dart';
-
 import '../../../main.dart';
 import '../../FormInputs.dart';
 import '../auth_dto.dart';
 import '../hyperlink.dart';
 import 'package:travel_mate/pages/auth/response_handler_dto.dart';
+import 'package:async_redux/async_redux.dart';
+
 
 class RegisterPage extends StatefulWidget {
   Function(AuthDto) onRegister;
   Function(String) routeChange;
   UserRole role;
-  ResponseHandler? responseHandler;
+  AuthResponseHandler? authResponseHandler;
+  Event<bool>? isInformed;
 
   RegisterPage({
     super.key,
     required this.onRegister,
     required this.routeChange,
     required this.role,
-    required this.responseHandler,
+    required this.authResponseHandler,
+    required this.isInformed
   });
 
   @override
@@ -28,7 +31,7 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPage extends State<RegisterPage> {
   late AuthDto inputData;
-  late ResponseHandler responseHandler;
+  late AuthResponseHandler authResponseHandler;
 
   @override
   void initState() {
@@ -38,16 +41,17 @@ class _RegisterPage extends State<RegisterPage> {
         password: "",
         checkPassword: "",
         role: userRoleFromJson(widget.role.name.toUpperCase()));
-    responseHandler = ResponseHandler.init();
+    authResponseHandler = AuthResponseHandler.init();
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant RegisterPage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    responseHandler = widget.responseHandler!;
-    if (responseHandler.detail == "Successfully Registered") {
+    authResponseHandler = widget.authResponseHandler!;
+    if (authResponseHandler.message == "Successfully Registered" && widget.isInformed!.isNotSpent) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        widget.isInformed?.consume();
         context.findAncestorStateOfType<AppViewportState>()?.informUser('Successfully Registered');
         widget.routeChange("login");
       });
@@ -81,6 +85,7 @@ class _RegisterPage extends State<RegisterPage> {
                   inputData = inputData.copyWith(name: value);
                 });
               },
+              submitOnKey: formSubmit,
             ),
             FormInputs(
               element: "email",
@@ -90,6 +95,7 @@ class _RegisterPage extends State<RegisterPage> {
                   inputData = inputData.copyWith(email: value);
                 });
               },
+              submitOnKey: formSubmit,
             ),
             FormInputs(
               element: "password",
@@ -100,6 +106,7 @@ class _RegisterPage extends State<RegisterPage> {
                   inputData = inputData.copyWith(password: value);
                 });
               },
+              submitOnKey: formSubmit,
             ),
             FormInputs(
               element: "check password",
@@ -110,26 +117,12 @@ class _RegisterPage extends State<RegisterPage> {
                   inputData = inputData.copyWith(checkPassword: value);
                 });
               },
+              submitOnKey: formSubmit,
             ),
             Align(
               alignment: Alignment.centerRight,
               child: ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    responseHandler = responseHandler.copyWith(
-                        detail: "", description: "");
-                  });
-                  if (inputData.checkPassword == inputData.password) {
-                    inputData = inputData.copyWith(checkPassword: null);
-                    widget.onRegister(inputData);
-                  } else {
-                    setState(() {
-                      responseHandler = responseHandler.copyWith(
-                          detail: "Passwords do not match",
-                          description: "Passwords do not match");
-                    });
-                  }
-                },
+                onPressed: formSubmit,
                 style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.all(18.0),
                     backgroundColor: Colors.white,
@@ -154,7 +147,7 @@ class _RegisterPage extends State<RegisterPage> {
                 children: [
                   HyperLink(
                       text: "Already have an account? ",
-                      linkText: "Login",
+                      linkText: "Log In",
                       link: () => widget.routeChange("login")),
                   const SizedBox(
                     height: 20.0,
@@ -176,10 +169,28 @@ class _RegisterPage extends State<RegisterPage> {
     );
   }
 
+  void formSubmit(){
+    {
+      setState(() {
+        authResponseHandler = authResponseHandler.copyWith(
+            message: "");
+      });
+      if (inputData.checkPassword == inputData.password) {
+        inputData = inputData.copyWith(checkPassword: null);
+        widget.onRegister(inputData);
+      } else {
+        setState(() {
+          authResponseHandler = authResponseHandler.copyWith(
+              message: "Passwords do not match");
+        });
+      }
+    }
+  }
+
   String? checkError(identifier) {
-    if (responseHandler.detail != null &&
-        responseHandler.detail!.toLowerCase().contains(identifier)) {
-      return responseHandler.detail;
+    if (authResponseHandler.message != null &&
+        authResponseHandler.message!.toLowerCase().contains(identifier)) {
+      return authResponseHandler.message;
     }
     return null;
   }

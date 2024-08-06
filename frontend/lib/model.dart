@@ -22,6 +22,10 @@ class UserData{
         role: role ?? this.role);
     }
 
+    UserData.init() {
+      UserData(name: null, email: null, role: userRoleFromJson(null));
+    }
+
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||

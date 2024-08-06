@@ -1,4 +1,4 @@
-package com.example.demo.Auth.config;
+package com.example.demo.config;
 
 import com.example.demo.Auth.services.JwtService;
 import jakarta.servlet.FilterChain;

@@ -1,6 +1,6 @@
 package com.example.demo.Auth.services;
 import com.example.demo.Auth.repository.UserRepository;
-import com.example.demo.User.User;
+import com.example.demo.Auth.entities.User;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.example.demo.Auth.config;
+package com.example.demo.config;
 
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -46,7 +46,7 @@ public class SecurityConfiguration {
         CorsConfiguration configuration = new CorsConfiguration();
 
         configuration.setAllowedOrigins(List.of("http://localhost:65000"));
-        configuration.setAllowedMethods(List.of("GET","POST","OPTIONS"));
+        configuration.setAllowedMethods(List.of("GET","POST","DELETE","OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization","Content-Type"));
         configuration.setAllowCredentials(true); // Add this line if credentials are needed
 

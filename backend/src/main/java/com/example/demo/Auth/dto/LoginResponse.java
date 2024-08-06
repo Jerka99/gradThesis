@@ -1,4 +1,4 @@
-package com.example.demo.Auth.DTO;
+package com.example.demo.Auth.dto;
 
 import lombok.Builder;
 import lombok.Getter;

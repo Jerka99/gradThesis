@@ -1,48 +1,54 @@
-class ResponseHandler {
-  String? description;
-  String? detail;
+import 'package:travel_mate/model.dart';
+import 'package:async_redux/async_redux.dart';
 
-  ResponseHandler({
-    this.description,
-    this.detail,
+class AuthResponseHandler {
+  String? message;
+  UserData? userData;
+  Event<bool>? isInformed;
+
+  AuthResponseHandler({
+    this.message,
+    this.userData,
+    this.isInformed
 });
 
-  ResponseHandler.init({
-    this.description = "",
-    this.detail = "",
-  });
+  AuthResponseHandler.init() {
+    message = "";
+    // userData;
+    isInformed = Event<bool>.spent();
+  }
 
-  factory ResponseHandler.fromJson(Map<String, dynamic> json) {
-  return ResponseHandler(
-  description: json['description'] as String,
-  detail: json['detail'] as String,
+  factory AuthResponseHandler.fromJson(Map<String, dynamic> json) {
+  return AuthResponseHandler(
+    message: json['detail'] as String,
   );
   }
 
-  ResponseHandler copyWith({
-    String? description,
-    String? detail,
+  AuthResponseHandler copyWith({
+    String? message,
+    UserData? userData,
+    Event<bool>? isInformed,
   }) {
-    return ResponseHandler(
-        description: description ?? this.description,
-        detail: detail ?? this.detail,
+    return AuthResponseHandler(
+        message: message ?? this.message,
+        userData: userData ?? this.userData,
+        isInformed: isInformed ?? this.isInformed,
     );
   }
 
-
   @override
   String toString() {
-    return 'ResponseHandler{ description: $description, detail: $detail}';
+    return 'AuthResponseHandler{message: $message, userData: $userData}';
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is ResponseHandler &&
+      other is AuthResponseHandler &&
           runtimeType == other.runtimeType &&
-          description == other.description &&
-          detail == other.detail;
+          message == other.message &&
+          userData == other.userData;
 
   @override
-  int get hashCode => description.hashCode ^ detail.hashCode;
+  int get hashCode => message.hashCode ^ userData.hashCode;
 }

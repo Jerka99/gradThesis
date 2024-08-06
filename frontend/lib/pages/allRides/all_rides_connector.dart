@@ -1,6 +1,8 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:travel_mate/app_state.dart';
+import 'package:travel_mate/main_api.dart';
+import 'package:travel_mate/myMap/map_actions.dart';
 import 'package:travel_mate/navigation/navigation_action.dart';
 import 'package:travel_mate/pages/allRides/all_rides_page.dart';
 
@@ -8,15 +10,15 @@ import 'package:travel_mate/pages/allRides/all_rides_page.dart';
 class Factory extends VmFactory<AppState, AllRidesConnector, ViewModel> {
   @override
   ViewModel fromStore() =>
-      ViewModel(onSomething: (String username, String otp) {
-        dispatch(MyNavigateAction("allRides"));
+      ViewModel(fetchAllRides: () {
+        dispatch(FetchMapData());
       });
 }
 
 class ViewModel extends Vm {
-  final Function(String, String) onSomething;
+  final Function() fetchAllRides;
 
-  ViewModel({required this.onSomething});
+  ViewModel({required this.fetchAllRides});
 }
 
 class AllRidesConnector extends StatelessWidget {
@@ -28,7 +30,7 @@ class AllRidesConnector extends StatelessWidget {
       vm: () => Factory(),
       builder: (BuildContext context, ViewModel vm) {
 //this will prevent going back to login screen
-        return AllRidesPage(onSomething: vm.onSomething);
+        return AllRidesPage(fetchAllRides: vm.fetchAllRides);
       },
     );
   }
