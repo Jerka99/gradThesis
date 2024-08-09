@@ -2,14 +2,11 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:travel_mate/appBar/customBar_connector.dart';
 import 'package:travel_mate/calendar/calendar_connector.dart';
 import 'package:travel_mate/pages/auth/auth_action.dart';
 import 'package:travel_mate/redux/myStateObserver.dart';
 import 'app_state.dart';
-import 'myMap/fetch_location_action.dart';
 import 'navigation/my_route_information_parser.dart';
 import 'navigation/my_router_delegate.dart';
 
@@ -137,19 +134,20 @@ class AppViewportState extends State<AppViewport> {
     });
   }
 
-  Future<DateTime?>? showLoading() {
+  Future<DateTime?>? showLoading(String content) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
        showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return const AlertDialog(
+        return AlertDialog(
+          backgroundColor: Colors.cyan[50],
           content: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              CircularProgressIndicator(),
-              SizedBox(width: 20),
-              Text('Fetching location...'),
+              const CircularProgressIndicator(),
+              const SizedBox(width: 20),
+              Text('Loading $content'),
             ],
           ),
         );      },

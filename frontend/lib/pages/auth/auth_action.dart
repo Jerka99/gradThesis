@@ -10,7 +10,9 @@ import 'package:travel_mate/pages/auth/auth_dto.dart';
 import 'package:travel_mate/pages/auth/response_handler_dto.dart';
 
 import '../../StoreSecurity.dart';
+import '../../myMap/all_rides_list.dart';
 import '../../myMap/fetch_location_action.dart';
+import '../../myMap/map_data_class.dart';
 
 class LoginAction extends ReduxAction<AppState> {
   AuthDto? authDto;
@@ -98,6 +100,13 @@ class LogOutAction extends ReduxAction<AppState> {
   Future<AppState?> reduce() async {
     StoreSecurity().deleteToken();
     dispatch(MyNavigateAction("login"));
-    return state.copy(user: UserData.init());
+    return state.copy(
+      user: UserData.init(),
+      route: null,
+      mapData: MapData(),
+      dateTime: DateTime.now(),
+      authResponseHandler: AuthResponseHandler.init(),
+      allRidesList: AllRidesList.init(),
+    );
   }
 }

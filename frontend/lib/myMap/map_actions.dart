@@ -190,7 +190,16 @@ class FetchMapData extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    List<MapData> ridesList = await MainApiClass().fetchAllRides();
-    return state.copy(allRidesList: state.allRidesList.copyWith(listOfRides: ridesList));
+    try {
+      appViewportKey.currentState?.showLoading("all rides");
+      List<MapData> ridesList = await MainApiClass().fetchAllRides();
+      return state.copy(allRidesList: state.allRidesList.copyWith(listOfRides: ridesList));
+    }catch (e) {
+      appViewportKey.currentState?.informUser('Failed to fetch rides: $e', Colors.red);
+      return null;
+    }
+    finally{
+      Navigator.of(appViewportKey.currentState!.context).pop();
+    }
   }
 }

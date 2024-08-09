@@ -11,7 +11,7 @@ class FetchLocationAction extends ReduxAction<AppState> {
     if(state.currentUserLocation == null){
     Position position;
     try {
-      appViewportKey.currentState?.showLoading();
+      appViewportKey.currentState?.showLoading("current location");
       position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
       appViewportKey.currentState?.informUser('Location is Fetched', Colors.green);
         return state.copy(
