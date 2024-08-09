@@ -1,6 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:travel_mate/myMap/address_class.dart';
+import 'package:travel_mate/myMap/fetch_location_action.dart';
 
 import '../../app_state.dart';
 import '../../myMap/map_actions.dart';
@@ -17,6 +18,9 @@ class Factory extends VmFactory<AppState, HomeConnector, ViewModel> {
        },
       role: state.user.role,
       dateTime: state.dateTime,
+         fetchLocation: () {
+           dispatch(FetchLocationAction());
+         },
     );
 }
 
@@ -26,12 +30,14 @@ class ViewModel extends Vm{
   Function(AddressClass) addAddress;
   UserRole? role;
   DateTime? dateTime;
+  Function() fetchLocation;
 
   ViewModel({
     required this.addressesList,
     required this.addAddress,
     this.role,
     this.dateTime,
+    required this.fetchLocation
   });
 
   @override
@@ -72,6 +78,7 @@ class HomeConnector extends StatelessWidget{
             addAddress: vm.addAddress,
             role: vm.role,
             dateTime: vm.dateTime,
+          fetchLocation: vm.fetchLocation,
         );},
     );
   }

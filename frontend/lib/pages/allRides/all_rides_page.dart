@@ -7,11 +7,8 @@ class AllRidesPage extends StatefulWidget {
   Function fetchAllRides;
   AllRidesList allRidesList;
 
-
-  AllRidesPage({
-    required this.fetchAllRides,
-    required this.allRidesList,
-    super.key});
+  AllRidesPage(
+      {required this.fetchAllRides, required this.allRidesList, super.key});
 
   @override
   State<AllRidesPage> createState() => _AllRidesPageState();
@@ -38,43 +35,41 @@ class _AllRidesPageState extends State<AllRidesPage> {
               AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 height: isExpanded ? 300 : 0,
-                child: MyMap(
-                    markerCoordinateList: widget.allRidesList.listOfRides[index].markerCoordinateList,
-                    polylineList: widget.allRidesList.listOfRides[index].polylineList),
+                child: ClipRect(// removes unnecessary border from MyMap widget when its collapsed
+                  child: MyMap(
+                    markerCoordinateList: widget
+                        .allRidesList.listOfRides[index].markerCoordinateList,
+                    polylineList:
+                        widget.allRidesList.listOfRides[index].polylineList,
+                    currentUserLocation: widget
+                        .allRidesList.listOfRides[index].markerCoordinateList.first,
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 12,
               ),
               AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 height: isExpanded ? 300 : 152,
                 color: Colors.white,
-                // decoration: BoxDecoration(
-                //   color: Colors.white,
-                //   border: Border.all(width: 2, color: Colors.black),
-                // ),
-                child: Stack(
-                  children: [
-
-                    Container(
-                      child: FromToDisplay(
-                        addressesList: widget.allRidesList.listOfRides[index].addressesList,
-                        dateTime: epochToDataTime(widget.allRidesList.listOfRides[index].addressesList[0].dataBetweenTwoAddresses!.duration),
-                        displayMore: isExpanded,
-                        displayCalendar: false
-                      ),
-                    ),
-                    Positioned(
-                      right: 0,
-                        child: IconButton(
-                      onPressed: () {
-                        setState(() {
-                          isExpanded ? expandedIndex = null : expandedIndex = index;
-                        });
-                      },
-                      icon: const Icon(Icons.arrow_drop_down),
-                    ))
-                  ],
+                child: FromToDisplay(
+                  addressesList:
+                      widget.allRidesList.listOfRides[index].addressesList,
+                  dateTime: epochToDataTime(widget
+                      .allRidesList
+                      .listOfRides[index]
+                      .addressesList[0]
+                      .dataBetweenTwoAddresses!
+                      .duration),
+                  displayMore: isExpanded,
+                  displayCalendar: false,
+                  expandButton: () => setState(() {
+                    isExpanded ? expandedIndex = null : expandedIndex = index;
+                  }),
                 ),
               ),
-             const SizedBox(
+              const SizedBox(
                 height: 50,
               )
             ],
@@ -84,7 +79,8 @@ class _AllRidesPageState extends State<AllRidesPage> {
 
   DateTime epochToDataTime(double duration) {
     double epochTimeInMiliseconds = duration;
-    DateTime dateTime = DateTime.fromMillisecondsSinceEpoch(epochTimeInMiliseconds.toInt());
+    DateTime dateTime =
+        DateTime.fromMillisecondsSinceEpoch(epochTimeInMiliseconds.toInt());
     return dateTime;
   }
 }

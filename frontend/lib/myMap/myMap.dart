@@ -13,6 +13,8 @@ class MyMap extends StatefulWidget {
   final Function(int)? removeLastMarkerFun;
   final Function(LatLng)? addMapData;
   final UserRole? userRole;
+  final bool enableScrollWheel;
+  final LatLng? currentUserLocation;
 
   const MyMap({
     super.key,
@@ -22,6 +24,8 @@ class MyMap extends StatefulWidget {
     this.addMapData,
     this.removeLastMarkerFun,
     this.userRole,
+    this.enableScrollWheel = false,
+    required this.currentUserLocation,
   });
 
   @override
@@ -29,6 +33,24 @@ class MyMap extends StatefulWidget {
 }
 
 class _MyMap extends State<MyMap> {
+  late bool enableScrollWheel;
+  final MapController _mapController = MapController();
+
+  @override
+  void initState() {
+    super.initState();
+    enableScrollWheel = widget.enableScrollWheel;
+  }
+
+  @override
+  void didUpdateWidget(MyMap oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.currentUserLocation != oldWidget.currentUserLocation) {
+        _mapController.move(widget.currentUserLocation!, 13.0);
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
     List<LatLng> markerCoordinateList = widget.markerCoordinateList;
@@ -41,13 +63,18 @@ class _MyMap extends State<MyMap> {
               decoration: BoxDecoration(
                   border: Border.all(color: Colors.black, width: 1.0)),
               child: FlutterMap(
+                mapController: _mapController,
                 options: MapOptions(
+                  enableScrollWheel: enableScrollWheel,
                     onTap: (pos, latLng) {
                       if (widget.addMapData != null) {
                         widget.addMapData!(latLng);
                       }
+                      setState(() {
+                        enableScrollWheel = true;
+                      });
                     },
-                    center: LatLng(43.508133, 16.440193),
+                    center: widget.currentUserLocation,
                     zoom: 13,
                     maxZoom: 18,
                     minZoom: 1,

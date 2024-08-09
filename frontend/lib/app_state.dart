@@ -1,3 +1,4 @@
+import 'package:latlong2/latlong.dart';
 import 'package:platform_detector/platform_detector.dart';
 import 'package:travel_mate/model.dart';
 import 'package:travel_mate/pages/auth/response_handler_dto.dart';
@@ -16,6 +17,7 @@ class AppState {
   AuthResponseHandler? authResponseHandler;
   PlatformDto platformDto;
   AllRidesList allRidesList;
+  LatLng? currentUserLocation;
 
   AppState({
     required this.routerDelegate,
@@ -26,6 +28,7 @@ class AppState {
     required this.authResponseHandler,
     required this.platformDto,
     required this.allRidesList,
+    required this.currentUserLocation,
   });
 
   static AppState initialState() => AppState(
@@ -43,6 +46,7 @@ class AppState {
         currentPlatformType: PlatformDetector.platform.type,
       ),
       allRidesList: AllRidesList.init(),
+      currentUserLocation: null,
   );
 
   AppState copy(
@@ -53,7 +57,8 @@ class AppState {
       DateTime? dateTime,
       AuthResponseHandler? authResponseHandler,
       PlatformDto? platformDto,
-      AllRidesList? allRidesList
+      AllRidesList? allRidesList,
+      LatLng? currentUserLocation
       }) {
     return AppState(
         routerDelegate: routerDelegate ?? this.routerDelegate,
@@ -64,8 +69,10 @@ class AppState {
         authResponseHandler: authResponseHandler ?? this.authResponseHandler,
         platformDto: platformDto ?? this.platformDto,
         allRidesList: allRidesList ?? this.allRidesList,
+        currentUserLocation: currentUserLocation ?? this.currentUserLocation,
     );
   }
+
 
   @override
   bool operator ==(Object other) =>
@@ -79,7 +86,8 @@ class AppState {
           dateTime == other.dateTime &&
           authResponseHandler == other.authResponseHandler &&
           platformDto == other.platformDto &&
-          allRidesList == other.allRidesList;
+          allRidesList == other.allRidesList &&
+          currentUserLocation == other.currentUserLocation;
 
   @override
   int get hashCode =>
@@ -90,12 +98,13 @@ class AppState {
       dateTime.hashCode ^
       authResponseHandler.hashCode ^
       platformDto.hashCode ^
-      allRidesList.hashCode;
+      allRidesList.hashCode ^
+      currentUserLocation.hashCode;
 
 
   @override
   String toString() {
-    return 'AppState{routerDelegate: $routerDelegate, user: $user, route: $route, mapData: $mapData, dateTime: $dateTime, authResponseHandler: $authResponseHandler, platformDto: $platformDto, allRidesList: $allRidesList}';
+    return 'AppState{routerDelegate: $routerDelegate, user: $user, route: $route, mapData: $mapData, dateTime: $dateTime, authResponseHandler: $authResponseHandler, platformDto: $platformDto, allRidesList: $allRidesList, currentUserLocation: $currentUserLocation}';
   }
 
   DateTime setDateTime(AppState state) => state.dateTime.copyWith(

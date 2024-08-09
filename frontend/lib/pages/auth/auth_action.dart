@@ -10,6 +10,7 @@ import 'package:travel_mate/pages/auth/auth_dto.dart';
 import 'package:travel_mate/pages/auth/response_handler_dto.dart';
 
 import '../../StoreSecurity.dart';
+import '../../myMap/fetch_location_action.dart';
 
 class LoginAction extends ReduxAction<AppState> {
   AuthDto? authDto;

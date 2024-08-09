@@ -6,7 +6,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:nominatim_geocoding/nominatim_geocoding.dart';
 import 'package:travel_mate/constants.dart';
 import 'package:travel_mate/myMap/address_class.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 
 class ResponseData {
   List<LatLng> coordinates;

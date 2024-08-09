@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:travel_mate/pages/auth/auth_dto.dart';
 import 'package:travel_mate/pages/auth/response_handler_dto.dart';
 
+import '../../../main.dart';
 import '../../FormInputs.dart';
 import '../hyperlink.dart';
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:travel_mate/main.dart';
 import 'package:travel_mate/myMap/address_class.dart';
 import 'package:travel_mate/pages/display/from_to_display.dart';
 import 'package:travel_mate/role_handler.dart';
@@ -10,6 +11,7 @@ class HomePage extends StatefulWidget {
   UserRole? role;
   final Function(AddressClass) addAddress;
   final DateTime? dateTime;
+  Function() fetchLocation;
 
   HomePage({
     super.key,
@@ -17,6 +19,7 @@ class HomePage extends StatefulWidget {
     this.role,
     required this.addAddress,
     this.dateTime,
+    required this.fetchLocation
   });
 
   @override
@@ -30,6 +33,7 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    widget.fetchLocation();
   }
 
   @override

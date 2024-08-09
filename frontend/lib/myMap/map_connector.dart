@@ -20,6 +20,7 @@ class Factory extends VmFactory<AppState, MapConnector, ViewModel> {
           removeLastMarkerFun : (key) {dispatch(RemoveLastMarker(key));},
           saveMapData: () {dispatch(SaveMapData());},
           userRole: state.user.role,
+          currentUserLocation: state.currentUserLocation,
       );
 }
 
@@ -31,6 +32,7 @@ class ViewModel extends Vm {
   Function(int)? removeLastMarkerFun;
   Function()? saveMapData;
   UserRole? userRole;
+  LatLng? currentUserLocation;
 
   ViewModel({
     required this.markerCoordinateList,
@@ -38,7 +40,8 @@ class ViewModel extends Vm {
     this.saveMapData,
     this.addMapData,
     this.removeLastMarkerFun,
-    this.userRole,}
+    this.userRole,
+    this.currentUserLocation}
   );
 
   @override
@@ -52,7 +55,8 @@ class ViewModel extends Vm {
           saveMapData == other.saveMapData &&
           markerCoordinateList == other.markerCoordinateList &&
           polylineList == other.polylineList &&
-          userRole == other.userRole;
+          userRole == other.userRole &&
+          currentUserLocation == other.currentUserLocation;
 
   @override
   int get hashCode =>
@@ -62,7 +66,13 @@ class ViewModel extends Vm {
       saveMapData.hashCode ^
       markerCoordinateList.hashCode ^
       polylineList.hashCode ^
-      userRole.hashCode;
+      userRole.hashCode ^
+      currentUserLocation.hashCode;
+
+  @override
+  String toString() {
+    return 'ViewModel{markerCoordinateList: $markerCoordinateList, polylineList: $polylineList, addMapData: $addMapData, removeLastMarkerFun: $removeLastMarkerFun, saveMapData: $saveMapData, userRole: $userRole, currentUserLocation: $currentUserLocation}';
+  }
 }
 
 class MapConnector extends StatelessWidget{
@@ -88,6 +98,8 @@ class MapConnector extends StatelessWidget{
           removeLastMarkerFun: vm.removeLastMarkerFun,
           saveMapData: vm.saveMapData,
           userRole: vm.userRole,
+          enableScrollWheel: true,
+          currentUserLocation: vm.currentUserLocation
         );},
     );
   }

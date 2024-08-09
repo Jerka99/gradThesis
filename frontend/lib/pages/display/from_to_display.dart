@@ -10,12 +10,14 @@ class FromToDisplay extends StatefulWidget {
   final DateTime? dateTime;
   bool displayMore;
   bool displayCalendar;
+  Function? expandButton;
 
   FromToDisplay(
       {required this.addressesList,
       required this.dateTime,
       this.displayMore = true,
       this.displayCalendar = true,
+      this.expandButton,
       super.key});
 
   @override
@@ -23,6 +25,8 @@ class FromToDisplay extends StatefulWidget {
 }
 
 class _FromToDisplayState extends State<FromToDisplay> {
+  List<String> titles = ["From", "To", "Arrival"];
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -33,30 +37,68 @@ class _FromToDisplayState extends State<FromToDisplay> {
             border: Border.all(width: 1.0),
             borderRadius: const BorderRadius.all(Radius.circular(10.0))),
         child: Column(children: [
+          if (widget.expandButton != null)
+            Container(
+              alignment: Alignment.centerRight,
+              child: IconButton(
+                onPressed: () =>
+                    {if (widget.expandButton != null) widget.expandButton!()},
+                icon: widget.displayMore
+                    ? const Icon(Icons.arrow_drop_up)
+                    : const Icon(Icons.arrow_drop_down),
+              ),
+            ),
           ...listViewHeader(),
-          widget.displayMore
-              ? Expanded(
-                  child: Container(
-                    color: Colors.white,
-                    child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: widget.addressesList.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.only(right: 12, left: 12),
-                            child: index > 0
-                                ? fromToElement(
-                                    index, widget.addressesList[index])
-                                : const SizedBox.shrink(),
-                          );
-                        }),
-                  ),
-                )
-              : const SizedBox.shrink()
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            height: widget.displayMore ? 36 : 0,
+            decoration: BoxDecoration(
+                color: const Color(0x1A2196F3),
+                border: widget.displayMore
+                    ? const Border(
+                        top: BorderSide(width: 1),
+                        bottom: BorderSide(color: Colors.black, width: 2.0),
+                      )
+                    : null),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ...titles
+                    .map(
+                      (title) => Expanded(
+                          child: Container(
+                              padding: const EdgeInsets.all(5),
+                              child: Center(
+                                  child: Text(
+                                title,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 16),
+                              )))),
+                    )
+                    .toList()
+              ],
+            ),
+          ),
+          Expanded(
+            child: Container(
+              color: Colors.white,
+              child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: widget.addressesList.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 12, left: 12),
+                      child: index > 0
+                          ? tableRows(index, widget.addressesList[index])
+                          : const SizedBox.shrink(),
+                    );
+                  }),
+            ),
+          )
         ]));
   }
 
-  Widget fromToElement(index, AddressClass value) {
+  Widget tableRows(index, AddressClass value) {
     return Container(
       height: 80,
       padding: const EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 0),
@@ -83,7 +125,7 @@ class _FromToDisplayState extends State<FromToDisplay> {
                           Text(
                         "${widget.addressesList[index - 1].fullAddress} ${widget.addressesList[index - 1].city}" ??
                             "-",
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 13),
                       ),
                     ),
@@ -97,7 +139,7 @@ class _FromToDisplayState extends State<FromToDisplay> {
                       padding: const EdgeInsets.all(2.0),
                       child: Text(
                         "${value.fullAddress} ${value.city}" ?? "-",
-                        style: TextStyle(
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 13),
                       ),
                     ),
@@ -137,7 +179,6 @@ class _FromToDisplayState extends State<FromToDisplay> {
   }
 
   List<Container> listViewHeader() {
-    List<String> titles = ["From", "To", "Arrival"];
     return [
       Container(
         height: 100,
@@ -199,52 +240,27 @@ class _FromToDisplayState extends State<FromToDisplay> {
                   const SizedBox(
                     width: 20,
                   ),
-                 if(widget.displayCalendar) Expanded(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: IconButton(
-                          onPressed: () async {
-                            await appViewportKey.currentState
-                                ?.showCalendarDialog();
-                          },
-                          icon: const Icon(
-                            Icons.edit_calendar,
-                            size: 30,
-                          )),
+                  if (widget.displayCalendar)
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: IconButton(
+                            onPressed: () async {
+                              await appViewportKey.currentState
+                                  ?.showCalendarDialog();
+                            },
+                            icon: const Icon(
+                              Icons.edit_calendar,
+                              size: 30,
+                            )),
+                      ),
                     ),
-                  ),
                 ],
               ),
             ),
           ],
         ),
       ),
-    if(widget.displayMore) Container(
-        decoration: const BoxDecoration(
-            color: Color(0x1A2196F3),
-            border: Border(
-              top: BorderSide(width: 1),
-              bottom: BorderSide(color: Colors.black, width: 2),
-            )),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ...titles
-                .map(
-                  (title) => Expanded(
-                      child: Container(
-                          padding: const EdgeInsets.all(5),
-                          child: Center(
-                              child: Text(
-                            title,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
-                          )))),
-                )
-                .toList()
-          ],
-        ),
-      )
     ];
   }
 
