@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:nominatim_geocoding/nominatim_geocoding.dart';
 import 'package:travel_mate/constants.dart';
 import 'package:travel_mate/myMap/address_class.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 
 class ResponseData {
   List<LatLng> coordinates;
@@ -18,22 +19,30 @@ class ResponseData {
 Future<ResponseData?> fetchCoordinates(startPoint, endPoint, callback) async {
   try {
     callback(true);
-    var response = await http.get(Uri.parse(
-        "${AppConstants.directionsUrl}?api_key=${dotenv.env["API_KEY"]}&start=$startPoint&end=$endPoint"));
+    var response = await http.post(Uri.parse(
+        AppConstants.directionsUrl,
+    ),
+      body: '{"coordinates":[[$startPoint],[$endPoint]]}',
+      headers: <String, String>{
+        'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
+        'Content-Type': 'application/json; charset=utf-8',
+        'Authorization': '${dotenv.env["API_KEY"]}',
+      });
 
     var data = jsonDecode(response.body);
 
     if (data.containsKey("error") && data["error"]["code"] == 2010) {
       throw Exception(data["error"]["message"]);
     }
+    // List<dynamic> coordinates = data["features"][0]["geometry"]["coordinates"];
     List<dynamic> coordinates = data["features"][0]["geometry"]["coordinates"];
     List<LatLng> coordinatesMapped = coordinates
         .map<LatLng>((element) => LatLng(element[1], element[0]))
         .toList();
     double distance =
-        data["features"][0]["properties"]["summary"]["distance"] ?? 0;
+        data["features"][0]["properties"]["segments"][0]["distance"] ?? 0;
     double duration =
-        data["features"][0]["properties"]["summary"]["duration"] ?? 0;
+        data["features"][0]["properties"]["segments"][0]["duration"] ?? 0;
 
     ResponseData responseData =
         ResponseData(coordinatesMapped, distance, duration);

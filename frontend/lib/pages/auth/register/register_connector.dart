@@ -20,7 +20,6 @@ class Factory extends VmFactory<AppState, RegisterConnector, ViewModel> {
             dispatch(MyNavigateAction(path));
           },
           authResponseHandler: state.authResponseHandler,
-          isInformed: state.authResponseHandler?.isInformed
       );
 }
 
@@ -29,19 +28,17 @@ class ViewModel extends Vm{
   final Function(AuthDto) onRegister;
   Function(String) routeChange;
   final AuthResponseHandler? authResponseHandler;
-  Event<bool>? isInformed;
 
 
   ViewModel({
     required this.onRegister,
     required this.routeChange,
     required this.authResponseHandler,
-    required this.isInformed,
   });
 
   @override
   String toString() {
-    return 'ViewModel{onRegister: $onRegister, routeChange: $routeChange, authResponseHandler: $authResponseHandler, isInformed: $isInformed}';
+    return 'ViewModel{onRegister: $onRegister, routeChange: $routeChange, authResponseHandler: $authResponseHandler}';
   }
 
   @override
@@ -52,16 +49,14 @@ class ViewModel extends Vm{
           runtimeType == other.runtimeType &&
           onRegister == other.onRegister &&
           routeChange == other.routeChange &&
-          authResponseHandler == other.authResponseHandler &&
-          isInformed == other.isInformed;
+          authResponseHandler == other.authResponseHandler;
 
   @override
   int get hashCode =>
       super.hashCode ^
       onRegister.hashCode ^
       routeChange.hashCode ^
-      authResponseHandler.hashCode ^
-      isInformed.hashCode;
+      authResponseHandler.hashCode;
 }
 
 
@@ -84,7 +79,6 @@ class RegisterConnector extends StatelessWidget{
             routeChange: vm.routeChange,
             role: role,
             authResponseHandler: vm.authResponseHandler,
-            isInformed: vm.isInformed
         );},
     );
   }

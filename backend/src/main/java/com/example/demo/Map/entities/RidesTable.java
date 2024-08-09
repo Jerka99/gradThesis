@@ -2,9 +2,11 @@ package com.example.demo.Map.entities;
 
 import com.example.demo.Auth.entities.User;
 import com.example.demo.Map.dto.DataBetweenTwoAddresses;
+import com.example.demo.Map.dto.LatLng;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter

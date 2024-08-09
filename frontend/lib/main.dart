@@ -11,6 +11,7 @@ import 'navigation/my_route_information_parser.dart';
 import 'navigation/my_router_delegate.dart';
 
 late GlobalKey<NavigatorState> navigatorKey;
+final GlobalKey<AppViewportState> appViewportKey = GlobalKey<AppViewportState>();
 
 Future<void> main() async {
   // setPathUrlStrategy(); has enabled normal routing paths without # (hash) in
@@ -96,17 +97,14 @@ class AppViewport extends StatefulWidget {
 
   AppViewport({
     this.child,
-    super.key
-  });
+  }) : super(key: appViewportKey);
 
   @override
   State<AppViewport> createState() => AppViewportState();
 }
 
 class AppViewportState extends State<AppViewport> {
-
-  void informUser(message) {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+  void informUser(message, [color = Colors.green]) {
        var snackBar = SnackBar(
         content: Padding(
           padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -116,10 +114,9 @@ class AppViewportState extends State<AppViewport> {
           ),
         ),
         duration: const Duration(seconds: 4),
-        backgroundColor: Colors.green,
+        backgroundColor: color,
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    });
   }
 
   Future<DateTime?>? showCalendarDialog() {

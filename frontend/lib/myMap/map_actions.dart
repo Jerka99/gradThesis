@@ -1,9 +1,11 @@
 import 'dart:html';
 
 import 'package:async_redux/async_redux.dart';
+import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:nominatim_geocoding/nominatim_geocoding.dart';
 import 'package:travel_mate/app_state.dart';
+import 'package:travel_mate/main.dart';
 import 'package:travel_mate/myMap/address_class.dart';
 import 'package:travel_mate/myMap/map_data_class.dart';
 
@@ -166,15 +168,20 @@ class SaveMapData extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    DateTime startTime = state.dateTime;
-    double startTimeInSeconds = startTime.millisecondsSinceEpoch.toDouble() /
-        1000.0;
-    state.mapData!.addressesList.first.dataBetweenTwoAddresses?.duration =
-        startTimeInSeconds;
-    await MainApiClass().saveMapData(
-        state.mapData!.addressesList,
-        state.mapData!.markerCoordinateList
-    );
+    if(state.mapData!.addressesList.length > 1) {
+      DateTime startTime = state.dateTime;
+      int startTimeInMiliseconds = startTime.millisecondsSinceEpoch;
+      state.mapData!.addressesList.first.dataBetweenTwoAddresses?.duration =
+          startTimeInMiliseconds.toDouble();
+      String? response = await MainApiClass().saveMapData(
+          state.mapData!.addressesList, state.mapData!.markerCoordinateList);
+      if(response != null) {
+        appViewportKey.currentState?.informUser(response);
+      }
+    }
+    else {
+      appViewportKey.currentState?.informUser("Choose minimal 2 marker points!", Colors.red);
+    }
   }
 }
 
@@ -183,6 +190,7 @@ class FetchMapData extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    MapData? mapData = await MainApiClass().fetchAllRides();
+    List<MapData> ridesList = await MainApiClass().fetchAllRides();
+    return state.copy(allRidesList: state.allRidesList.copyWith(listOfRides: ridesList));
   }
 }

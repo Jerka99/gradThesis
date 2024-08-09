@@ -3,6 +3,9 @@ package com.example.demo.Map.controllers;
 import com.example.demo.Map.dto.RideData;
 import com.example.demo.Map.services.RidesService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,9 +33,12 @@ public class RideDataController {
     @GetMapping("/fetchAllRides")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<List<RideData>> fetchAllRides() {
-        //related to AuthenticationManager
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8); // Ensure UTF-8 encoding
+
         List<RideData> rideData = ridesService.fetchAllRides();
 
-        return ResponseEntity.ok(rideData);
+        return new ResponseEntity<>(rideData, headers, HttpStatus.OK);
     }
 }

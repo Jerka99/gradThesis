@@ -7,7 +7,6 @@ import 'package:travel_mate/user_role.dart';
 import 'marker_and_polyline.dart';
 
 class MyMap extends StatefulWidget {
-
   final List<LatLng> markerCoordinateList;
   final List<List<LatLng>> polylineList;
   final Function()? saveMapData;
@@ -30,7 +29,6 @@ class MyMap extends StatefulWidget {
 }
 
 class _MyMap extends State<MyMap> {
-
   @override
   Widget build(BuildContext context) {
     List<LatLng> markerCoordinateList = widget.markerCoordinateList;
@@ -53,11 +51,12 @@ class _MyMap extends State<MyMap> {
                     zoom: 13,
                     maxZoom: 18,
                     minZoom: 1,
-                    interactiveFlags: InteractiveFlag.pinchZoom | InteractiveFlag.drag
-                ),
+                    interactiveFlags:
+                        InteractiveFlag.pinchZoom | InteractiveFlag.drag),
                 children: [
                   TileLayer(
-                    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    urlTemplate:
+                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                     userAgentPackageName: 'com.example.app',
                   ),
                   PolylineLayer(
@@ -75,31 +74,31 @@ class _MyMap extends State<MyMap> {
                                   markerCoordinateList.length, () {
                                 if (markerCoordinateList.length - 1 ==
                                     markerCoordinate.key) {
-                                  if(widget.removeLastMarkerFun != null){
-                                  widget.removeLastMarkerFun!(markerCoordinate.key);
+                                  if (widget.removeLastMarkerFun != null) {
+                                    widget.removeLastMarkerFun!(
+                                        markerCoordinate.key);
                                   }
-                                }
-                                else{
+                                } else {
                                   // widget.chooseTwoStations();
                                   // print(markerCoordinate);
                                 }
                               }))
                           .toList()),
                   Align(
-                    alignment: Alignment.bottomRight,
+                      alignment: Alignment.bottomRight,
                       child: Container(
-                        
-                        margin: EdgeInsets.all(5.0),
+                          margin: EdgeInsets.all(5.0),
                           child: FloatingActionButton(
-                            backgroundColor: Colors.blue,
-                              onPressed: (){
-                              if(widget.saveMapData != null){
-                              widget.saveMapData!();
-                              }
+                              backgroundColor: Colors.blue,
+                              onPressed: () {
+                                  widget.saveMapData!();
                               },
-                            child: const Text("Save",
-                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-                            ))))
+                              child: const Text(
+                                "Save",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ))))
                 ],
               )),
         ),

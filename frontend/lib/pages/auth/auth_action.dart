@@ -1,6 +1,7 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:travel_mate/app_state.dart';
+import 'package:travel_mate/main.dart';
 import 'package:travel_mate/main_api.dart';
 import 'package:travel_mate/model.dart';
 import 'package:travel_mate/navigation/navigation_action.dart';
@@ -79,9 +80,13 @@ class RegisterAction extends ReduxAction<AppState> {
   Future<AppState?> reduce() async {
     AuthResponseHandler? response = await MainApiClass().register(authDto);
 
+    if(response?.message == "Successfully Registered") {
+      appViewportKey.currentState?.informUser(response?.message);
+      dispatch(MyNavigateAction("login"));
+    }
     return state.copy(
         authResponseHandler: state.authResponseHandler?.copyWith(
-            message: response?.message, isInformed: Event<bool>(true)));
+            message: response?.message),);
   }
 }
 

@@ -51,7 +51,7 @@ class MainApiClass {
     Response response = await http.post(
         Uri.parse("${AppConstants.backendUrl}/auth/signup"),
         headers: <String, String>{
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(authDto.toJson()));
 
@@ -62,26 +62,23 @@ class MainApiClass {
     }
   }
 
-  Future<MapData?> fetchAllRides() async {
+  Future<List<MapData>> fetchAllRides() async {
     String? token = await StoreSecurity().getToken();
 
     Response response = await http.get(Uri.parse(
         "${AppConstants.backendUrl}/fetchAllRides"),
         headers: <String, String>{
-          'Content-Type': 'application/json',
+          'Content-Type': 'application/json; charset=UTF-8',
           'Authorization': 'Bearer $token'
         });
+    List<MapData> mapDataList = [];
     if (response.statusCode == 200) {
       List<dynamic> decoded = jsonDecode(response.body);
-      List<MapData> mapDataList = [];
       decoded.forEach((element) {
         mapDataList.add(MapData.fromJson(element));
       });
-
-      return null;
-    } else {
-      return null;
     }
+    return mapDataList;
   }
 
   Future saveMapData(List<AddressClass> addressesList,
@@ -98,5 +95,9 @@ class MainApiClass {
           'addressesList': addressesList,
           'markerCoordinateList': markerCoordinateList,
         }));
+    if(response.statusCode == 200) {
+      return response.body;
+    }
+    return null;
   }
 }

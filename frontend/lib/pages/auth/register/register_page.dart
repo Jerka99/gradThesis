@@ -14,7 +14,6 @@ class RegisterPage extends StatefulWidget {
   Function(String) routeChange;
   UserRole role;
   AuthResponseHandler? authResponseHandler;
-  Event<bool>? isInformed;
 
   RegisterPage({
     super.key,
@@ -22,7 +21,6 @@ class RegisterPage extends StatefulWidget {
     required this.routeChange,
     required this.role,
     required this.authResponseHandler,
-    required this.isInformed
   });
 
   @override
@@ -49,13 +47,6 @@ class _RegisterPage extends State<RegisterPage> {
   void didUpdateWidget(covariant RegisterPage oldWidget) {
     super.didUpdateWidget(oldWidget);
     authResponseHandler = widget.authResponseHandler!;
-    if (authResponseHandler.message == "Successfully Registered" && widget.isInformed!.isNotSpent) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        widget.isInformed?.consume();
-        context.findAncestorStateOfType<AppViewportState>()?.informUser('Successfully Registered');
-        widget.routeChange("login");
-      });
-    }
   }
 
   @override
