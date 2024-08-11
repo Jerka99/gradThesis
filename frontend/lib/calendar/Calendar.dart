@@ -5,11 +5,9 @@ import 'package:table_calendar/table_calendar.dart';
 
 class Calendar extends StatefulWidget {
   DateTime dateTime;
-  Function(DateTime dateTime) setDateTime;
 
   Calendar({
     required this.dateTime,
-    required this.setDateTime
   });
 
   @override
@@ -166,8 +164,7 @@ class _CalendarState extends State<Calendar> {
                     _selectedDay.hour,
                     _selectedDay.minute,
                   );
-                  widget.setDateTime(selectedDateTime);
-                  Navigator.of(context).pop();
+                  Navigator.pop(context, selectedDateTime);
                 },
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,

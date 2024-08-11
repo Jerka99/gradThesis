@@ -7,17 +7,17 @@ import '../../myMap/address_class.dart';
 
 class FromToDisplay extends StatefulWidget {
   List<AddressClass> addressesList;
-  final DateTime? dateTime;
+  DateTime? dateTime;
   bool displayMore;
-  bool displayCalendar;
   Function? expandButton;
+  Function(DateTime) setDateTime;
 
   FromToDisplay(
       {required this.addressesList,
       required this.dateTime,
       this.displayMore = true,
-      this.displayCalendar = true,
       this.expandButton,
+      required this.setDateTime,
       super.key});
 
   @override
@@ -138,7 +138,7 @@ class _FromToDisplayState extends State<FromToDisplay> {
                     child: Padding(
                       padding: const EdgeInsets.all(2.0),
                       child: Text(
-                        "${value.fullAddress} ${value.city}" ?? "-",
+                        "${value.fullAddress ?? "-"} ${value.city ?? "-"}",
                         style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 13),
                       ),
@@ -240,14 +240,19 @@ class _FromToDisplayState extends State<FromToDisplay> {
                   const SizedBox(
                     width: 20,
                   ),
-                  if (widget.displayCalendar)
+                  if (widget.expandButton == null)
                     Expanded(
                       child: Align(
                         alignment: Alignment.center,
                         child: IconButton(
                             onPressed: () async {
-                              await appViewportKey.currentState
-                                  ?.showCalendarDialog();
+                              var calendarFuture = appViewportKey.currentState
+                                  ?.showCalendarDialog(widget.dateTime);
+                              if (calendarFuture != null) {
+                                await calendarFuture.then((date) {
+                                  widget.setDateTime(date ?? widget.dateTime!);
+                                });
+                              }
                             },
                             icon: const Icon(
                               Icons.edit_calendar,

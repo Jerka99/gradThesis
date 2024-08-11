@@ -4,7 +4,7 @@ import 'package:travel_mate/myMap/address_class.dart';
 
 class MapData{
   List<LatLng> markerCoordinateList;
-  List<List<LatLng>> polylineList;
+  List<LatLng> polylineList;
   List<AddressClass> addressesList;
 
   MapData({
@@ -15,7 +15,7 @@ class MapData{
 
   MapData copyWith({
     List<LatLng>? markerCoordinateList,
-    List<List<LatLng>>? polylineList,
+    List<LatLng>? polylineList,
     List<AddressClass>? addressesList
   }){
     return MapData(
@@ -47,8 +47,6 @@ class MapData{
 
   MapData.fromJson(Map<String, dynamic> json)
       : markerCoordinateList = (json['markerCoordinateList'] as List).map((item) => LatLng.fromJson(item)).toList(),
-        polylineList = (json['polylineList'] as List)
-            .map((item) => (item as List)
-            .map((subItem) => LatLng.fromJson(subItem)).toList()).toList(),
+        polylineList = (json['polylineList'] as List).map((item) => LatLng.fromJson(item)).toList(),
         addressesList = (json['addressesList'] as List).map((item) => AddressClass.fromJson(item)).toList();
 }

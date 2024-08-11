@@ -1,5 +1,6 @@
 import 'package:async_redux/async_redux.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:travel_mate/myMap/address_class.dart';
 import 'package:travel_mate/myMap/fetch_location_action.dart';
 
@@ -12,52 +13,18 @@ class Factory extends VmFactory<AppState, HomeConnector, ViewModel> {
   @override
    ViewModel fromStore() =>
      ViewModel(
-      addressesList: state.mapData!.addressesList,
-      addAddress: (AddressClass address) {
-         dispatch(MapActionAddressesManager(address));
-       },
-      role: state.user.role,
-      dateTime: state.dateTime,
          fetchLocation: () {
            dispatch(FetchLocationAction());
          },
-    );
+     );
 }
 
 class ViewModel extends Vm{
-
-  final List<AddressClass> addressesList;
-  Function(AddressClass) addAddress;
-  UserRole? role;
-  DateTime? dateTime;
   Function() fetchLocation;
 
   ViewModel({
-    required this.addressesList,
-    required this.addAddress,
-    this.role,
-    this.dateTime,
-    required this.fetchLocation
+    required this.fetchLocation,
   });
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      super == other &&
-          other is ViewModel &&
-          runtimeType == other.runtimeType &&
-          addressesList == other.addressesList &&
-          addAddress == other.addAddress &&
-          role == other.role &&
-          dateTime == other.dateTime;
-
-  @override
-  int get hashCode =>
-      super.hashCode ^
-      addressesList.hashCode ^
-      addAddress.hashCode ^
-      role.hashCode ^
-      dateTime.hashCode;
 }
 
 
@@ -74,11 +41,7 @@ class HomeConnector extends StatelessWidget{
       builder: (BuildContext context, ViewModel vm) {
 
         return HomePage(
-            addressesList: vm.addressesList,
-            addAddress: vm.addAddress,
-            role: vm.role,
-            dateTime: vm.dateTime,
-          fetchLocation: vm.fetchLocation,
+            fetchLocation: vm.fetchLocation,
         );},
     );
   }

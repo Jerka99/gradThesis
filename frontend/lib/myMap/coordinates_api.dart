@@ -15,13 +15,16 @@ class ResponseData {
   ResponseData(this.coordinates, this.distance, this.duration);
 }
 
-Future<ResponseData?> fetchCoordinates(startPoint, endPoint, callback) async {
+Future<ResponseData?> fetchCoordinates(markerCoordinateList) async {
+  if(markerCoordinateList.length == 1){
+    markerCoordinateList.add(markerCoordinateList[0]);
+  }
+  var jsonBody = jsonEncode({'coordinates': markerCoordinateList});
   try {
-    callback(true);
     var response = await http.post(Uri.parse(
         AppConstants.directionsUrl,
     ),
-      body: '{"coordinates":[[$startPoint],[$endPoint]]}',
+        body: jsonBody,
       headers: <String, String>{
         'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
         'Content-Type': 'application/json; charset=utf-8',
@@ -49,57 +52,44 @@ Future<ResponseData?> fetchCoordinates(startPoint, endPoint, callback) async {
     return responseData;
   } catch (e) {
     print("error -> $e");
-  } finally {
-    callback(false);
   }
   return null;
 }
 
-List<AddressClass> endpointsToBeFetched = [];
+List<LatLng> endpointsToBeFetched = [];
+List<AddressClass> addressesList = [];
 bool isFetching = false;
 
 Future<void> fetchAddressName(
-    Coordinate endPoint,
-    DataBetweenTwoAddresses dataBetweenTwoAddresses,
-    bool boolean,
-    void Function(AddressClass) callback,
-    int stationNumber) async {
-  if (boolean) {
-    AddressClass coordinateAndData =
-    AddressClass(coordinates: endPoint, fullAddress: null, city: null, dataBetweenTwoAddresses: dataBetweenTwoAddresses);
-    endpointsToBeFetched.add(coordinateAndData);
-  }
-
-  if (!isFetching && endpointsToBeFetched.isNotEmpty) {
-    isFetching = true;
-    while (endpointsToBeFetched.isNotEmpty) {
-      AddressClass firstElement = endpointsToBeFetched.first;
+    LatLng markerCoordinate,
+    stationNumber,
+    callback
+) async {
       try {
         await NominatimGeocoding.init();
         Geocoding address =
             await NominatimGeocoding.to.reverseGeoCoding(Coordinate(
-          latitude: firstElement.coordinates!.latitude,
-          longitude: firstElement.coordinates!.longitude,
+          latitude: markerCoordinate.latitude,
+          longitude: markerCoordinate.longitude,
         ));
-        await createAddressObject(address, callback, firstElement, stationNumber);
+         await createAddressObject(address, stationNumber, callback);
+
       } catch (error) {
         print("error fetching location name");
         if (error.toString() ==
             "Expected a value of type 'Geocoding', but got one of type 'String'") {
-          await createAddressObject(null, callback, firstElement, stationNumber);
+            await createAddressObject(null, stationNumber, callback);
         }
         if (error.toString() ==
             "Exception: can not sent more than 1 request per second") {
           print("Exception: can not sent more than 1 request per second");
           await Future.delayed(const Duration(milliseconds: 2000));
+          fetchAddressName(markerCoordinate, stationNumber, callback);
         }
       }
-    }
-    isFetching = false;
-  }
 }
 
-Future<void> createAddressObject(address, callback, firstElement, stationNumber) async {
+Future<void> createAddressObject(address, stationNumber, callback) async {
   String fullAddress = address != null
       ? address?.address.road == "" ? "Station $stationNumber" : "${address?.address.road} ${address?.address.houseNumber}"
       : "No data for this country";
@@ -111,8 +101,7 @@ Future<void> createAddressObject(address, callback, firstElement, stationNumber)
               : address.address.district)
           : address.address.city;
 
-  AddressClass addressClass =
-  AddressClass(fullAddress: fullAddress, city: cityOrDistrict, dataBetweenTwoAddresses: firstElement.dataBetweenTwoAddresses);
-  endpointsToBeFetched.removeAt(0);
-  callback(addressClass);
+  AddressClass newAddress =
+  AddressClass(fullAddress: fullAddress, city: cityOrDistrict);
+  callback(newAddress);
 }

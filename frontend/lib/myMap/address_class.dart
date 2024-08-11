@@ -1,5 +1,3 @@
-import 'package:latlong2/latlong.dart';
-import 'package:nominatim_geocoding/nominatim_geocoding.dart';
 
 class DataBetweenTwoAddresses{
   double duration;
@@ -18,20 +16,17 @@ class DataBetweenTwoAddresses{
 }
 
 class AddressClass{
-  Coordinate? coordinates;
   String? fullAddress;
   String? city;
   DataBetweenTwoAddresses? dataBetweenTwoAddresses;
 
   AddressClass({
-    this.coordinates,
     this.fullAddress,
     this.city,
     this.dataBetweenTwoAddresses,
   });
 
   Map<String, dynamic> toJson() => {
-    'coordinates': coordinates,
     'fullAddress': fullAddress,
     'city': city,
     'dataBetweenTwoAddresses': dataBetweenTwoAddresses,

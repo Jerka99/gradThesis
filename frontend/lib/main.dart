@@ -3,10 +3,10 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:travel_mate/appBar/customBar_connector.dart';
-import 'package:travel_mate/calendar/calendar_connector.dart';
 import 'package:travel_mate/pages/auth/auth_action.dart';
 import 'package:travel_mate/redux/myStateObserver.dart';
 import 'app_state.dart';
+import 'calendar/Calendar.dart';
 import 'navigation/my_route_information_parser.dart';
 import 'navigation/my_router_delegate.dart';
 
@@ -120,11 +120,11 @@ class AppViewportState extends State<AppViewport> {
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 
-  Future<DateTime?>? showCalendarDialog() {
+  Future<DateTime?>? showCalendarDialog(dateTime) {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const CalendarConnector();
+        return Calendar(dateTime: dateTime,);
       },
     ).then((selectedDateTime) {
       if (selectedDateTime != null) {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travel_mate/myMap/all_rides_list.dart';
-import 'package:travel_mate/myMap/myMap.dart';
+import 'package:travel_mate/myMap/map_and_display_connector.dart';
+import 'package:travel_mate/myMap/my_map.dart';
 import 'package:travel_mate/pages/display/from_to_display.dart';
 
 class AllRidesPage extends StatefulWidget {
@@ -30,49 +31,28 @@ class _AllRidesPageState extends State<AllRidesPage> {
         itemCount: widget.allRidesList.listOfRides.length,
         itemBuilder: (context, index) {
           bool isExpanded = expandedIndex == index;
-          return Column(
-            children: [
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                height: isExpanded ? 300 : 0,
-                child: ClipRect(// removes unnecessary border from MyMap widget when its collapsed
-                  child: MyMap(
-                    markerCoordinateList: widget
-                        .allRidesList.listOfRides[index].markerCoordinateList,
-                    polylineList:
-                        widget.allRidesList.listOfRides[index].polylineList,
-                    currentUserLocation: widget
-                        .allRidesList.listOfRides[index].markerCoordinateList.first,
-                  ),
-                ),
-              ),
-              const SizedBox(
-                height: 12,
-              ),
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                height: isExpanded ? 300 : 152,
-                color: Colors.white,
-                child: FromToDisplay(
-                  addressesList:
-                      widget.allRidesList.listOfRides[index].addressesList,
-                  dateTime: epochToDataTime(widget
-                      .allRidesList
-                      .listOfRides[index]
-                      .addressesList[0]
-                      .dataBetweenTwoAddresses!
-                      .duration),
-                  displayMore: isExpanded,
-                  displayCalendar: false,
-                  expandButton: () => setState(() {
-                    isExpanded ? expandedIndex = null : expandedIndex = index;
-                  }),
-                ),
-              ),
-              const SizedBox(
-                height: 50,
-              )
-            ],
+          return Container(
+            margin: const EdgeInsets.only(bottom: 50),
+            height: 700,
+            child: MapAndDisplayConnector(
+              markerCoordinateList: widget
+                  .allRidesList.listOfRides[index].markerCoordinateList,
+              polylineList:
+              widget.allRidesList.listOfRides[index].polylineList,
+              currentUserLocation: widget
+                  .allRidesList.listOfRides[index].markerCoordinateList.first,
+              addressesList: widget.allRidesList.listOfRides[index].addressesList,
+              dateTime: epochToDataTime(widget
+                  .allRidesList
+                  .listOfRides[index]
+                  .addressesList[0]
+                  .dataBetweenTwoAddresses!
+                  .duration),
+              expandButton: () => setState(() {
+                isExpanded ? expandedIndex = null : expandedIndex = index;
+              }),
+              isExpanded: isExpanded,
+            ),
           );
         });
   }

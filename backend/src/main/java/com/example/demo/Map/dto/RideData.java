@@ -14,5 +14,5 @@ import java.util.List;
 public class RideData {
     private List<AddressClass> addressesList;
     private List<LatLng> markerCoordinateList;
-    private List<List<LatLng>> polylineList;
+    private List<LatLng> polylineList;
 }

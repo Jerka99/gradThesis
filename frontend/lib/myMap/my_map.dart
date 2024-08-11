@@ -7,25 +7,25 @@ import 'package:travel_mate/user_role.dart';
 import 'marker_and_polyline.dart';
 
 class MyMap extends StatefulWidget {
-  final List<LatLng> markerCoordinateList;
-  final List<List<LatLng>> polylineList;
-  final Function()? saveMapData;
-  final Function(int)? removeLastMarkerFun;
-  final Function(LatLng)? addMapData;
+  final List<LatLng>? markerCoordinateList;
+  final List<LatLng>? polylineList;
+  final Function() saveMapData;
   final UserRole? userRole;
   final bool enableScrollWheel;
   final LatLng? currentUserLocation;
+  final Function(LatLng)? addMarker;
+  final Function(int index)? removeMarker;
 
   const MyMap({
     super.key,
-    required this.markerCoordinateList,
-    required this.polylineList,
-    this.saveMapData,
-    this.addMapData,
-    this.removeLastMarkerFun,
+    this.markerCoordinateList,
+    this.polylineList,
+    required this.saveMapData,
     this.userRole,
     this.enableScrollWheel = false,
     required this.currentUserLocation,
+    this.addMarker,
+    this.removeMarker,
   });
 
   @override
@@ -35,16 +35,22 @@ class MyMap extends StatefulWidget {
 class _MyMap extends State<MyMap> {
   late bool enableScrollWheel;
   final MapController _mapController = MapController();
+  late List<LatLng> markerCoordinateList;
+  late List<LatLng> polylineList;
 
   @override
   void initState() {
     super.initState();
+    markerCoordinateList = widget.markerCoordinateList ?? <LatLng>[];
+    polylineList = widget.polylineList ?? [];
     enableScrollWheel = widget.enableScrollWheel;
   }
 
   @override
   void didUpdateWidget(MyMap oldWidget) {
     super.didUpdateWidget(oldWidget);
+    markerCoordinateList = widget.markerCoordinateList ?? <LatLng>[];
+    polylineList = widget.polylineList ?? [];
     if (widget.currentUserLocation != oldWidget.currentUserLocation) {
         _mapController.move(widget.currentUserLocation!, 13.0);
     }
@@ -53,8 +59,6 @@ class _MyMap extends State<MyMap> {
 
   @override
   Widget build(BuildContext context) {
-    List<LatLng> markerCoordinateList = widget.markerCoordinateList;
-    List<List<LatLng>> polylineList = widget.polylineList;
 
     return Column(
       children: [
@@ -67,9 +71,7 @@ class _MyMap extends State<MyMap> {
                 options: MapOptions(
                   enableScrollWheel: enableScrollWheel,
                     onTap: (pos, latLng) {
-                      if (widget.addMapData != null) {
-                        widget.addMapData!(latLng);
-                      }
+                      widget.addMarker!(latLng);
                       setState(() {
                         enableScrollWheel = true;
                       });
@@ -87,9 +89,7 @@ class _MyMap extends State<MyMap> {
                     userAgentPackageName: 'com.example.app',
                   ),
                   PolylineLayer(
-                    polylines: polylineList
-                        .map((points) => polylineFun(points))
-                        .toList(),
+                    polylines: [polylineFun(polylineList)],
                   ),
                   MarkerLayer(
                       markers: markerCoordinateList
@@ -98,27 +98,19 @@ class _MyMap extends State<MyMap> {
                           .map((markerCoordinate) => markerDisplayFun(
                                   markerCoordinate.value,
                                   markerCoordinate.key,
-                                  markerCoordinateList.length, () {
-                                if (markerCoordinateList.length - 1 ==
-                                    markerCoordinate.key) {
-                                  if (widget.removeLastMarkerFun != null) {
-                                    widget.removeLastMarkerFun!(
-                                        markerCoordinate.key);
-                                  }
-                                } else {
-                                  // widget.chooseTwoStations();
-                                  // print(markerCoordinate);
-                                }
+                                  markerCoordinateList.length,
+                                  () {
+                                    widget.removeMarker!(markerCoordinate.key);
                               }))
                           .toList()),
                   Align(
                       alignment: Alignment.bottomRight,
                       child: Container(
-                          margin: EdgeInsets.all(5.0),
+                          margin: const EdgeInsets.all(5.0),
                           child: FloatingActionButton(
                               backgroundColor: Colors.blue,
                               onPressed: () {
-                                  widget.saveMapData!();
+                                  widget.saveMapData();
                               },
                               child: const Text(
                                 "Save",

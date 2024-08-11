@@ -84,9 +84,7 @@ public class RidesService {
         List<List<Double>> markerPoints = new ArrayList<>();
         List<LatLng> polyline = new ArrayList<>();
 
-        markerPoints = ridesTableList.stream().map(el -> {
-            return List.of(el.getLatitude(), el.getLongitude());
-                }
+        markerPoints = ridesTableList.stream().map(el -> List.of(el.getLatitude(), el.getLongitude())
         ).toList();
 
         String apiUrl = "https://api.openrouteservice.org/v2/directions/driving-car/geojson";
@@ -136,7 +134,7 @@ public class RidesService {
                     addressesList.add(new AddressClass(el.getFullAddress(), el.getCity(), el.getDataBetweenTwoAddresses()));
                 }
         );
-        return new RideData(addressesList, markerCoordinateList, List.of(polyline));
+        return new RideData(addressesList, markerCoordinateList, polyline);
     }
 
     private static RidesTable dataMapper(User user, LatLng markersCoordinates, AddressClass addressData, int sequence, RideNum newRide) {

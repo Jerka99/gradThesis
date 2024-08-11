@@ -33,7 +33,7 @@ Marker markerDisplayFun(coordinate, index, markersNumber, delete) {
                 Container(
                   padding: const EdgeInsets.only(top: 12),
                   child: Text(
-                    index.toString(),
+                    (index + 1).toString(),
                     style: const TextStyle(
                         color: Colors.white
                     ),

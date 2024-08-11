@@ -22,8 +22,9 @@ class FetchLocationAction extends ReduxAction<AppState> {
       return null;
     }
     finally{
-      Navigator.of(appViewportKey.currentState!.context).pop();
+      if(appViewportKey.currentState!.context.mounted) Navigator.of(appViewportKey.currentState!.context).pop();
     }
   }
+    return null;
   }
 }
