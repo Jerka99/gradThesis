@@ -74,9 +74,9 @@ class MainApiClass {
     List<MapData> mapDataList = [];
     if (response.statusCode == 200) {
       List<dynamic> decoded = jsonDecode(response.body);
-      decoded.forEach((element) {
+      for (var element in decoded) {
         mapDataList.add(MapData.fromJson(element));
-      });
+      }
     }
     return mapDataList;
   }

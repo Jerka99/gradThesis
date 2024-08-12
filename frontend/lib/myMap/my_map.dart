@@ -52,76 +52,67 @@ class _MyMap extends State<MyMap> {
     markerCoordinateList = widget.markerCoordinateList ?? <LatLng>[];
     polylineList = widget.polylineList ?? [];
     if (widget.currentUserLocation != oldWidget.currentUserLocation) {
-        _mapController.move(widget.currentUserLocation!, 13.0);
+      _mapController.move(widget.currentUserLocation!, 13.0);
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
-
-    return Column(
-      children: [
-        Expanded(
-          child: Container(
-              decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black, width: 1.0)),
-              child: FlutterMap(
-                mapController: _mapController,
-                options: MapOptions(
-                  enableScrollWheel: enableScrollWheel,
-                    onTap: (pos, latLng) {
-                      widget.addMarker!(latLng);
-                      setState(() {
-                        enableScrollWheel = true;
-                      });
-                    },
-                    center: widget.currentUserLocation,
-                    zoom: 13,
-                    maxZoom: 18,
-                    minZoom: 1,
-                    interactiveFlags:
-                        InteractiveFlag.pinchZoom | InteractiveFlag.drag),
-                children: [
-                  TileLayer(
-                    urlTemplate:
-                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                    userAgentPackageName: 'com.example.app',
-                  ),
-                  PolylineLayer(
-                    polylines: [polylineFun(polylineList)],
-                  ),
-                  MarkerLayer(
-                      markers: markerCoordinateList
-                          .asMap()
-                          .entries
-                          .map((markerCoordinate) => markerDisplayFun(
-                                  markerCoordinate.value,
-                                  markerCoordinate.key,
-                                  markerCoordinateList.length,
-                                  () {
-                                    widget.removeMarker!(markerCoordinate.key);
-                              }))
-                          .toList()),
-                  Align(
-                      alignment: Alignment.bottomRight,
-                      child: Container(
-                          margin: const EdgeInsets.all(5.0),
-                          child: FloatingActionButton(
-                              backgroundColor: Colors.blue,
-                              onPressed: () {
-                                  widget.saveMapData();
-                              },
-                              child: const Text(
-                                "Save",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              ))))
-                ],
-              )),
-        ),
-      ],
-    );
+    return Container(
+        decoration: BoxDecoration(
+            border: Border.all(color: Colors.black, width: 1.0)),
+        child: FlutterMap(
+          mapController: _mapController,
+          options: MapOptions(
+              enableScrollWheel: enableScrollWheel,
+              onTap: (pos, latLng) {
+                widget.addMarker!(latLng);
+                setState(() {
+                  enableScrollWheel = true;
+                });
+              },
+              center: widget.currentUserLocation,
+              zoom: 13,
+              maxZoom: 18,
+              minZoom: 1,
+              interactiveFlags:
+                  InteractiveFlag.pinchZoom | InteractiveFlag.drag),
+          children: [
+            TileLayer(
+              urlTemplate:
+                  'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+              userAgentPackageName: 'com.example.app',
+            ),
+            PolylineLayer(
+              polylines: [polylineFun(polylineList)],
+            ),
+            MarkerLayer(
+                markers: markerCoordinateList
+                    .asMap()
+                    .entries
+                    .map((markerCoordinate) => markerDisplayFun(
+                            markerCoordinate.value,
+                            markerCoordinate.key,
+                            markerCoordinateList.length, () {
+                          widget.removeMarker!(markerCoordinate.key);
+                        }))
+                    .toList()),
+            Align(
+                alignment: Alignment.bottomRight,
+                child: Container(
+                    margin: const EdgeInsets.all(5.0),
+                    child: FloatingActionButton(
+                        backgroundColor: Colors.blue,
+                        onPressed: () {
+                          widget.saveMapData();
+                        },
+                        child: const Text(
+                          "Save",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold),
+                        ))))
+          ],
+        ));
   }
 }

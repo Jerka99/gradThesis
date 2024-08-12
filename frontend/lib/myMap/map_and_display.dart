@@ -18,17 +18,17 @@ class MapAndDisplay extends StatefulWidget {
   bool? isExpanded;
   Function? expandButton;
 
-  MapAndDisplay({
-    this.markerCoordinateList,
-    this.polylineList,
-    this.currentUserLocation,
-    this.addressesList,
-    required this.saveMapData,
-    required this.role,
-    this.dateTime,
-    this.isExpanded,
-    this.expandButton,
-    super.key});
+  MapAndDisplay(
+      {this.markerCoordinateList,
+      this.polylineList,
+      this.currentUserLocation,
+      this.addressesList,
+      required this.saveMapData,
+      required this.role,
+      this.dateTime,
+      this.isExpanded,
+      this.expandButton,
+      super.key});
 
   @override
   State<MapAndDisplay> createState() => _MapAndDisplayState();
@@ -53,7 +53,6 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
     addressClassList = widget.addressesList ?? [];
   }
 
-
   @override
   Widget build(BuildContext context) {
     void getAddressData() async {
@@ -64,15 +63,18 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
           int indexToUpdate = addressClassList
               .indexWhere((address) => address.fullAddress == "loading");
 
-          if (indexToUpdate == -1) break; // Exit loop if no "loading" address is found
+          if (indexToUpdate == -1)
+            break; // Exit loop if no "loading" address is found
 
           await Future.delayed(const Duration(milliseconds: 2000));
-          await fetchAddressName(markerCoordinateList[indexToUpdate], indexToUpdate, (newAddress) {
-                setState(() {
-                  addressClassList[indexToUpdate].fullAddress = newAddress.fullAddress;
-                  addressClassList[indexToUpdate].city = newAddress.city;
-                });
-              });
+          await fetchAddressName(
+              markerCoordinateList[indexToUpdate], indexToUpdate, (newAddress) {
+            setState(() {
+              addressClassList[indexToUpdate].fullAddress =
+                  newAddress.fullAddress;
+              addressClassList[indexToUpdate].city = newAddress.city;
+            });
+          });
         }
         whileLoopTriggered = false; // Reset the flag once the loop completes
       }
@@ -83,11 +85,11 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
           .map((marker) => [marker.longitude, marker.latitude])
           .toList();
       ResponseData? fetchedPolylineCoordinates =
-      await fetchCoordinates(mappedCoordinateList);
+          await fetchCoordinates(mappedCoordinateList);
       if (fetchedPolylineCoordinates != null) {
         DataBetweenTwoAddresses dataBetweenTwoAddresses =
-        DataBetweenTwoAddresses(fetchedPolylineCoordinates.duration,
-            fetchedPolylineCoordinates.distance);
+            DataBetweenTwoAddresses(fetchedPolylineCoordinates.duration,
+                fetchedPolylineCoordinates.distance);
         setState(() {
           polylineList = fetchedPolylineCoordinates.coordinates;
           if (!deleting) {
@@ -124,54 +126,45 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
       }
     }
 
-
-    return LayoutBuilder(builder: (context, constraint) {
-      return SingleChildScrollView(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(minHeight: constraint.maxHeight),
-          child: IntrinsicHeight(
-            child: Container(
-              height: constraint.minHeight,
-              constraints: const BoxConstraints(
-                minHeight: 700.0,
-              ),
-              width: double.maxFinite,
-              child: Column(children: [
-              AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-                  height: widget.isExpanded == null ? 400 : widget.isExpanded! ? 300 : 0,
-                child: ClipRect(// removes unnecessary border from MyMap widget when its collapsed
-                    child: MyMap(
-                      userRole: widget.role,
-                      markerCoordinateList: markerCoordinateList,
-                      polylineList: polylineList,
-                      addMarker: addMarker,
-                      removeMarker: removeMarker,
-                      saveMapData: () {
-                        if(!whileLoopTriggered) widget.saveMapData(addressClassList, markerCoordinateList, dateTime!);
-                      },
-                      currentUserLocation: widget.currentUserLocation,))
-              ),
-                SizedBox(
-                  child: Container(
-                    height: 10,
-                  ),
-                ),
-                Expanded(
-                  child: FromToDisplay(
-                    addressesList: addressClassList,
-                    dateTime: dateTime,
-                    setDateTime: (date) => setState((){
-                      dateTime = date;
-                    }),
-                    expandButton: widget.expandButton,
-                  ),
-                )
-              ]),
-            ),
-          ),
+    return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+      AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          height: widget.isExpanded == null ? 400 : widget.isExpanded! ? 300 : 0,
+          child: ClipRect(
+              // removes unnecessary border from MyMap widget when its collapsed
+              child: MyMap(
+            userRole: widget.role,
+            markerCoordinateList: markerCoordinateList,
+            polylineList: polylineList,
+            addMarker: addMarker,
+            removeMarker: removeMarker,
+            saveMapData: () {
+              if (!whileLoopTriggered) {
+                widget.saveMapData(
+                    addressClassList, markerCoordinateList, dateTime!);
+              }
+            },
+            currentUserLocation: widget.currentUserLocation,
+          ))
+      ),
+      SizedBox(
+        child: Container(
+          height: 10,
         ),
-      );
-    });
+      ),
+      Expanded(
+        child: FromToDisplay(
+          addressesList: addressClassList,
+          dateTime: dateTime,
+          setDateTime: (date) => setState(() {
+            dateTime = date;
+          }),
+          expandButton: widget.expandButton,
+          displayMore: widget.isExpanded ?? true,
+        ),
+      )
+    ]);
   }
 }

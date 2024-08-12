@@ -31,9 +31,10 @@ class _AllRidesPageState extends State<AllRidesPage> {
         itemCount: widget.allRidesList.listOfRides.length,
         itemBuilder: (context, index) {
           bool isExpanded = expandedIndex == index;
-          return Container(
+          return AnimatedContainer(
+            duration: Duration(milliseconds: 300),
             margin: const EdgeInsets.only(bottom: 50),
-            height: 700,
+            height: isExpanded ? 700 : 162,
             child: MapAndDisplayConnector(
               markerCoordinateList: widget
                   .allRidesList.listOfRides[index].markerCoordinateList,

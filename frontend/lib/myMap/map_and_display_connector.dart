@@ -71,7 +71,7 @@ class MapAndDisplayConnector extends StatelessWidget{
   List<AddressClass>? addressesList;
   DateTime? dateTime;
   Function? expandButton;
-  bool isExpanded;
+  bool? isExpanded;
 
   MapAndDisplayConnector({
     this.polylineList,
@@ -80,7 +80,7 @@ class MapAndDisplayConnector extends StatelessWidget{
     this.addressesList,
     this.dateTime,
     this.expandButton,
-    this.isExpanded = true,
+    this.isExpanded,
     super.key});
 
   @override
