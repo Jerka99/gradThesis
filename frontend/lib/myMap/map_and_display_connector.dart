@@ -72,6 +72,8 @@ class MapAndDisplayConnector extends StatelessWidget{
   DateTime? dateTime;
   Function? expandButton;
   bool? isExpanded;
+  bool enableScrollWheel;
+  bool editingAllowed;
 
   MapAndDisplayConnector({
     this.polylineList,
@@ -81,6 +83,8 @@ class MapAndDisplayConnector extends StatelessWidget{
     this.dateTime,
     this.expandButton,
     this.isExpanded,
+    this.enableScrollWheel = true,
+    this.editingAllowed = true,
     super.key});
 
   @override
@@ -100,6 +104,8 @@ class MapAndDisplayConnector extends StatelessWidget{
             dateTime: dateTime,
             expandButton: expandButton,
             isExpanded: isExpanded,
+            enableScrollWheel: enableScrollWheel,
+            editingAllowed: editingAllowed,
         );},
     );
   }

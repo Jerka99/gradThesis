@@ -3,7 +3,7 @@ import 'package:flutter_map/flutter_map.dart';
 
 import '../shape/TriangleClipper.dart';
 
-Marker markerDisplayFun(coordinate, index, markersNumber, delete) {
+Marker  markerDisplayFun(coordinate, index, markersNumber, deleteOrSelectFunction, selectedMarkerIndex1, selectedMarkerIndex2) {
 
   return Marker(
       point: coordinate,
@@ -24,11 +24,10 @@ Marker markerDisplayFun(coordinate, index, markersNumber, delete) {
                 Icon(
                   Icons.location_on,
                   size: 50.0,
-                  color: index == markersNumber -1 ? Colors.indigo[400]
-                      : Colors.red,
-                  shadows: index == markersNumber -1 ? [const Shadow
-                    (color:
-                  Colors.red, blurRadius: 6.0)] : null,
+                  color: (index == selectedMarkerIndex1 || index == selectedMarkerIndex2 || ((selectedMarkerIndex2 != null && selectedMarkerIndex1 != null) && (index < selectedMarkerIndex2 && index > selectedMarkerIndex1)))
+                      ? Colors.green
+                      : (index == markersNumber - 1 ? Colors.indigo[400] : Colors.red),
+                  shadows: index == markersNumber - 1 ? [const Shadow(color: Colors.red, blurRadius: 6.0)] : null,
                 ),
                 Container(
                   padding: const EdgeInsets.only(top: 12),
@@ -43,7 +42,7 @@ Marker markerDisplayFun(coordinate, index, markersNumber, delete) {
               ],
             ),
             onPressed: () {
-              delete();
+              deleteOrSelectFunction(index);
             },
           ),
         ),

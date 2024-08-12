@@ -19,7 +19,9 @@ class FetchLocationAction extends ReduxAction<AppState> {
         );
     } catch (e) {
       appViewportKey.currentState?.informUser('Failed to get location: $e', Colors.red);
-      return null;
+      return state.copy(
+        currentUserLocation: LatLng(43.514052, 16.462383),
+      );
     }
     finally{
       if(appViewportKey.currentState!.context.mounted) Navigator.of(appViewportKey.currentState!.context).pop();

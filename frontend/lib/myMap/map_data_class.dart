@@ -47,6 +47,6 @@ class MapData{
 
   MapData.fromJson(Map<String, dynamic> json)
       : markerCoordinateList = (json['markerCoordinateList'] as List).map((item) => LatLng.fromJson(item)).toList(),
-        polylineList = (json['polylineList'] as List).map((item) => LatLng.fromJson(item)).toList(),
+        polylineList = [],
         addressesList = (json['addressesList'] as List).map((item) => AddressClass.fromJson(item)).toList();
 }

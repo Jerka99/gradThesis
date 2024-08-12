@@ -8,11 +8,9 @@ import 'package:travel_mate/navigation/navigation_action.dart';
 import 'package:travel_mate/pages/auth/TokenDto.dart';
 import 'package:travel_mate/pages/auth/auth_dto.dart';
 import 'package:travel_mate/pages/auth/response_handler_dto.dart';
-
-import '../../StoreSecurity.dart';
-import '../../myMap/all_rides_list.dart';
-import '../../myMap/fetch_location_action.dart';
-import '../../myMap/map_data_class.dart';
+import 'package:travel_mate/StoreSecurity.dart';
+import 'package:travel_mate/myMap/all_rides_list.dart';
+import 'package:travel_mate/myMap/map_data_class.dart';
 
 class LoginAction extends ReduxAction<AppState> {
   AuthDto? authDto;

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:travel_mate/myMap/all_rides_list.dart';
 import 'package:travel_mate/myMap/map_and_display_connector.dart';
-import 'package:travel_mate/myMap/my_map.dart';
-import 'package:travel_mate/pages/display/from_to_display.dart';
+
+import '../../myMap/coordinates_api.dart';
 
 class AllRidesPage extends StatefulWidget {
   Function fetchAllRides;
@@ -17,6 +19,7 @@ class AllRidesPage extends StatefulWidget {
 
 class _AllRidesPageState extends State<AllRidesPage> {
   int? expandedIndex;
+  List<List<LatLng>> allPolylineLists = [];
 
   @override
   void initState() {
@@ -53,6 +56,8 @@ class _AllRidesPageState extends State<AllRidesPage> {
                 isExpanded ? expandedIndex = null : expandedIndex = index;
               }),
               isExpanded: isExpanded,
+              enableScrollWheel: false,
+              editingAllowed: false,
             ),
           );
         });

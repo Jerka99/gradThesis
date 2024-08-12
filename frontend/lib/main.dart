@@ -3,6 +3,7 @@ import 'package:async_redux/async_redux.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:travel_mate/appBar/customBar_connector.dart';
+import 'package:travel_mate/main_api.dart';
 import 'package:travel_mate/pages/auth/auth_action.dart';
 import 'package:travel_mate/redux/myStateObserver.dart';
 import 'app_state.dart';
@@ -42,13 +43,13 @@ class MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
   void initState() {
     super.initState();
     _routeDelegate = widget.store.state.routerDelegate;
-    widget.store.dispatch(LoginAction());
     Future.microtask(() async {
       await widget.store.dispatch(LoginAction());
       setState(() {
         loading = false;
       });
     });
+    // MainApiClass.initializePlatform(widget.store.state.platformDto);
     navigatorKey = GlobalKey<NavigatorState>();
   }
 

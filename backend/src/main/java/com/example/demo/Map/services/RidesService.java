@@ -81,51 +81,6 @@ public class RidesService {
 
     private RideData RideDataMapper(List<RidesTable> ridesTableList) {
         List<AddressClass> addressesList = new ArrayList<>();
-        List<List<Double>> markerPoints = new ArrayList<>();
-        List<LatLng> polyline = new ArrayList<>();
-
-        markerPoints = ridesTableList.stream().map(el -> List.of(el.getLatitude(), el.getLongitude())
-        ).toList();
-
-        String apiUrl = "https://api.openrouteservice.org/v2/directions/driving-car/geojson";
-
-        Map<String, Object> payload = Map.of(
-                "coordinates", markerPoints
-        );
-
-        try {
-            WebClient webClient = webClientBuilder.build();
-            ResponseEntity<String> response = webClient.post()
-                    .uri(apiUrl)
-                    .header("Authorization", "5b3ce3597851110001cf62487adb1559612143eda0724256da26f388")
-                    .accept(MediaType.APPLICATION_JSON, MediaType.valueOf("application/geo+json"))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(payload)
-                    .retrieve()
-                    .toEntity(String.class)
-                    .block();
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode data = objectMapper.readTree(response.getBody());
-
-            if (data.has("error") && data.get("error").get("code").asInt() == 2010) {
-                throw new RuntimeException(data.get("error").get("message").asText());
-            }
-
-            JsonNode coordinatesNode = data.get("features").get(0).get("geometry").get("coordinates");
-
-            for (JsonNode coordinate : coordinatesNode) {
-                List<Double> point = new ArrayList<>();
-                point.add(coordinate.get(0).asDouble());
-                point.add(coordinate.get(1).asDouble());
-                polyline.add(new LatLng(point));
-            }
-        }
-        catch (Exception e) {
-            System.err.println("An error occurred while processing the ride data: " + e.getMessage());
-            e.printStackTrace();
-        }
-
 
         List<LatLng> markerCoordinateList = new ArrayList<>();
         ridesTableList.forEach(el -> {
@@ -134,7 +89,7 @@ public class RidesService {
                     addressesList.add(new AddressClass(el.getFullAddress(), el.getCity(), el.getDataBetweenTwoAddresses()));
                 }
         );
-        return new RideData(addressesList, markerCoordinateList, polyline);
+        return new RideData(addressesList, markerCoordinateList);
     }
 
     private static RidesTable dataMapper(User user, LatLng markersCoordinates, AddressClass addressData, int sequence, RideNum newRide) {

@@ -17,6 +17,8 @@ class MapAndDisplay extends StatefulWidget {
   DateTime? dateTime;
   bool? isExpanded;
   Function? expandButton;
+  bool enableScrollWheel;
+  bool editingAllowed;
 
   MapAndDisplay(
       {this.markerCoordinateList,
@@ -28,6 +30,8 @@ class MapAndDisplay extends StatefulWidget {
       this.dateTime,
       this.isExpanded,
       this.expandButton,
+      required this.enableScrollWheel,
+      required this.editingAllowed,
       super.key});
 
   @override
@@ -138,8 +142,8 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
             userRole: widget.role,
             markerCoordinateList: markerCoordinateList,
             polylineList: polylineList,
-            addMarker: addMarker,
-            removeMarker: removeMarker,
+            addMarker: widget.editingAllowed ? addMarker : null,
+            removeMarker: widget.editingAllowed ? removeMarker : null,
             saveMapData: () {
               if (!whileLoopTriggered) {
                 widget.saveMapData(
@@ -147,6 +151,7 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
               }
             },
             currentUserLocation: widget.currentUserLocation,
+            enableScrollWheel: widget.enableScrollWheel,
           ))
       ),
       SizedBox(
