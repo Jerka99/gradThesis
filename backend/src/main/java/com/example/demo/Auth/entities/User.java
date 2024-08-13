@@ -39,13 +39,13 @@ public class User implements UserDetails {
     )
     private Role role;
 
-    @ManyToMany
-    @JoinTable(
-            name = "user_ride_relation", // The junction table name
-            joinColumns = @JoinColumn(name = "user_id"), // The column in the junction table that references the User entity
-            inverseJoinColumns = @JoinColumn(name = "ride_id") // The column in the junction table that references the AddressTable entity
-    )
-    private Set<RidesTable> ridesTableSet;
+//    @ManyToMany
+//    @JoinTable(
+//            name = "user_ride_relation", // The junction table name
+//            joinColumns = @JoinColumn(name = "user_id"), // The column in the junction table that references the User entity
+//            inverseJoinColumns = @JoinColumn(name = "ride_id") // The column in the junction table that references the AddressTable entity
+//    )
+//    private Set<RidesTable> ridesTableSet;
 
 
     @Override

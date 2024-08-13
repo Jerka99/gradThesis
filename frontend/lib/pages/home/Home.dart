@@ -29,6 +29,9 @@ class _HomePage extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    return MapAndDisplayConnector();
+    return Container(
+      margin: const EdgeInsets.only(
+        left: 20, right: 20, top: 10, bottom: 20),
+        child: MapAndDisplayConnector());
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:travel_mate/model.dart';
 
 import '../pages/display/from_to_display.dart';
 import '../user_role.dart';
@@ -12,26 +13,36 @@ class MapAndDisplay extends StatefulWidget {
   List<LatLng>? polylineList;
   LatLng? currentUserLocation;
   List<AddressClass>? addressesList;
-  Function(List<AddressClass>, List<LatLng>, DateTime) saveMapData;
-  UserRole? role;
+  Function(List<AddressClass>, List<LatLng>, DateTime, double)? saveMapData;
+  Function(int rideId, List<int> sequence)? saveUserRoute;
+  UserData? userData;
   DateTime? dateTime;
   bool? isExpanded;
   Function? expandButton;
   bool enableScrollWheel;
-  bool editingAllowed;
+  bool alterableRoutesMap;
+  double maxCapacity;
+  int? rideId;
+  int? selectedMarkerIndex1;
+  int? selectedMarkerIndex2;
 
   MapAndDisplay(
       {this.markerCoordinateList,
       this.polylineList,
       this.currentUserLocation,
       this.addressesList,
-      required this.saveMapData,
-      required this.role,
+      this.saveMapData,
+      this.saveUserRoute,
+      required this.userData,
       this.dateTime,
       this.isExpanded,
       this.expandButton,
       required this.enableScrollWheel,
-      required this.editingAllowed,
+      required this.alterableRoutesMap,
+      required this.maxCapacity,
+      this.rideId,
+      this.selectedMarkerIndex1,
+      this.selectedMarkerIndex2,
       super.key});
 
   @override
@@ -46,6 +57,9 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
   late List<AddressClass> addressClassList;
   bool whileLoopTriggered = false;
   late DateTime? dateTime;
+  late double maxCapacity;
+  late int? selectedMarkerIndex1;
+  late int? selectedMarkerIndex2;
 
   @override
   void initState() {
@@ -55,6 +69,9 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
     tempMarkerCoordinateList = [];
     polylineList = widget.polylineList ?? [];
     addressClassList = widget.addressesList ?? [];
+    maxCapacity = widget.maxCapacity;
+    selectedMarkerIndex1 = widget.selectedMarkerIndex1;
+    selectedMarkerIndex2 = widget.selectedMarkerIndex2;
   }
 
   @override
@@ -76,19 +93,35 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
           child: ClipRect(
               // removes unnecessary border from MyMap widget when its collapsed
               child: MyMap(
-            userRole: widget.role,
+            userRole: widget.userData?.role,
             markerCoordinateList: markerCoordinateList,
             polylineList: polylineList,
-            addMarker: widget.editingAllowed ? addMarker : null,
-            removeMarker: widget.editingAllowed ? removeMarker : null,
-            saveMapData: () {
+            addMarker: widget.alterableRoutesMap ? addMarker : null,
+            removeMarker: widget.alterableRoutesMap ? removeMarker : null,
+            floatingSaveButton: () {
+              if(widget.alterableRoutesMap){
               if (!whileLoopTriggered) {
-                widget.saveMapData(
-                    addressClassList, markerCoordinateList, dateTime!);
+                widget.saveMapData!(addressClassList, markerCoordinateList, dateTime!, maxCapacity);
+                }
+              }
+              else{
+                selectedMarkerIndex1 = selectedMarkerIndex1!+1;
+                selectedMarkerIndex2 = selectedMarkerIndex2!+1;
+                widget.saveUserRoute!(widget.rideId!, List.generate(selectedMarkerIndex2! - selectedMarkerIndex1! , (index) => selectedMarkerIndex1! + index));
               }
             },
             currentUserLocation: widget.currentUserLocation,
             enableScrollWheel: widget.enableScrollWheel,
+            addressList: widget.addressesList,
+            maxCapacity: widget.maxCapacity,
+            changeCapacity: (capacity) => {
+              widget.alterableRoutesMap ? setState((){
+                maxCapacity = capacity;
+              }) : null},
+            alterableRoutesMap: widget.alterableRoutesMap,
+            selectedMarkerIndex1: selectedMarkerIndex1,
+            selectedMarkerIndex2: selectedMarkerIndex2,
+            setSelectedMarkers: setSelectedMarkers
           ))
       ),
       SizedBox(
@@ -132,8 +165,9 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
         int indexToUpdate = addressClassList
             .indexWhere((address) => address.fullAddress == "loading");
 
-        if (indexToUpdate == -1)
+        if (indexToUpdate == -1) {
           break; // Exit loop if no "loading" address is found
+        }
 
         await Future.delayed(const Duration(milliseconds: 2000));
         await fetchAddressName(
@@ -193,6 +227,19 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
             : getPolyline(true);
       });
     }
+  }
+
+  setSelectedMarkers(int index) {
+    setState(() {
+      if (selectedMarkerIndex1 == null) {
+        selectedMarkerIndex1 = index;
+      } else if (selectedMarkerIndex2 == null && index > selectedMarkerIndex1!) {
+        selectedMarkerIndex2 = index;
+      } else {
+        selectedMarkerIndex1 = index;
+        selectedMarkerIndex2 = null;
+      }
+    });
   }
 
 }

@@ -19,11 +19,14 @@ class AddressClass{
   String? fullAddress;
   String? city;
   DataBetweenTwoAddresses? dataBetweenTwoAddresses;
+  int? stationCapacity;
+
 
   AddressClass({
     this.fullAddress,
     this.city,
     this.dataBetweenTwoAddresses,
+    this.stationCapacity,
   });
 
   Map<String, dynamic> toJson() => {

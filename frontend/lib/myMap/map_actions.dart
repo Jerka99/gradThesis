@@ -12,30 +12,35 @@ class SaveMapData extends ReduxAction<AppState> {
   List<AddressClass> addressClassList;
   List<LatLng> markerCoordinateList;
   DateTime dateTime;
+  double maxCapacity;
 
   SaveMapData({
     required this.addressClassList,
     required this.markerCoordinateList,
     required this.dateTime,
+    required this.maxCapacity,
 });
 
   @override
   Future<AppState?> reduce() async {
-    if(addressClassList.length > 1) {
+    if(maxCapacity == 0){
+      appViewportKey.currentState?.informUser("Capacity cant be 0!", Colors.red);
+      return null;
+    }
+    if(addressClassList.length < 2){
+      appViewportKey.currentState?.informUser("Choose minimal 2 marker points!", Colors.red);
+      return null;
+    }
       DateTime startTime = dateTime;
       int startTimeInMillisecond = startTime.millisecondsSinceEpoch;
       addressClassList.first.dataBetweenTwoAddresses?.duration = startTimeInMillisecond.toDouble();
 
       String? response = await MainApiClass().saveMapData(
-          addressClassList, markerCoordinateList);
+          addressClassList, markerCoordinateList, maxCapacity);
 
       if(response != null) {
         appViewportKey.currentState?.informUser(response);
       }
-    }
-    else {
-      appViewportKey.currentState?.informUser("Choose minimal 2 marker points!", Colors.red);
-    }
   }
 }
 

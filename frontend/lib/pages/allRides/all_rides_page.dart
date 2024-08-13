@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
 import 'package:travel_mate/myMap/all_rides_list.dart';
 import 'package:travel_mate/myMap/map_and_display_connector.dart';
-
-import '../../myMap/coordinates_api.dart';
 
 class AllRidesPage extends StatefulWidget {
   Function fetchAllRides;
@@ -34,9 +30,12 @@ class _AllRidesPageState extends State<AllRidesPage> {
         itemBuilder: (context, index) {
           bool isExpanded = expandedIndex == index;
           return AnimatedContainer(
-            duration: Duration(milliseconds: 300),
-            margin: const EdgeInsets.only(bottom: 50),
-            height: isExpanded ? 700 : 162,
+            padding: const EdgeInsets.only(
+              left: 20, right: 20, top: 10, bottom: 20),
+
+          duration: const Duration(milliseconds: 300),
+            margin: const EdgeInsets.only(bottom: 25),
+            height: isExpanded ? 700 : 350,
             child: MapAndDisplayConnector(
               markerCoordinateList: widget
                   .allRidesList.listOfRides[index].markerCoordinateList,
@@ -54,16 +53,18 @@ class _AllRidesPageState extends State<AllRidesPage> {
               }),
               isExpanded: isExpanded,
               enableScrollWheel: false,
-              editingAllowed: false,
+              alterableRoutesMap: false,
+              maxCapacity: widget.allRidesList.listOfRides[index].maxCapacity,
+              rideId: widget.allRidesList.listOfRides[index].rideId
             ),
           );
         });
   }
 
   DateTime epochToDataTime(double duration) {
-    double epochTimeInMiliseconds = duration;
+    double epochTimeInMilliseconds = duration;
     DateTime dateTime =
-        DateTime.fromMillisecondsSinceEpoch(epochTimeInMiliseconds.toInt());
+        DateTime.fromMillisecondsSinceEpoch(epochTimeInMilliseconds.toInt());
     return dateTime;
   }
 }

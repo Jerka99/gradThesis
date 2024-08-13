@@ -11,9 +11,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RideData {
-    private List<AddressClass> addressesList;
-    private List<LatLng> markerCoordinateList;
-    private double maxCapacity;
+public class UserRideSequencesDTO {
     private Long rideId;
+    private Long userId;
+    private List<Integer> sequences;
 }

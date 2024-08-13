@@ -1,4 +1,4 @@
-import 'package:flutter/gestures.dart';
+import 'package:customizable_counter/customizable_counter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -10,23 +10,37 @@ import 'marker_and_polyline.dart';
 class MyMap extends StatefulWidget {
   final List<LatLng>? markerCoordinateList;
   final List<LatLng>? polylineList;
-  final Function() saveMapData;
+  final Function() floatingSaveButton;
   final UserRole? userRole;
   final bool enableScrollWheel;
   final LatLng? currentUserLocation;
   final Function(LatLng)? addMarker;
   final Function(int index)? removeMarker;
+  final List<AddressClass>? addressList;
+  final double maxCapacity;
+  final Function(double capacity)? changeCapacity;
+  final bool alterableRoutesMap;
+  final int? selectedMarkerIndex1;
+  final int? selectedMarkerIndex2;
+  final Function(int index)? setSelectedMarkers;
 
   const MyMap({
     super.key,
     this.markerCoordinateList,
     this.polylineList,
-    required this.saveMapData,
+    required this.floatingSaveButton,
     this.userRole,
     this.enableScrollWheel = false,
     required this.currentUserLocation,
     this.addMarker,
     this.removeMarker,
+    this.addressList,
+    required this.maxCapacity,
+    this.changeCapacity,
+    required this.alterableRoutesMap,
+    this.selectedMarkerIndex1,
+    this.selectedMarkerIndex2,
+    this.setSelectedMarkers,
   });
 
   @override
@@ -38,8 +52,6 @@ class _MyMap extends State<MyMap> {
   final MapController _mapController = MapController();
   late List<LatLng> markerCoordinateList;
   late List<LatLng> polylineList;
-  int? selectedMarkerIndex1;
-  int? selectedMarkerIndex2;
 
   @override
   void initState() {
@@ -59,19 +71,6 @@ class _MyMap extends State<MyMap> {
     }
   }
 
-  setSelectedMarkers(int index) {
-    setState(() {
-      if (selectedMarkerIndex1 == null) {
-        selectedMarkerIndex1 = index;
-      } else if (selectedMarkerIndex2 == null && index > selectedMarkerIndex1!) {
-        selectedMarkerIndex2 = index;
-      } else {
-        selectedMarkerIndex1 = index;
-        selectedMarkerIndex2 = null;
-      }
-    });
-  }
-
   void toggleScrolling(bool value) {
     setState(() {
       enableScrollWheel = value;
@@ -86,7 +85,7 @@ class _MyMap extends State<MyMap> {
             border: Border.all(color: Colors.black, width: 1.0)),
         child: MouseRegion(
           onExit: (PointerExitEvent) {
-          toggleScrolling(false);
+          if(widget.addMarker == null) toggleScrolling(false);
           },
           child: FlutterMap(
             mapController: _mapController,
@@ -112,23 +111,26 @@ class _MyMap extends State<MyMap> {
                 userAgentPackageName: 'com.example.app',
               ),
               PolylineLayer(
-                polylines: [polylineFun(polylineList)],
+                polylines: [MapUtils().createPolyline(polylineList)],
               ),
               MarkerLayer(
                   markers: markerCoordinateList
                       .asMap()
                       .entries
-                      .map((markerCoordinate) => markerDisplayFun(
-                              markerCoordinate.value,
-                              markerCoordinate.key,
-                              markerCoordinateList.length, (index) {
-                              toggleScrolling(true);
-                            widget.removeMarker != null ?
-                            widget.removeMarker!(index) :
-                            setSelectedMarkers(index);
-                          },
-                        selectedMarkerIndex1,
-                        selectedMarkerIndex2
+                      .map((markerCoordinate) => MapUtils().createMarker(
+                      coordinate: markerCoordinate.value,
+                      index: markerCoordinate.key,
+                      markersNumber: markerCoordinateList.length,
+                      deleteOrSelectFunction: (int index) {
+                          toggleScrolling(true);
+                          widget.removeMarker != null
+                              ? widget.removeMarker!(index)
+                              : widget.setSelectedMarkers != null ? widget.setSelectedMarkers!(index) : {};
+                      },
+                      selectedMarkerIndex1: UserRole.customer == widget.userRole ? widget.selectedMarkerIndex1 : null,
+                      selectedMarkerIndex2: UserRole.customer == widget.userRole ? widget.selectedMarkerIndex2 : null,
+                      stationCapacity: widget.addressList?[markerCoordinate.key].stationCapacity,
+                      maxCapacity: widget.maxCapacity
                   ))
                       .toList()),
               Align(
@@ -138,14 +140,68 @@ class _MyMap extends State<MyMap> {
                       child: FloatingActionButton(
                           backgroundColor: Colors.blue,
                           onPressed: () {
-                            widget.saveMapData();
+                            widget.floatingSaveButton();
                           },
                           child: const Text(
                             "Save",
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold),
-                          ))))
+                          )))),
+              Align(
+                alignment: Alignment.topLeft,
+                child: widget.alterableRoutesMap ? Container(
+                  margin: const EdgeInsets.all(5.0),
+                  height: 70,
+                  decoration: BoxDecoration(
+                      color: Colors.blue,
+                      border: Border.all(color: Colors.blue, width: 2),
+                    borderRadius: BorderRadius.all(Radius.circular(10))
+                  ),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 5,),
+                      const Text("Capacity", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
+                      CustomizableCounter(
+                        showButtonText: false,
+                        textColor: Colors.white,
+                        // backgroundColor: Colors.blue,
+                        borderWidth: 0,
+                        borderColor: Colors.blue,
+                        minCount: 0,
+                        maxCount: 10,
+                        onCountChange: (count) {
+                        if(widget.changeCapacity != null) widget.changeCapacity!(count);
+                        },
+                      ),
+                    ],
+                  ),
+                ) : Container(
+                  margin: const EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(2),
+                  height: 100,
+                  width: 120,
+                  decoration: const BoxDecoration(
+                    color: Color.fromRGBO(255, 255, 255, 0.7),
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                  ),
+                  child: const Flex(
+                    direction: Axis.vertical,
+                    children: [
+                       Flexible(
+                         child: Flex(
+                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          direction: Axis.horizontal,
+                          children: [
+                            Text("Station"),
+                            Text("Capacity")
+                          ],
+                         ),
+                       )
+                    ],
+                  ),
+                ),
+              )
             ],
           ),
         ));

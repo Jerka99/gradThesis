@@ -157,7 +157,7 @@ class _FromToDisplayState extends State<FromToDisplay> {
                             child: Align(
                                 alignment: Alignment.bottomLeft,
                                 child: Text(
-                                  "${sumDrivingDurations(index)?.hour}:${sumDrivingDurations(index)?.minute.toString().padLeft(2, '0')}",
+                                  "${sumDrivingDurations(index)?.hour.toString().padLeft(2, '0')}:${sumDrivingDurations(index)?.minute.toString().padLeft(2, '0')}",
                                   style: const TextStyle(
                                       fontSize: 13,
                                       fontWeight: FontWeight.bold),
@@ -234,7 +234,7 @@ class _FromToDisplayState extends State<FromToDisplay> {
                 // mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "Starts at: ${widget.dateTime?.day}.${widget.dateTime?.month}.${widget.dateTime?.year} ${widget.dateTime?.hour}:${widget.dateTime?.minute.toString().padLeft(2, '0')}",
+                    "Starts at: ${widget.dateTime?.day}.${widget.dateTime?.month}.${widget.dateTime?.year} ${widget.dateTime?.hour.toString().padLeft(2, '0')}:${widget.dateTime?.minute.toString().padLeft(2, '0')}",
                     style: const TextStyle(
                         fontSize: 18, fontWeight: FontWeight.bold),
                   ),

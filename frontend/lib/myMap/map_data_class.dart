@@ -6,11 +6,15 @@ class MapData{
   List<LatLng> markerCoordinateList;
   List<LatLng> polylineList;
   List<AddressClass> addressesList;
+  double maxCapacity;
+  int rideId;
 
   MapData({
     this.markerCoordinateList = const [],
     this.polylineList = const [],
-    this.addressesList = const []
+    this.addressesList = const [],
+    this.maxCapacity = 0,
+    this.rideId = 0
   });
 
   MapData copyWith({
@@ -32,21 +36,27 @@ class MapData{
           runtimeType == other.runtimeType &&
           markerCoordinateList == other.markerCoordinateList &&
           polylineList == other.polylineList &&
-          addressesList == other.addressesList;
+          addressesList == other.addressesList &&
+          maxCapacity == other.maxCapacity &&
+          rideId == other.rideId;
 
   @override
   int get hashCode =>
       markerCoordinateList.hashCode ^
       polylineList.hashCode ^
-      addressesList.hashCode;
+      addressesList.hashCode ^
+      maxCapacity.hashCode ^
+      rideId.hashCode;
 
   @override
   String toString() {
-    return 'MapData{markerCoordinateList2: $markerCoordinateList, polylineList2: $polylineList, addressesList: $addressesList}';
+    return 'MapData{markerCoordinateList2: $markerCoordinateList, polylineList2: $polylineList, addressesList: $addressesList maxCapacity: $maxCapacity rideId: $rideId}';
   }
 
   MapData.fromJson(Map<String, dynamic> json)
       : markerCoordinateList = (json['markerCoordinateList'] as List).map((item) => LatLng.fromJson(item)).toList(),
         polylineList = [],
-        addressesList = (json['addressesList'] as List).map((item) => AddressClass.fromJson(item)).toList();
+        addressesList = (json['addressesList'] as List).map((item) => AddressClass.fromJson(item)).toList(),
+        maxCapacity = (json['maxCapacity'] as double),
+        rideId = (json['rideId'] as int);
 }

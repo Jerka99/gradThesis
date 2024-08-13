@@ -96,7 +96,7 @@ class MainApiClass {
   }
 
   Future saveMapData(List<AddressClass> addressesList,
-      List<LatLng> markerCoordinateList) async {
+      List<LatLng> markerCoordinateList, double maxCapacity) async {
     String? token = await StoreSecurity().getToken();
 
     Response response = await http.post(Uri.parse(
@@ -108,6 +108,7 @@ class MainApiClass {
         body: jsonEncode(<String, dynamic>{
           'addressesList': addressesList,
           'markerCoordinateList': markerCoordinateList,
+          'maxCapacity': maxCapacity,
         }));
     if(response.statusCode == 200) {
       return response.body;

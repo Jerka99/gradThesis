@@ -1,11 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 
 import '../shape/TriangleClipper.dart';
 
-Marker  markerDisplayFun(coordinate, index, markersNumber, deleteOrSelectFunction, selectedMarkerIndex1, selectedMarkerIndex2) {
+import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import '../shape/TriangleClipper.dart';
 
-  return Marker(
+class MapUtils {
+  // Method to create a Marker
+  Marker createMarker({
+    required LatLng coordinate,
+    required int index,
+    required int markersNumber,
+    required Function(int) deleteOrSelectFunction,
+    int? selectedMarkerIndex1,
+    int? selectedMarkerIndex2,
+    int? stationCapacity,
+    double? maxCapacity
+  }) {
+    return Marker(
       point: coordinate,
       width: 50.0,
       height: 80.0,
@@ -14,8 +29,9 @@ Marker  markerDisplayFun(coordinate, index, markersNumber, deleteOrSelectFunctio
         child: Container(
           padding: const EdgeInsets.only(bottom: 30),
           child: IconButton(
-            hoverColor: index == markersNumber -1 ? Colors
-                .blue.withOpacity(0.6) : null,
+            hoverColor: index == markersNumber - 1
+                ? Colors.blue.withOpacity(0.6)
+                : null,
             padding: EdgeInsets.zero,
             alignment: Alignment.topCenter,
             icon: Stack(
@@ -24,19 +40,25 @@ Marker  markerDisplayFun(coordinate, index, markersNumber, deleteOrSelectFunctio
                 Icon(
                   Icons.location_on,
                   size: 50.0,
-                  color: (index == selectedMarkerIndex1 || index == selectedMarkerIndex2 || ((selectedMarkerIndex2 != null && selectedMarkerIndex1 != null) && (index < selectedMarkerIndex2 && index > selectedMarkerIndex1)))
+                  color: (index == selectedMarkerIndex1 ||
+                      index == selectedMarkerIndex2 ||
+                      ((selectedMarkerIndex2 != null &&
+                          selectedMarkerIndex1 != null) &&
+                          (index < selectedMarkerIndex2 &&
+                              index > selectedMarkerIndex1)))
                       ? Colors.green
-                      : (index == markersNumber - 1 ? Colors.indigo[400] : Colors.red),
-                  shadows: index == markersNumber - 1 ? [const Shadow(color: Colors.red, blurRadius: 6.0)] : null,
+                      : (index == markersNumber - 1
+                      ? Colors.indigo[400]
+                      : Colors.red),
+                  shadows: index == markersNumber - 1
+                      ? [const Shadow(color: Colors.red, blurRadius: 6.0)]
+                      : null,
                 ),
                 Container(
                   padding: const EdgeInsets.only(top: 12),
                   child: Text(
                     (index + 1).toString(),
-                    style: const TextStyle(
-                        color: Colors.white
-                    ),
-
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ),
               ],
@@ -46,13 +68,16 @@ Marker  markerDisplayFun(coordinate, index, markersNumber, deleteOrSelectFunctio
             },
           ),
         ),
-      ));
-}
+      ),
+    );
+  }
 
-Polyline polylineFun(coordinatesMapped){
-  return Polyline(
-    strokeWidth: 4,
-    points: coordinatesMapped,
-    color: Colors.blue,
-  );
+  // Method to create a Polyline
+  Polyline createPolyline(List<LatLng> coordinatesMapped) {
+    return Polyline(
+      strokeWidth: 4,
+      points: coordinatesMapped,
+      color: Colors.blue,
+    );
+  }
 }

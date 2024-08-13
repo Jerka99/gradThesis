@@ -1,6 +1,8 @@
 package com.example.demo.Map.controllers;
 
 import com.example.demo.Map.dto.RideData;
+import com.example.demo.Map.dto.UserRideSequencesDTO;
+import com.example.demo.Map.entities.UserRideSequence;
 import com.example.demo.Map.services.RidesService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -34,7 +36,7 @@ public class RideDataController {
 
     @PostMapping("/saveUsersDesiredRideData")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<String> saveDesiredRideData(@RequestBody RideData rideData) {
+    public ResponseEntity<String> saveDesiredRideData(@RequestBody UserRideSequencesDTO userRideSequencesDTO) {
         //related to AuthenticationManager
 //        ridesService.saveRideData(rideData);
 //

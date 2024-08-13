@@ -6,26 +6,17 @@ import com.example.demo.Auth.services.AuthService;
 import com.example.demo.Map.dto.AddressClass;
 import com.example.demo.Map.dto.LatLng;
 import com.example.demo.Map.dto.RideData;
-import com.example.demo.Map.entities.Coordinate;
 import com.example.demo.Map.entities.RideNum;
 import com.example.demo.Map.entities.RidesTable;
 import com.example.demo.Map.repository.RidesCounterRepository;
 import com.example.demo.Map.repository.RidesNumRepository;
 import com.example.demo.Map.repository.RidesRepository;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,6 +43,7 @@ public class RidesService {
     public void saveRideData(RideData rideData){
         User user = (User) authService.getCurrentAuthentication().getPrincipal();
         RideNum newRide = RideNum.builder()
+                .capacity(rideData.getMaxCapacity())
                 .build();
 
         newRide = ridesCounterRepository.save(newRide);
@@ -71,25 +63,28 @@ public class RidesService {
         List<RideData> rideDataList;
 
         rideDataList = numberOfRides.stream().map(
-                rideNum -> RideDataMapper(ridesTable.stream().filter((element) ->
-                        element.getRideNum().getId().equals(rideNum.getId())
+                rideNum -> RideDataMapper(ridesTable.stream().filter((oneRide) ->
+                        oneRide.getRideNum().getId().equals(rideNum.getId())
                 ).collect(Collectors.toList()))
         ).toList();
 
         return rideDataList;
     }
 
-    private RideData RideDataMapper(List<RidesTable> ridesTableList) {
+    private RideData RideDataMapper(List<RidesTable> oneRide) {
         List<AddressClass> addressesList = new ArrayList<>();
-
         List<LatLng> markerCoordinateList = new ArrayList<>();
-        ridesTableList.forEach(el -> {
-                    List<Double> coordinates = Arrays.asList(el.getLatitude(), el.getLongitude());
-                    markerCoordinateList.add(new LatLng(coordinates));
-                    addressesList.add(new AddressClass(el.getFullAddress(), el.getCity(), el.getDataBetweenTwoAddresses()));
-                }
-        );
-        return new RideData(addressesList, markerCoordinateList);
+        double maxCapacity = 0.0;
+        Long rideId = null;
+
+        for (RidesTable el : oneRide) {
+            List<Double> coordinates = Arrays.asList(el.getLatitude(), el.getLongitude());
+            markerCoordinateList.add(new LatLng(coordinates));
+            maxCapacity = el.getRideNum().getCapacity();
+            rideId = el.getRideNum().getId();
+            addressesList.add(new AddressClass(el.getFullAddress(), el.getCity(), el.getDataBetweenTwoAddresses()));
+        }
+        return new RideData(addressesList, markerCoordinateList, maxCapacity, rideId);
     }
 
     private static RidesTable dataMapper(User user, LatLng markersCoordinates, AddressClass addressData, int sequence, RideNum newRide) {
