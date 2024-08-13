@@ -58,78 +58,15 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
   }
 
   @override
+  void didUpdateWidget(covariant MapAndDisplay oldWidget) {
+    if(widget.isExpanded != null && widget.isExpanded!) {
+      fetchPolylineData();
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    void getAddressData() async {
-      if (!whileLoopTriggered) {
-        whileLoopTriggered = true;
-        while (addressClassList
-            .any((address) => address.fullAddress == "loading")) {
-          int indexToUpdate = addressClassList
-              .indexWhere((address) => address.fullAddress == "loading");
-
-          if (indexToUpdate == -1)
-            break; // Exit loop if no "loading" address is found
-
-          await Future.delayed(const Duration(milliseconds: 2000));
-          await fetchAddressName(
-              markerCoordinateList[indexToUpdate], indexToUpdate, (newAddress) {
-            setState(() {
-              addressClassList[indexToUpdate].fullAddress =
-                  newAddress.fullAddress;
-              addressClassList[indexToUpdate].city = newAddress.city;
-            });
-          });
-        }
-        whileLoopTriggered = false; // Reset the flag once the loop completes
-      }
-    }
-
-    void getPolyline(deleting) async {
-      var mappedCoordinateList = tempMarkerCoordinateList
-          .map((marker) => [marker.longitude, marker.latitude])
-          .toList();
-      ResponseData? fetchedPolylineCoordinates =
-          await fetchCoordinates(mappedCoordinateList);
-      if (fetchedPolylineCoordinates != null) {
-        DataBetweenTwoAddresses dataBetweenTwoAddresses =
-            DataBetweenTwoAddresses(fetchedPolylineCoordinates.duration,
-                fetchedPolylineCoordinates.distance);
-        setState(() {
-          polylineList = fetchedPolylineCoordinates.coordinates;
-          if (!deleting) {
-            markerCoordinateList
-                .add(fetchedPolylineCoordinates.coordinates.last);
-            tempMarkerCoordinateList = [...markerCoordinateList];
-            addressClassList.add(AddressClass(
-                fullAddress: "loading",
-                city: "loading",
-                dataBetweenTwoAddresses: dataBetweenTwoAddresses));
-            getAddressData();
-          }
-        });
-      } else {
-        tempMarkerCoordinateList.removeLast();
-      }
-    }
-
-    void addMarker(LatLng latLng) {
-      tempMarkerCoordinateList.add(latLng);
-      getPolyline(false);
-    }
-
-    void removeMarker(int index) {
-      if (!whileLoopTriggered) {
-        setState(() {
-          markerCoordinateList.removeAt(index);
-          tempMarkerCoordinateList.removeAt(index);
-          addressClassList.removeAt(index);
-          markerCoordinateList.length <= 1
-              ? polylineList = []
-              : getPolyline(true);
-        });
-      }
-    }
-
     return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -172,4 +109,90 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
       )
     ]);
   }
+
+  Future<void> fetchPolylineData() async {
+    var mappedCoordinateList = markerCoordinateList
+        .map((marker) => [marker.longitude, marker.latitude])
+        .toList();
+    ResponseData? fetchedPolylineCoordinates = await fetchCoordinates(mappedCoordinateList);
+
+    if (fetchedPolylineCoordinates != null) {
+      setState(() {
+        polylineList = fetchedPolylineCoordinates.coordinates;
+      });
+    }
+    return null;
+  }
+
+  void getAddressData() async {
+    if (!whileLoopTriggered) {
+      whileLoopTriggered = true;
+      while (addressClassList
+          .any((address) => address.fullAddress == "loading")) {
+        int indexToUpdate = addressClassList
+            .indexWhere((address) => address.fullAddress == "loading");
+
+        if (indexToUpdate == -1)
+          break; // Exit loop if no "loading" address is found
+
+        await Future.delayed(const Duration(milliseconds: 2000));
+        await fetchAddressName(
+            markerCoordinateList[indexToUpdate], indexToUpdate, (newAddress) {
+          setState(() {
+            addressClassList[indexToUpdate].fullAddress =
+                newAddress.fullAddress;
+            addressClassList[indexToUpdate].city = newAddress.city;
+          });
+        });
+      }
+      whileLoopTriggered = false; // Reset the flag once the loop completes
+    }
+  }
+
+  void getPolyline(deleting) async {
+    var mappedCoordinateList = tempMarkerCoordinateList
+        .map((marker) => [marker.longitude, marker.latitude])
+        .toList();
+    ResponseData? fetchedPolylineCoordinates =
+    await fetchCoordinates(mappedCoordinateList);
+    if (fetchedPolylineCoordinates != null) {
+      DataBetweenTwoAddresses dataBetweenTwoAddresses =
+      DataBetweenTwoAddresses(fetchedPolylineCoordinates.duration,
+          fetchedPolylineCoordinates.distance);
+      setState(() {
+        polylineList = fetchedPolylineCoordinates.coordinates;
+        if (!deleting) {
+          markerCoordinateList
+              .add(fetchedPolylineCoordinates.coordinates.last);
+          tempMarkerCoordinateList = [...markerCoordinateList];
+          addressClassList.add(AddressClass(
+              fullAddress: "loading",
+              city: "loading",
+              dataBetweenTwoAddresses: dataBetweenTwoAddresses));
+          getAddressData();
+        }
+      });
+    } else {
+      tempMarkerCoordinateList.removeLast();
+    }
+  }
+
+  void addMarker(LatLng latLng) {
+    tempMarkerCoordinateList.add(latLng);
+    getPolyline(false);
+  }
+
+  void removeMarker(int index) {
+    if (!whileLoopTriggered) {
+      setState(() {
+        markerCoordinateList.removeAt(index);
+        tempMarkerCoordinateList.removeAt(index);
+        addressClassList.removeAt(index);
+        markerCoordinateList.length <= 1
+            ? polylineList = []
+            : getPolyline(true);
+      });
+    }
+  }
+
 }

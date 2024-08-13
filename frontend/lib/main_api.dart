@@ -89,12 +89,6 @@ class MainApiClass {
       List<dynamic> decoded = jsonDecode(response.body);
       for (var element in decoded) {
         MapData newRide = MapData.fromJson(element);
-        var mappedCoordinateList = newRide.markerCoordinateList
-            .map((marker) => [marker.longitude, marker.latitude])
-            .toList();
-        ResponseData? fetchedPolylineCoordinates = await fetchCoordinates(mappedCoordinateList);
-        List<LatLng> polyline = (fetchedPolylineCoordinates!.coordinates);
-        newRide.polylineList = polyline;
         mapDataList.add(newRide);
       }
     }

@@ -19,7 +19,6 @@ class AllRidesPage extends StatefulWidget {
 
 class _AllRidesPageState extends State<AllRidesPage> {
   int? expandedIndex;
-  List<List<LatLng>> allPolylineLists = [];
 
   @override
   void initState() {
@@ -41,8 +40,6 @@ class _AllRidesPageState extends State<AllRidesPage> {
             child: MapAndDisplayConnector(
               markerCoordinateList: widget
                   .allRidesList.listOfRides[index].markerCoordinateList,
-              polylineList:
-              widget.allRidesList.listOfRides[index].polylineList,
               currentUserLocation: widget
                   .allRidesList.listOfRides[index].markerCoordinateList.first,
               addressesList: widget.allRidesList.listOfRides[index].addressesList,
