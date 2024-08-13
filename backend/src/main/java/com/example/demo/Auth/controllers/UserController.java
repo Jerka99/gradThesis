@@ -39,7 +39,7 @@ public class UserController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN')") //https://developer.okta.com/blog/2019/06/20/spring-preauthorize
     public ResponseEntity<List<User>> allUsers() {
         List <User> users = userService.allUsers();
 

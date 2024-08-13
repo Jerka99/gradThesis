@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -30,10 +32,18 @@ public class RideDataController {
         return ResponseEntity.ok("Ride is saved successfully");
     }
 
-    @GetMapping("/fetchAllRides")
+    @PostMapping("/saveUsersDesiredRideData")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<List<RideData>> fetchAllRides() {
+    public ResponseEntity<String> saveDesiredRideData(@RequestBody RideData rideData) {
+        //related to AuthenticationManager
+//        ridesService.saveRideData(rideData);
+//
+        return ResponseEntity.ok("Ride is saved successfully");
+    }
 
+    @GetMapping("/fetchAllRides")
+    @PreAuthorize("hasAnyRole('DRIVER', 'CUSTOMER')")
+    public ResponseEntity<List<RideData>> fetchAllRides() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON_UTF8); // Ensure UTF-8 encoding
 
