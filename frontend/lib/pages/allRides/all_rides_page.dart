@@ -55,7 +55,10 @@ class _AllRidesPageState extends State<AllRidesPage> {
               enableScrollWheel: false,
               alterableRoutesMap: false,
               maxCapacity: widget.allRidesList.listOfRides[index].maxCapacity,
-              rideId: widget.allRidesList.listOfRides[index].rideId
+              rideId: widget.allRidesList.listOfRides[index].rideId,
+              selectedMarkerIndex1: widget.allRidesList.listOfRides[index].selectedMarkerIndex1,
+              selectedMarkerIndex2: widget.allRidesList.listOfRides[index].selectedMarkerIndex2,
+
             ),
           );
         });

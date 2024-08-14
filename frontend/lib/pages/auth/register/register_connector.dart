@@ -19,7 +19,7 @@ class Factory extends VmFactory<AppState, RegisterConnector, ViewModel> {
           routeChange: (path){
             dispatch(MyNavigateAction(path));
           },
-          authResponseHandler: state.authResponseHandler,
+          responseHandler: state.responseHandler,
       );
 }
 
@@ -27,18 +27,18 @@ class ViewModel extends Vm{
 
   final Function(AuthDto) onRegister;
   Function(String) routeChange;
-  final AuthResponseHandler? authResponseHandler;
+  final ResponseHandler? responseHandler;
 
 
   ViewModel({
     required this.onRegister,
     required this.routeChange,
-    required this.authResponseHandler,
+    required this.responseHandler,
   });
 
   @override
   String toString() {
-    return 'ViewModel{onRegister: $onRegister, routeChange: $routeChange, authResponseHandler: $authResponseHandler}';
+    return 'ViewModel{onRegister: $onRegister, routeChange: $routeChange, responseHandler: $responseHandler}';
   }
 
   @override
@@ -49,14 +49,14 @@ class ViewModel extends Vm{
           runtimeType == other.runtimeType &&
           onRegister == other.onRegister &&
           routeChange == other.routeChange &&
-          authResponseHandler == other.authResponseHandler;
+          responseHandler == other.responseHandler;
 
   @override
   int get hashCode =>
       super.hashCode ^
       onRegister.hashCode ^
       routeChange.hashCode ^
-      authResponseHandler.hashCode;
+      responseHandler.hashCode;
 }
 
 
@@ -78,7 +78,7 @@ class RegisterConnector extends StatelessWidget{
             onRegister: vm.onRegister,
             routeChange: vm.routeChange,
             role: role,
-            authResponseHandler: vm.authResponseHandler,
+            responseHandler: vm.responseHandler,
         );},
     );
   }

@@ -3,7 +3,6 @@ import 'package:latlong2/latlong.dart';
 import 'package:travel_mate/model.dart';
 
 import '../pages/display/from_to_display.dart';
-import '../user_role.dart';
 import 'address_class.dart';
 import 'coordinates_api.dart';
 import 'my_map.dart';
@@ -14,7 +13,7 @@ class MapAndDisplay extends StatefulWidget {
   LatLng? currentUserLocation;
   List<AddressClass>? addressesList;
   Function(List<AddressClass>, List<LatLng>, DateTime, double)? saveMapData;
-  Function(int rideId, List<int> sequence)? saveUserRoute;
+  Function(int rideId, int? firstMarker, int? lastMarker)? saveUserRoute;
   UserData? userData;
   DateTime? dateTime;
   bool? isExpanded;
@@ -68,7 +67,13 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
     markerCoordinateList = widget.markerCoordinateList ?? [];
     tempMarkerCoordinateList = [];
     polylineList = widget.polylineList ?? [];
-    addressClassList = widget.addressesList ?? [];
+    addressClassList = widget.addressesList?.map((address) => AddressClass(
+        city: address.city, // Copy each field from the original object
+        fullAddress: address.fullAddress,
+        dataBetweenTwoAddresses: address.dataBetweenTwoAddresses,
+        stationCapacity: address.stationCapacity
+    )).toList() ?? [];
+    // addressClassList = widget.addressesList ?? [];
     maxCapacity = widget.maxCapacity;
     selectedMarkerIndex1 = widget.selectedMarkerIndex1;
     selectedMarkerIndex2 = widget.selectedMarkerIndex2;
@@ -105,14 +110,12 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
                 }
               }
               else{
-                selectedMarkerIndex1 = selectedMarkerIndex1!+1;
-                selectedMarkerIndex2 = selectedMarkerIndex2!+1;
-                widget.saveUserRoute!(widget.rideId!, List.generate(selectedMarkerIndex2! - selectedMarkerIndex1! , (index) => selectedMarkerIndex1! + index));
+                widget.saveUserRoute!(widget.rideId!, selectedMarkerIndex1, selectedMarkerIndex2);
               }
             },
             currentUserLocation: widget.currentUserLocation,
             enableScrollWheel: widget.enableScrollWheel,
-            addressList: widget.addressesList,
+            addressList: addressClassList,
             maxCapacity: widget.maxCapacity,
             changeCapacity: (capacity) => {
               widget.alterableRoutesMap ? setState((){
@@ -232,11 +235,22 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
   setSelectedMarkers(int index) {
     setState(() {
       if (selectedMarkerIndex1 == null) {
+        addressClassList[index].stationCapacity = addressClassList[index].stationCapacity! - 1;
         selectedMarkerIndex1 = index;
       } else if (selectedMarkerIndex2 == null && index > selectedMarkerIndex1!) {
+        for(int? i = selectedMarkerIndex1! + 1; i! < index!; i++) {
+          addressClassList[i].stationCapacity =
+              addressClassList[i].stationCapacity! - 1;
+        }
         selectedMarkerIndex2 = index;
       } else {
-        selectedMarkerIndex1 = index;
+        addressClassList = widget.addressesList?.map((address) => AddressClass(
+            city: address.city,
+            fullAddress: address.fullAddress,
+            dataBetweenTwoAddresses: address.dataBetweenTwoAddresses,
+            stationCapacity: address.stationCapacity
+        )).toList() ?? [];
+        selectedMarkerIndex1 = null;
         selectedMarkerIndex2 = null;
       }
     });

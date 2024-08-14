@@ -14,5 +14,5 @@ public class RideNum {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double capacity;
+    private double maxCapacity;
 }

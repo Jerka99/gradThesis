@@ -42,7 +42,7 @@ class MainApiClass {
 
   }
 
-  Future<AuthResponseHandler?> logIn(token) async {
+  Future<ResponseHandler?> logIn(token) async {
     Response response = await http.get(
       Uri.parse("${AppConstants.backendUrl}/users/me"),
       headers: <String, String>{
@@ -53,14 +53,14 @@ class MainApiClass {
     if (response.statusCode == 200) {
       var decoded = jsonDecode(response.body);
       UserData userData = UserData.fromJson(decoded);
-      return AuthResponseHandler(userData: userData);
+      return ResponseHandler(data: userData);
     } else {
-      return AuthResponseHandler(message: "Login failed. Invalid credentials.");
+      return ResponseHandler(message: "Login failed. Invalid credentials.");
     }
   }
 
 
-  Future<AuthResponseHandler>? register(AuthDto authDto) async {
+  Future<ResponseHandler>? register(AuthDto authDto) async {
     Response response = await http.post(
         Uri.parse("${AppConstants.backendUrl}/auth/signup"),
         headers: <String, String>{
@@ -69,9 +69,9 @@ class MainApiClass {
         body: jsonEncode(authDto.toJson()));
 
     if (response.statusCode == 200) {
-      return AuthResponseHandler(message: response.body);
+      return ResponseHandler(message: response.body);
     } else {
-      return AuthResponseHandler.fromJson(jsonDecode(response.body));
+      return ResponseHandler.fromJson(jsonDecode(response.body));
     }
   }
 
@@ -115,4 +115,28 @@ class MainApiClass {
     }
     return null;
   }
+
+  Future<dynamic> saveUserRoute(int rideId, List<int> sequence) async {
+    String? token = await StoreSecurity().getToken();
+
+    Response response = await http.post(Uri.parse(
+        "${AppConstants.backendUrl}/saveUserRoute"),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(<String, dynamic>{
+          'rideId': rideId,
+          'sequence': sequence,
+        }));
+    if(response.statusCode == 200) {
+      return ResponseHandler(message: response.body, status: response.statusCode);
+    }
+    else{
+      ResponseHandler responseHandler = ResponseHandler.fromJson(jsonDecode(response.body));
+      return responseHandler;
+    }
+  }
+
+
 }

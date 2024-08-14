@@ -185,10 +185,10 @@ class _MyMap extends State<MyMap> {
                     color: Color.fromRGBO(255, 255, 255, 0.7),
                     borderRadius: BorderRadius.all(Radius.circular(5)),
                   ),
-                  child: const Flex(
+                  child: Flex(
                     direction: Axis.vertical,
                     children: [
-                       Flexible(
+                       const Flexible(
                          child: Flex(
                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           direction: Axis.horizontal,
@@ -197,7 +197,28 @@ class _MyMap extends State<MyMap> {
                             Text("Capacity")
                           ],
                          ),
-                       )
+                       ),
+                      if(widget.addressList != null) Flexible(child:
+                      Flex(
+                        direction: Axis.horizontal,
+                        children: [
+                          Expanded(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: widget.addressList!.length - 1,
+                              itemBuilder: (context, index) {
+                                return Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(child: Text((index+1).toString())),
+                                    Expanded(child: Text((widget.addressList?[index].stationCapacity ?? "0").toString())),
+                                  ],
+                                );
+                              }),
+                          ),
+                        ],
+                      )
+                      )
                     ],
                   ),
                 ),

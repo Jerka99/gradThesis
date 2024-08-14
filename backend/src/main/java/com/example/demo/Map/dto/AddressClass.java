@@ -11,4 +11,5 @@ public class AddressClass {
     private String fullAddress;
     private String city;
     private DataBetweenTwoAddresses dataBetweenTwoAddresses;
+    private Long stationCapacity;
 }

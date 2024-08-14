@@ -10,8 +10,10 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "user_ride_sequence")
-public class UserRideSequence {
+@Table(name = "users_ride_route", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"ride_id", "sequence", "user_id"})
+})
+public class UsersRideRoute {
     @Id
     @SequenceGenerator(name = "user_ride_seq_gen", sequenceName = "user_ride_seq", allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_ride_seq_gen")

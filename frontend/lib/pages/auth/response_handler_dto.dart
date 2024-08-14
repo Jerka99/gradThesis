@@ -1,50 +1,55 @@
 import 'package:travel_mate/model.dart';
 import 'package:async_redux/async_redux.dart';
 
-class AuthResponseHandler {
+class ResponseHandler {
   String? message;
-  UserData? userData;
+  dynamic data;
+  int? status;
 
-  AuthResponseHandler({
+  ResponseHandler({
     this.message,
-    this.userData,
+    this.data,
+    this.status,
 });
 
-  AuthResponseHandler.init() {
+  ResponseHandler.init() {
     message = "";
+    status = null;
     // userData;
   }
 
-  factory AuthResponseHandler.fromJson(Map<String, dynamic> json) {
-  return AuthResponseHandler(
+  factory ResponseHandler.fromJson(Map<String, dynamic> json) {
+  return ResponseHandler(
     message: json['detail'] as String,
+    status: json['status'] as int,
   );
   }
 
-  AuthResponseHandler copyWith({
+  ResponseHandler copyWith({
     String? message,
     UserData? userData,
     Event<bool>? isInformed,
   }) {
-    return AuthResponseHandler(
+    return ResponseHandler(
         message: message ?? this.message,
-        userData: userData ?? this.userData,
+        data: data ?? this.data,
     );
   }
 
   @override
   String toString() {
-    return 'AuthResponseHandler{message: $message, userData: $userData}';
+    return 'ResponseHandler{message: $message, data: $data, status: $status}';
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AuthResponseHandler &&
+      other is ResponseHandler &&
           runtimeType == other.runtimeType &&
           message == other.message &&
-          userData == other.userData;
+          data == other.data &&
+          status == other.status;
 
   @override
-  int get hashCode => message.hashCode ^ userData.hashCode;
+  int get hashCode => message.hashCode ^ data.hashCode ^ status.hashCode;
 }

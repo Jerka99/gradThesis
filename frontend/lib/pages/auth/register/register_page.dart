@@ -13,14 +13,14 @@ class RegisterPage extends StatefulWidget {
   Function(AuthDto) onRegister;
   Function(String) routeChange;
   UserRole role;
-  AuthResponseHandler? authResponseHandler;
+  ResponseHandler? responseHandler;
 
   RegisterPage({
     super.key,
     required this.onRegister,
     required this.routeChange,
     required this.role,
-    required this.authResponseHandler,
+    required this.responseHandler,
   });
 
   @override
@@ -29,7 +29,7 @@ class RegisterPage extends StatefulWidget {
 
 class _RegisterPage extends State<RegisterPage> {
   late AuthDto inputData;
-  late AuthResponseHandler authResponseHandler;
+  late ResponseHandler responseHandler;
 
   @override
   void initState() {
@@ -39,14 +39,20 @@ class _RegisterPage extends State<RegisterPage> {
         password: "",
         checkPassword: "",
         role: userRoleFromJson(widget.role.name.toUpperCase()));
-    authResponseHandler = AuthResponseHandler.init();
+    responseHandler = ResponseHandler.init();
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant RegisterPage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    authResponseHandler = widget.authResponseHandler!;
+    inputData = AuthDto(
+        email: "",
+        name: "",
+        password: "",
+        checkPassword: "",
+        role: userRoleFromJson(widget.role.name.toUpperCase()));
+    responseHandler = widget.responseHandler!;
   }
 
   @override
@@ -163,7 +169,7 @@ class _RegisterPage extends State<RegisterPage> {
   void formSubmit(){
     {
       setState(() {
-        authResponseHandler = authResponseHandler.copyWith(
+        responseHandler = responseHandler.copyWith(
             message: "");
       });
       if (inputData.checkPassword == inputData.password) {
@@ -171,7 +177,7 @@ class _RegisterPage extends State<RegisterPage> {
         widget.onRegister(inputData);
       } else {
         setState(() {
-          authResponseHandler = authResponseHandler.copyWith(
+          responseHandler = responseHandler.copyWith(
               message: "Passwords do not match");
         });
       }
@@ -179,9 +185,9 @@ class _RegisterPage extends State<RegisterPage> {
   }
 
   String? checkError(identifier) {
-    if (authResponseHandler.message != null &&
-        authResponseHandler.message!.toLowerCase().contains(identifier)) {
-      return authResponseHandler.message;
+    if (responseHandler.message != null &&
+        responseHandler.message!.toLowerCase().contains(identifier)) {
+      return responseHandler.message;
     }
     return null;
   }

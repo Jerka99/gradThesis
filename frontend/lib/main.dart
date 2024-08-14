@@ -115,7 +115,7 @@ class AppViewportState extends State<AppViewport> {
             style: const TextStyle(fontSize: 18.0),
           ),
         ),
-        duration: const Duration(seconds: 4),
+        duration: const Duration(milliseconds: 2500),
         backgroundColor: color,
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);

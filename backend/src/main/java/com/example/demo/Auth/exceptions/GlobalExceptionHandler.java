@@ -2,6 +2,7 @@ package com.example.demo.Auth.exceptions;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.security.SignatureException;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.access.AccessDeniedException;
@@ -21,6 +22,15 @@ public class GlobalExceptionHandler {
 
         return errorDetail;
     }
+
+    @ExceptionHandler(DuplicateRouteException.class)
+    public ProblemDetail handleDuplicateInsertError(DuplicateRouteException exception) {
+        ProblemDetail errorDetail = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, exception.getMessage());
+        errorDetail.setProperty("description", "Duplicate route detected");
+
+        return errorDetail;
+    }
+
 
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ProblemDetail handleDataIntegrityViolationException(DataIntegrityViolationException exception) {

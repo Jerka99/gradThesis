@@ -9,13 +9,13 @@ import '../hyperlink.dart';
 class LoginPage extends StatefulWidget {
   final Function(AuthDto) onLogin;
   final Function(String) routeChange;
-  AuthResponseHandler? authResponseHandler;
+  ResponseHandler? responseHandler;
 
   LoginPage({
     super.key,
     required this.onLogin,
     required this.routeChange,
-    required this.authResponseHandler,
+    required this.responseHandler,
   });
 
   @override
@@ -23,17 +23,17 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPage extends State<LoginPage> {
-  late AuthResponseHandler authResponseHandler;
+  late ResponseHandler responseHandler;
 
   @override
   void initState() {
-    authResponseHandler = AuthResponseHandler.init();
+    responseHandler = ResponseHandler.init();
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant LoginPage oldWidget) {
-    authResponseHandler = widget.authResponseHandler!;
+    responseHandler = widget.responseHandler!;
     super.didUpdateWidget(oldWidget);
   }
 
@@ -71,7 +71,7 @@ class _LoginPage extends State<LoginPage> {
                 FormInputs(
                   element: "email",
                   errorText:
-                  authResponseHandler.message == "" ? null : authResponseHandler.message,
+                  responseHandler.message == "" ? null : responseHandler.message,
                   inputValueFun: (value) {
                     setState(() {
                       inputData = inputData.copyWith(email: value);
@@ -83,7 +83,7 @@ class _LoginPage extends State<LoginPage> {
                   element: "password",
                   obscureText: true,
                   errorText:
-                  authResponseHandler.message == "" ? null : authResponseHandler.message,
+                  responseHandler.message == "" ? null : responseHandler.message,
                   inputValueFun: (value) {
                     setState(() {
                       inputData = inputData.copyWith(password: value);

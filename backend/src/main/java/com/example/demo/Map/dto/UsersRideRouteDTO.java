@@ -11,8 +11,8 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserRideSequencesDTO {
+public class UsersRideRouteDTO {
     private Long rideId;
     private Long userId;
-    private List<Integer> sequences;
+    private List<Integer> sequence;
 }

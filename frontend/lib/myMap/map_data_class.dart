@@ -8,13 +8,17 @@ class MapData{
   List<AddressClass> addressesList;
   double maxCapacity;
   int rideId;
+  int? selectedMarkerIndex1;
+  int? selectedMarkerIndex2;
 
   MapData({
     this.markerCoordinateList = const [],
     this.polylineList = const [],
     this.addressesList = const [],
     this.maxCapacity = 0,
-    this.rideId = 0
+    this.rideId = 0,
+    this.selectedMarkerIndex1,
+    this.selectedMarkerIndex2
   });
 
   MapData copyWith({
@@ -38,7 +42,9 @@ class MapData{
           polylineList == other.polylineList &&
           addressesList == other.addressesList &&
           maxCapacity == other.maxCapacity &&
-          rideId == other.rideId;
+          rideId == other.rideId &&
+          selectedMarkerIndex1 == other.selectedMarkerIndex1 &&
+          selectedMarkerIndex2 == other.selectedMarkerIndex2;
 
   @override
   int get hashCode =>
@@ -46,11 +52,13 @@ class MapData{
       polylineList.hashCode ^
       addressesList.hashCode ^
       maxCapacity.hashCode ^
-      rideId.hashCode;
+      rideId.hashCode ^
+      selectedMarkerIndex1.hashCode ^
+      selectedMarkerIndex2.hashCode;
 
   @override
   String toString() {
-    return 'MapData{markerCoordinateList2: $markerCoordinateList, polylineList2: $polylineList, addressesList: $addressesList maxCapacity: $maxCapacity rideId: $rideId}';
+    return 'MapData{markerCoordinateList2: $markerCoordinateList, polylineList2: $polylineList, addressesList: $addressesList maxCapacity: $maxCapacity rideId: $rideId, selectedMarkerIndex1 $selectedMarkerIndex1, selectedMarkerIndex2 $selectedMarkerIndex2}';
   }
 
   MapData.fromJson(Map<String, dynamic> json)
@@ -58,5 +66,7 @@ class MapData{
         polylineList = [],
         addressesList = (json['addressesList'] as List).map((item) => AddressClass.fromJson(item)).toList(),
         maxCapacity = (json['maxCapacity'] as double),
-        rideId = (json['rideId'] as int);
+        rideId = (json['rideId'] as int),
+        selectedMarkerIndex1 = (json['selectedMarkerIndex1'] as int?),
+        selectedMarkerIndex2 = (json['selectedMarkerIndex2'] as int?);
 }

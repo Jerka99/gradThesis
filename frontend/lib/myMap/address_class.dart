@@ -21,7 +21,6 @@ class AddressClass{
   DataBetweenTwoAddresses? dataBetweenTwoAddresses;
   int? stationCapacity;
 
-
   AddressClass({
     this.fullAddress,
     this.city,
@@ -38,5 +37,6 @@ class AddressClass{
   AddressClass.fromJson(Map<String, dynamic> json)
       : fullAddress = json['fullAddress'] as String?,
         city = json['city'] as String?,
-        dataBetweenTwoAddresses = DataBetweenTwoAddresses.fromJson(json['dataBetweenTwoAddresses']);
+        dataBetweenTwoAddresses = DataBetweenTwoAddresses.fromJson(json['dataBetweenTwoAddresses']),
+        stationCapacity = json['stationCapacity'] as int;
 }

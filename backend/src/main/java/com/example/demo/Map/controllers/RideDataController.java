@@ -1,8 +1,9 @@
 package com.example.demo.Map.controllers;
 
 import com.example.demo.Map.dto.RideData;
-import com.example.demo.Map.dto.UserRideSequencesDTO;
-import com.example.demo.Map.entities.UserRideSequence;
+import com.example.demo.Map.dto.UsersRideRouteDTO;
+import com.example.demo.Map.dto.UsersRideRouteDTO;
+import com.example.demo.Map.entities.UsersRideRoute;
 import com.example.demo.Map.services.RidesService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -34,9 +35,18 @@ public class RideDataController {
         return ResponseEntity.ok("Ride is saved successfully");
     }
 
+    @PostMapping("/saveUserRoute")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<String> saveUserRoute(@RequestBody UsersRideRouteDTO usersRideRouteDTO) {
+
+        ridesService.saveUserRoute(usersRideRouteDTO);
+
+        return ResponseEntity.ok("Ride is saved successfully");
+    }
+
     @PostMapping("/saveUsersDesiredRideData")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<String> saveDesiredRideData(@RequestBody UserRideSequencesDTO userRideSequencesDTO) {
+    public ResponseEntity<String> saveDesiredRideData(@RequestBody UsersRideRouteDTO usersRideRouteDTOđ) {
         //related to AuthenticationManager
 //        ridesService.saveRideData(rideData);
 //

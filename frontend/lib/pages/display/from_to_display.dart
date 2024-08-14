@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../../AutoScrollingText.dart';
-import '../../main.dart';
-import '../../myMap/address_class.dart';
+import 'package:travel_mate/AutoScrollingText.dart';
+import 'package:travel_mate/main.dart';
+import 'package:travel_mate/myMap/address_class.dart';
 
 class FromToDisplay extends StatefulWidget {
   List<AddressClass> addressesList;

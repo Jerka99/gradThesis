@@ -16,4 +16,6 @@ public class RideData {
     private List<LatLng> markerCoordinateList;
     private double maxCapacity;
     private Long rideId;
+    private Integer selectedMarkerIndex1;
+    private Integer selectedMarkerIndex2;
 }

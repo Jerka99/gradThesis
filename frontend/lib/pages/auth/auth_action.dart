@@ -48,8 +48,8 @@ class GetTokenAction extends ReduxAction<AppState> {
       print(decodedToken);
     } else {
       return state.copy(
-          authResponseHandler:
-              AuthResponseHandler(message: "Login failed. Invalid credentials."));
+          responseHandler:
+              ResponseHandler(message: "Login failed. Invalid credentials."));
     }
   }
 }
@@ -61,13 +61,13 @@ class GetUserData extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    AuthResponseHandler? responseHandler = await MainApiClass().logIn(token);
-    if (responseHandler?.userData != null) {
+    ResponseHandler? responseHandler = await MainApiClass().logIn(token);
+    if (responseHandler?.data != null) {
       dispatch(MyNavigateAction("/"));
-      return store.state.copy(user: responseHandler!.userData);
+      return store.state.copy(user: responseHandler!.data);
     } else {
       return store.state.copy(
-          authResponseHandler: responseHandler);
+          responseHandler: responseHandler);
     }
   }
 }
@@ -79,14 +79,14 @@ class RegisterAction extends ReduxAction<AppState> {
 
   @override
   Future<AppState?> reduce() async {
-    AuthResponseHandler? response = await MainApiClass().register(authDto);
+    ResponseHandler? response = await MainApiClass().register(authDto);
 
     if(response?.message == "Successfully Registered") {
       appViewportKey.currentState?.informUser(response?.message);
       dispatch(MyNavigateAction("login"));
     }
     return state.copy(
-        authResponseHandler: state.authResponseHandler?.copyWith(
+        responseHandler: state.responseHandler?.copyWith(
             message: response?.message),);
   }
 }
@@ -103,7 +103,7 @@ class LogOutAction extends ReduxAction<AppState> {
       route: null,
       mapData: MapData(),
       dateTime: DateTime.now(),
-      authResponseHandler: AuthResponseHandler.init(),
+      responseHandler: ResponseHandler.init(),
       allRidesList: AllRidesList.init(),
     );
   }

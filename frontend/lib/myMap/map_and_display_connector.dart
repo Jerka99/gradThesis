@@ -24,8 +24,8 @@ class Factory extends VmFactory<AppState, MapAndDisplayConnector, ViewModel> {
         },
         userData: state.user,
         currentUserLocation: state.currentUserLocation,
-        saveUserRoute: (int rideId, List<int> sequence){
-          print(rideId);
+        saveUserRoute: (int rideId, int? firstMarker, int? lastMarker){
+          dispatch(SaveUserRoute(rideId: rideId, firstMarker: firstMarker, lastMarker: lastMarker));
         }
       );
 }
@@ -37,7 +37,7 @@ class ViewModel extends Vm {
   Function(List<AddressClass>, List<LatLng>, DateTime, double) saveMapData;
   UserData? userData;
   LatLng? currentUserLocation;
-  Function(int rideId, List<int> sequence)? saveUserRoute;
+  Function(int rideId, int? firstMarker, int? lastMarker)? saveUserRoute;
 
   ViewModel({
     required this.saveMapData,
@@ -86,6 +86,8 @@ class MapAndDisplayConnector extends StatelessWidget {
   bool alterableRoutesMap;
   double maxCapacity;
   int? rideId;
+  final int? selectedMarkerIndex1;
+  final int? selectedMarkerIndex2;
 
   MapAndDisplayConnector({
     this.polylineList,
@@ -99,6 +101,8 @@ class MapAndDisplayConnector extends StatelessWidget {
     this.alterableRoutesMap = true,
     this.maxCapacity = 0,
     this.rideId,
+    this.selectedMarkerIndex1,
+    this.selectedMarkerIndex2,
     super.key});
 
   @override
@@ -120,7 +124,9 @@ class MapAndDisplayConnector extends StatelessWidget {
           enableScrollWheel: enableScrollWheel,
           alterableRoutesMap: alterableRoutesMap,
           maxCapacity: maxCapacity,
-          rideId: rideId
+          rideId: rideId,
+          selectedMarkerIndex1: selectedMarkerIndex1,
+          selectedMarkerIndex2: selectedMarkerIndex2,
         );
       },
     );

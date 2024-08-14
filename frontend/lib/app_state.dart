@@ -14,7 +14,7 @@ class AppState {
   String? route;
   MapData? mapData;
   DateTime dateTime;
-  AuthResponseHandler? authResponseHandler;
+  ResponseHandler? responseHandler;
   PlatformDto platformDto;
   AllRidesList allRidesList;
   LatLng? currentUserLocation;
@@ -25,7 +25,7 @@ class AppState {
     required this.route,
     required this.mapData,
     required this.dateTime,
-    required this.authResponseHandler,
+    required this.responseHandler,
     required this.platformDto,
     required this.allRidesList,
     required this.currentUserLocation,
@@ -39,7 +39,7 @@ class AppState {
       route: null,
       mapData: MapData(),
       dateTime: DateTime.now(),
-      authResponseHandler: AuthResponseHandler.init(),
+      responseHandler: ResponseHandler.init(),
       platformDto: PlatformDto(
         currentPlatformCompany: PlatformDetector.platform.company,
         currentPlatformName: PlatformDetector.platform.name,
@@ -55,7 +55,7 @@ class AppState {
       String? route,
       MapData? mapData,
       DateTime? dateTime,
-      AuthResponseHandler? authResponseHandler,
+      ResponseHandler? responseHandler,
       PlatformDto? platformDto,
       AllRidesList? allRidesList,
       LatLng? currentUserLocation
@@ -66,7 +66,7 @@ class AppState {
         route: route ?? this.route,
         mapData: mapData ?? this.mapData,
         dateTime: dateTime ?? this.dateTime,
-        authResponseHandler: authResponseHandler ?? this.authResponseHandler,
+        responseHandler: responseHandler ?? this.responseHandler,
         platformDto: platformDto ?? this.platformDto,
         allRidesList: allRidesList ?? this.allRidesList,
         currentUserLocation: currentUserLocation ?? this.currentUserLocation,
@@ -84,7 +84,7 @@ class AppState {
           route == other.route &&
           mapData == other.mapData &&
           dateTime == other.dateTime &&
-          authResponseHandler == other.authResponseHandler &&
+          responseHandler == other.responseHandler &&
           platformDto == other.platformDto &&
           allRidesList == other.allRidesList &&
           currentUserLocation == other.currentUserLocation;
@@ -96,7 +96,7 @@ class AppState {
       route.hashCode ^
       mapData.hashCode ^
       dateTime.hashCode ^
-      authResponseHandler.hashCode ^
+      responseHandler.hashCode ^
       platformDto.hashCode ^
       allRidesList.hashCode ^
       currentUserLocation.hashCode;
@@ -104,7 +104,7 @@ class AppState {
 
   @override
   String toString() {
-    return 'AppState{routerDelegate: $routerDelegate, user: $user, route: $route, mapData: $mapData, dateTime: $dateTime, authResponseHandler: $authResponseHandler, platformDto: $platformDto, allRidesList: $allRidesList, currentUserLocation: $currentUserLocation}';
+    return 'AppState{routerDelegate: $routerDelegate, user: $user, route: $route, mapData: $mapData, dateTime: $dateTime, responseHandler: $responseHandler, platformDto: $platformDto, allRidesList: $allRidesList, currentUserLocation: $currentUserLocation}';
   }
 
   DateTime setDateTime(AppState state) => state.dateTime.copyWith(

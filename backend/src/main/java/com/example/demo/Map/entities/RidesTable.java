@@ -45,6 +45,4 @@ public class RidesTable {
 
     private Double latitude;
     private Double longitude;
-
-    int capacity;
 }
