@@ -105,10 +105,10 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
   Widget build(BuildContext context) {
     return Flex(
       direction: Axis.vertical,
-        // mainAxisSize: MainAxisSize.min,
+        mainAxisSize: MainAxisSize.min,
         children: [
       Flexible(
-        flex: 0,
+        flex: widget.mainMap ? 1 : 0,
         child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             height: widget.isExpanded == null ? 400 : widget.isExpanded! ? 300 : 0,
