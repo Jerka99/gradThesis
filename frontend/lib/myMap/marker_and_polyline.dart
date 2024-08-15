@@ -18,7 +18,8 @@ class MapUtils {
     int? selectedMarkerIndex1,
     int? selectedMarkerIndex2,
     int? stationCapacity,
-    double? maxCapacity
+    double? maxCapacity,
+    required MaterialColor markerColor,
   }) {
     return Marker(
       point: coordinate,
@@ -40,19 +41,7 @@ class MapUtils {
                 Icon(
                   Icons.location_on,
                   size: 50.0,
-                  color: (index == selectedMarkerIndex1 ||
-                      index == selectedMarkerIndex2 ||
-                      ((selectedMarkerIndex2 != null &&
-                          selectedMarkerIndex1 != null) &&
-                          (index < selectedMarkerIndex2 &&
-                              index > selectedMarkerIndex1)))
-                      ? Colors.green
-                      : (index == markersNumber - 1
-                      ? Colors.indigo[400]
-                      : Colors.red),
-                  shadows: index == markersNumber - 1
-                      ? [const Shadow(color: Colors.red, blurRadius: 6.0)]
-                      : null,
+                  color: markerColor,
                 ),
                 Container(
                   padding: const EdgeInsets.only(top: 12),

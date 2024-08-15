@@ -83,7 +83,7 @@ class MapAndDisplayConnector extends StatelessWidget {
   Function? expandButton;
   bool? isExpanded;
   bool enableScrollWheel;
-  bool alterableRoutesMap;
+  bool mainMap;
   double maxCapacity;
   int? rideId;
   final int? selectedMarkerIndex1;
@@ -98,7 +98,7 @@ class MapAndDisplayConnector extends StatelessWidget {
     this.expandButton,
     this.isExpanded,
     this.enableScrollWheel = true,
-    this.alterableRoutesMap = true,
+    this.mainMap = true,
     this.maxCapacity = 0,
     this.rideId,
     this.selectedMarkerIndex1,
@@ -122,7 +122,7 @@ class MapAndDisplayConnector extends StatelessWidget {
           expandButton: expandButton,
           isExpanded: isExpanded,
           enableScrollWheel: enableScrollWheel,
-          alterableRoutesMap: alterableRoutesMap,
+          mainMap: mainMap,
           maxCapacity: maxCapacity,
           rideId: rideId,
           selectedMarkerIndex1: selectedMarkerIndex1,

@@ -17,12 +17,14 @@ class MyMap extends StatefulWidget {
   final Function(LatLng)? addMarker;
   final Function(int index)? removeMarker;
   final List<AddressClass>? addressList;
+  final List<AddressClass>? unchangeableAddressList;
   final double maxCapacity;
   final Function(double capacity)? changeCapacity;
-  final bool alterableRoutesMap;
+  final bool mainMap;
   final int? selectedMarkerIndex1;
   final int? selectedMarkerIndex2;
   final Function(int index)? setSelectedMarkers;
+  final bool isMarkerAlteringEnabled;
 
   const MyMap({
     super.key,
@@ -35,12 +37,14 @@ class MyMap extends StatefulWidget {
     this.addMarker,
     this.removeMarker,
     this.addressList,
+    this.unchangeableAddressList,
     required this.maxCapacity,
     this.changeCapacity,
-    required this.alterableRoutesMap,
+    required this.mainMap,
     this.selectedMarkerIndex1,
     this.selectedMarkerIndex2,
     this.setSelectedMarkers,
+    this.isMarkerAlteringEnabled = true,
   });
 
   @override
@@ -76,6 +80,35 @@ class _MyMap extends State<MyMap> {
       enableScrollWheel = value;
     });
   }
+
+  MaterialColor getMarkerColor(int index, int markersLength){
+    if(index == widget.selectedMarkerIndex1 || index == widget.selectedMarkerIndex2 ||
+        ((widget.selectedMarkerIndex2 != null && widget.selectedMarkerIndex1 != null)
+            && (index < widget.selectedMarkerIndex2! && index > widget.selectedMarkerIndex1!))) {
+      return Colors.green;
+    }
+    if(widget.addressList?[index].stationCapacity == 0){
+      return Colors.grey;
+    }
+
+    if(index ==  markersLength - 1) {
+      return Colors.blue;
+    }
+
+    return Colors.red;
+  }
+
+  bool isAllStationsCapacityGood(int index){
+    if(widget.selectedMarkerIndex1 != null) {
+      for (int i = widget.selectedMarkerIndex1!; i <= index; i++) {
+        if(widget.unchangeableAddressList![i].stationCapacity! < 1) return false;
+      }
+      return true;
+    }
+    else{
+    return widget.unchangeableAddressList![index].stationCapacity! > 0;
+    }
+}
 
 
   @override
@@ -122,15 +155,22 @@ class _MyMap extends State<MyMap> {
                       index: markerCoordinate.key,
                       markersNumber: markerCoordinateList.length,
                       deleteOrSelectFunction: (int index) {
-                          toggleScrolling(true);
-                          widget.removeMarker != null
-                              ? widget.removeMarker!(index)
-                              : widget.setSelectedMarkers != null ? widget.setSelectedMarkers!(index) : {};
-                      },
-                      selectedMarkerIndex1: UserRole.customer == widget.userRole ? widget.selectedMarkerIndex1 : null,
-                      selectedMarkerIndex2: UserRole.customer == widget.userRole ? widget.selectedMarkerIndex2 : null,
+                              toggleScrolling(true);
+                              if (widget.isMarkerAlteringEnabled && (widget.mainMap || isAllStationsCapacityGood(index))) {
+                                if (widget.removeMarker != null) {
+                                  widget.removeMarker!(index);
+                                }
+                                if (widget.setSelectedMarkers != null && !widget.mainMap) {
+                                  widget.setSelectedMarkers!(index);
+                                }
+                                ;
+                              }
+                            },
+                      selectedMarkerIndex1: widget.selectedMarkerIndex1,
+                      selectedMarkerIndex2: widget.selectedMarkerIndex2,
                       stationCapacity: widget.addressList?[markerCoordinate.key].stationCapacity,
-                      maxCapacity: widget.maxCapacity
+                      maxCapacity: widget.maxCapacity,
+                      markerColor: getMarkerColor(markerCoordinate.key, markerCoordinateList.length),
                   ))
                       .toList()),
               Align(
@@ -150,13 +190,13 @@ class _MyMap extends State<MyMap> {
                           )))),
               Align(
                 alignment: Alignment.topLeft,
-                child: widget.alterableRoutesMap ? Container(
+                child: widget.mainMap ? Container(
                   margin: const EdgeInsets.all(5.0),
                   height: 70,
                   decoration: BoxDecoration(
                       color: Colors.blue,
                       border: Border.all(color: Colors.blue, width: 2),
-                    borderRadius: BorderRadius.all(Radius.circular(10))
+                    borderRadius: const BorderRadius.all(Radius.circular(10))
                   ),
                   child: Column(
                     children: [

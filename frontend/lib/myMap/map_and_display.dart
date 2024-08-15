@@ -3,6 +3,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:travel_mate/model.dart';
 
 import '../pages/display/from_to_display.dart';
+import '../user_role.dart';
 import 'address_class.dart';
 import 'coordinates_api.dart';
 import 'my_map.dart';
@@ -19,7 +20,7 @@ class MapAndDisplay extends StatefulWidget {
   bool? isExpanded;
   Function? expandButton;
   bool enableScrollWheel;
-  bool alterableRoutesMap;
+  bool mainMap;
   double maxCapacity;
   int? rideId;
   int? selectedMarkerIndex1;
@@ -37,7 +38,7 @@ class MapAndDisplay extends StatefulWidget {
       this.isExpanded,
       this.expandButton,
       required this.enableScrollWheel,
-      required this.alterableRoutesMap,
+      required this.mainMap,
       required this.maxCapacity,
       this.rideId,
       this.selectedMarkerIndex1,
@@ -59,6 +60,7 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
   late double maxCapacity;
   late int? selectedMarkerIndex1;
   late int? selectedMarkerIndex2;
+  late bool isMarkerAlteringEnabled;
 
   @override
   void initState() {
@@ -77,6 +79,16 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
     maxCapacity = widget.maxCapacity;
     selectedMarkerIndex1 = widget.selectedMarkerIndex1;
     selectedMarkerIndex2 = widget.selectedMarkerIndex2;
+
+    if(widget.userData?.role == UserRole.driver && !widget.mainMap){
+      isMarkerAlteringEnabled = false;
+    }
+    else if(widget.selectedMarkerIndex1 == null) {
+      isMarkerAlteringEnabled = true;
+    }
+    else {
+      isMarkerAlteringEnabled = false;
+    }
   }
 
   @override
@@ -84,6 +96,8 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
     if(widget.isExpanded != null && widget.isExpanded!) {
       fetchPolylineData();
     }
+    // selectedMarkerIndex1 = null;
+    // selectedMarkerIndex2 = null;
     super.didUpdateWidget(oldWidget);
   }
 
@@ -101,10 +115,10 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
             userRole: widget.userData?.role,
             markerCoordinateList: markerCoordinateList,
             polylineList: polylineList,
-            addMarker: widget.alterableRoutesMap ? addMarker : null,
-            removeMarker: widget.alterableRoutesMap ? removeMarker : null,
+            addMarker: widget.mainMap ? addMarker : null,
+            removeMarker: widget.mainMap ? removeMarker : null,
             floatingSaveButton: () {
-              if(widget.alterableRoutesMap){
+              if(widget.mainMap){
               if (!whileLoopTriggered) {
                 widget.saveMapData!(addressClassList, markerCoordinateList, dateTime!, maxCapacity);
                 }
@@ -116,15 +130,17 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
             currentUserLocation: widget.currentUserLocation,
             enableScrollWheel: widget.enableScrollWheel,
             addressList: addressClassList,
+            unchangeableAddressList: widget.addressesList,
             maxCapacity: widget.maxCapacity,
             changeCapacity: (capacity) => {
-              widget.alterableRoutesMap ? setState((){
+              widget.mainMap ? setState((){
                 maxCapacity = capacity;
               }) : null},
-            alterableRoutesMap: widget.alterableRoutesMap,
+            mainMap: widget.mainMap,
             selectedMarkerIndex1: selectedMarkerIndex1,
             selectedMarkerIndex2: selectedMarkerIndex2,
-            setSelectedMarkers: setSelectedMarkers
+            setSelectedMarkers: setSelectedMarkers,
+            isMarkerAlteringEnabled: isMarkerAlteringEnabled,
           ))
       ),
       SizedBox(
@@ -238,7 +254,7 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
         addressClassList[index].stationCapacity = addressClassList[index].stationCapacity! - 1;
         selectedMarkerIndex1 = index;
       } else if (selectedMarkerIndex2 == null && index > selectedMarkerIndex1!) {
-        for(int? i = selectedMarkerIndex1! + 1; i! < index!; i++) {
+        for(int? i = selectedMarkerIndex1! + 1; i! < index; i++) {
           addressClassList[i].stationCapacity =
               addressClassList[i].stationCapacity! - 1;
         }

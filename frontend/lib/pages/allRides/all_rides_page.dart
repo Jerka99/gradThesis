@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:travel_mate/myMap/all_rides_list.dart';
 import 'package:travel_mate/myMap/map_and_display_connector.dart';
+import 'package:travel_mate/myMap/map_data_class.dart';
 
 class AllRidesPage extends StatefulWidget {
   Function fetchAllRides;
@@ -19,6 +20,7 @@ class _AllRidesPageState extends State<AllRidesPage> {
   @override
   void initState() {
     super.initState();
+    AllRidesList.init();
     widget.fetchAllRides();
   }
 
@@ -53,7 +55,7 @@ class _AllRidesPageState extends State<AllRidesPage> {
               }),
               isExpanded: isExpanded,
               enableScrollWheel: false,
-              alterableRoutesMap: false,
+              mainMap: false,
               maxCapacity: widget.allRidesList.listOfRides[index].maxCapacity,
               rideId: widget.allRidesList.listOfRides[index].rideId,
               selectedMarkerIndex1: widget.allRidesList.listOfRides[index].selectedMarkerIndex1,
