@@ -60,7 +60,6 @@ class _AllRidesPageState extends State<AllRidesPage> {
               rideId: widget.allRidesList.listOfRides[index].rideId,
               selectedMarkerIndex1: widget.allRidesList.listOfRides[index].selectedMarkerIndex1,
               selectedMarkerIndex2: widget.allRidesList.listOfRides[index].selectedMarkerIndex2,
-
             ),
           );
         });

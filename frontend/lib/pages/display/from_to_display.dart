@@ -29,14 +29,15 @@ class _FromToDisplayState extends State<FromToDisplay> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      // height: 300,
         width: double.maxFinite,
         padding: const EdgeInsets.all(5.0),
         decoration: BoxDecoration(
             color: Colors.cyanAccent[50],
             border: Border.all(width: 1.0),
             borderRadius: const BorderRadius.all(Radius.circular(10.0))),
-        child: Column(children: [
+        child: Flex(
+            direction: Axis.vertical,
+            children: [
           if (widget.expandButton != null)
             Container(
               alignment: Alignment.centerRight,
@@ -79,14 +80,15 @@ class _FromToDisplayState extends State<FromToDisplay> {
               ],
             ),
           ),
-          Expanded(
+          Flexible(
             child: Container(
+              height: double.maxFinite,
               color: Colors.white,
               child: ListView.builder(
                   shrinkWrap: true,
                   itemCount: widget.addressesList.length,
                   itemBuilder: (context, index) {
-                    return Padding(
+                    return Container(
                       padding: const EdgeInsets.only(right: 12, left: 12),
                       child: index > 0
                           ? tableRows(index, widget.addressesList[index])
@@ -108,7 +110,8 @@ class _FromToDisplayState extends State<FromToDisplay> {
       )),
       child: value.fullAddress.toString() == "loading"
           ? loading()
-          : Row(
+          : Flex(
+              direction: Axis.horizontal,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Expanded(
@@ -228,7 +231,8 @@ class _FromToDisplayState extends State<FromToDisplay> {
               ),
             ),
             Expanded(
-              child: Row(
+              child: Flex(
+                direction: Axis.horizontal,
                 // crossAxisAlignment: CrossAxisAlignment.center,
                 // mainAxisAlignment: MainAxisAlignment.center,
                 children: [

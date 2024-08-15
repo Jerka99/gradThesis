@@ -198,21 +198,24 @@ class _MyMap extends State<MyMap> {
                       border: Border.all(color: Colors.blue, width: 2),
                     borderRadius: const BorderRadius.all(Radius.circular(10))
                   ),
-                  child: Column(
+                  child: Flex(
+                    direction: Axis.vertical,
                     children: [
                       const SizedBox(height: 5,),
                       const Text("Capacity", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
-                      CustomizableCounter(
-                        showButtonText: false,
-                        textColor: Colors.white,
-                        // backgroundColor: Colors.blue,
-                        borderWidth: 0,
-                        borderColor: Colors.blue,
-                        minCount: 0,
-                        maxCount: 10,
-                        onCountChange: (count) {
-                        if(widget.changeCapacity != null) widget.changeCapacity!(count);
-                        },
+                      Flexible(
+                        child: CustomizableCounter(
+                          showButtonText: false,
+                          textColor: Colors.white,
+                          // backgroundColor: Colors.blue,
+                          borderWidth: 0,
+                          borderColor: Colors.blue,
+                          minCount: 0,
+                          maxCount: 10,
+                          onCountChange: (count) {
+                          if(widget.changeCapacity != null) widget.changeCapacity!(count);
+                          },
+                        ),
                       ),
                     ],
                   ),

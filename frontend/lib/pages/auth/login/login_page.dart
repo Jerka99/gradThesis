@@ -44,92 +44,99 @@ class _LoginPage extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
-    return Container(
-      height: size.height - 106,
-      constraints: const BoxConstraints(
-        minHeight: 700.0,
-      ),
-      child: Center(
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: SingleChildScrollView(
         child: Container(
-          constraints: const BoxConstraints(maxWidth: 400.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              // crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Login",
-                      style: TextStyle(
-                          fontSize: 35.0, fontWeight: FontWeight.bold),
-                    )),
-                const SizedBox(
-                  height: 80.0,
-                ),
-                FormInputs(
-                  element: "email",
-                  errorText:
-                  responseHandler.message == "" ? null : responseHandler.message,
-                  inputValueFun: (value) {
-                    setState(() {
-                      inputData = inputData.copyWith(email: value);
-                    });
-                  },
-                  submitOnKey: formSubmit,
-                ),
-                FormInputs(
-                  element: "password",
-                  obscureText: true,
-                  errorText:
-                  responseHandler.message == "" ? null : responseHandler.message,
-                  inputValueFun: (value) {
-                    setState(() {
-                      inputData = inputData.copyWith(password: value);
-                    });
-                  },
-                  submitOnKey: formSubmit,
-                ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: ElevatedButton(
-                    onPressed: formSubmit,
-                    style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.all(18.0),
-                        backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0))),
-                    child: const Text(
-                      "Log in",
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 18.0,
+          height: size.height - 106,
+          constraints: const BoxConstraints(
+            minHeight: 700.0,
+          ),
+          child: Center(
+            child: Container(
+              constraints: const BoxConstraints(maxWidth: 400.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  // crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Login",
+                          style: TextStyle(
+                              fontSize: 35.0, fontWeight: FontWeight.bold),
+                        )),
+                    const SizedBox(
+                      height: 80.0,
+                    ),
+                    FormInputs(
+                      element: "email",
+                      errorText:
+                      responseHandler.message == "" ? null : responseHandler.message,
+                      inputValueFun: (value) {
+                        setState(() {
+                          inputData = inputData.copyWith(email: value);
+                        });
+                      },
+                      submitOnKey: formSubmit,
+                    ),
+                    FormInputs(
+                      element: "password",
+                      obscureText: true,
+                      errorText:
+                      responseHandler.message == "" ? null : responseHandler.message,
+                      inputValueFun: (value) {
+                        setState(() {
+                          inputData = inputData.copyWith(password: value);
+                        });
+                      },
+                      submitOnKey: formSubmit,
+                    ),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: ElevatedButton(
+                        onPressed: formSubmit,
+                        style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.all(18.0),
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0))),
+                        child: const Text(
+                          "Log in",
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 18.0,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 30.0,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    HyperLink(
-                        text:
-                            "Don't have an account? Join us as out Driving Partner ",
-                        linkText: "here",
-                        link: () => widget.routeChange("registerDriver")),
                     const SizedBox(
-                      height: 20.0,
+                      height: 30.0,
                     ),
-                    HyperLink(
-                        text: "Don't have an account? Sign up as a Customer ",
-                        linkText: "here",
-                        link: () => widget.routeChange("registerCustomer")),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        HyperLink(
+                            text:
+                                "Don't have an account? Join us as out Driving Partner ",
+                            linkText: "here",
+                            link: () => widget.routeChange("registerDriver")),
+                        const SizedBox(
+                          height: 20.0,
+                        ),
+                        HyperLink(
+                            text: "Don't have an account? Sign up as a Customer ",
+                            linkText: "here",
+                            link: () => widget.routeChange("registerCustomer")),
+                      ],
+                    )
                   ],
-                )
-              ],
+                ),
+              ),
             ),
           ),
         ),

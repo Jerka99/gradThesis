@@ -103,45 +103,49 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-        mainAxisSize: MainAxisSize.min,
+    return Flex(
+      direction: Axis.vertical,
+        // mainAxisSize: MainAxisSize.min,
         children: [
-      AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          height: widget.isExpanded == null ? 400 : widget.isExpanded! ? 300 : 0,
-          child: ClipRect(
-              // removes unnecessary border from MyMap widget when its collapsed
-              child: MyMap(
-            userRole: widget.userData?.role,
-            markerCoordinateList: markerCoordinateList,
-            polylineList: polylineList,
-            addMarker: widget.mainMap ? addMarker : null,
-            removeMarker: widget.mainMap ? removeMarker : null,
-            floatingSaveButton: () {
-              if(widget.mainMap){
-              if (!whileLoopTriggered) {
-                widget.saveMapData!(addressClassList, markerCoordinateList, dateTime!, maxCapacity);
+      Flexible(
+        flex: 0,
+        child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            height: widget.isExpanded == null ? 400 : widget.isExpanded! ? 300 : 0,
+            child: ClipRect(
+                // removes unnecessary border from MyMap widget when its collapsed
+                child: MyMap(
+              userRole: widget.userData?.role,
+              markerCoordinateList: markerCoordinateList,
+              polylineList: polylineList,
+              addMarker: widget.mainMap ? addMarker : null,
+              removeMarker: widget.mainMap ? removeMarker : null,
+              floatingSaveButton: () {
+                if(widget.mainMap){
+                if (!whileLoopTriggered) {
+                  widget.saveMapData!(addressClassList, markerCoordinateList, dateTime!, maxCapacity);
+                  }
                 }
-              }
-              else{
-                widget.saveUserRoute!(widget.rideId!, selectedMarkerIndex1, selectedMarkerIndex2);
-              }
-            },
-            currentUserLocation: widget.currentUserLocation,
-            enableScrollWheel: widget.enableScrollWheel,
-            addressList: addressClassList,
-            unchangeableAddressList: widget.addressesList,
-            maxCapacity: widget.maxCapacity,
-            changeCapacity: (capacity) => {
-              widget.mainMap ? setState((){
-                maxCapacity = capacity;
-              }) : null},
-            mainMap: widget.mainMap,
-            selectedMarkerIndex1: selectedMarkerIndex1,
-            selectedMarkerIndex2: selectedMarkerIndex2,
-            setSelectedMarkers: setSelectedMarkers,
-            isMarkerAlteringEnabled: isMarkerAlteringEnabled,
-          ))
+                else{
+                  widget.saveUserRoute!(widget.rideId!, selectedMarkerIndex1, selectedMarkerIndex2);
+                }
+              },
+              currentUserLocation: widget.currentUserLocation,
+              enableScrollWheel: widget.enableScrollWheel,
+              addressList: addressClassList,
+              unchangeableAddressList: widget.addressesList,
+              maxCapacity: widget.maxCapacity,
+              changeCapacity: (capacity) => {
+                widget.mainMap ? setState((){
+                  maxCapacity = capacity;
+                }) : null},
+              mainMap: widget.mainMap,
+              selectedMarkerIndex1: selectedMarkerIndex1,
+              selectedMarkerIndex2: selectedMarkerIndex2,
+              setSelectedMarkers: setSelectedMarkers,
+              isMarkerAlteringEnabled: isMarkerAlteringEnabled,
+            ))
+        ),
       ),
       SizedBox(
         child: Container(
