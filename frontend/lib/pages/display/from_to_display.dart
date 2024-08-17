@@ -10,6 +10,7 @@ class FromToDisplay extends StatefulWidget {
   bool displayMore;
   Function? expandButton;
   Function(DateTime) setDateTime;
+  bool isRideCancelable;
 
   FromToDisplay(
       {required this.addressesList,
@@ -17,6 +18,7 @@ class FromToDisplay extends StatefulWidget {
       this.displayMore = true,
       this.expandButton,
       required this.setDateTime,
+      required this.isRideCancelable,
       super.key});
 
   @override
@@ -39,15 +41,19 @@ class _FromToDisplayState extends State<FromToDisplay> {
             direction: Axis.vertical,
             children: [
           if (widget.expandButton != null)
-            Container(
-              alignment: Alignment.centerRight,
-              child: IconButton(
-                onPressed: () =>
-                    {if (widget.expandButton != null) widget.expandButton!()},
-                icon: widget.displayMore
-                    ? const Icon(Icons.arrow_drop_up)
-                    : const Icon(Icons.arrow_drop_down),
-              ),
+            Flex(
+              direction: Axis.horizontal,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Container(width: 20),
+                IconButton(
+                  onPressed: () =>
+                      {if (widget.expandButton != null) widget.expandButton!()},
+                  icon: widget.displayMore
+                      ? const Icon(Icons.arrow_drop_up)
+                      : const Icon(Icons.arrow_drop_down),
+                ),
+              ],
             ),
           ...listViewHeader(),
           AnimatedContainer(

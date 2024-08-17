@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:travel_mate/myMap/all_rides_list.dart';
 import 'package:travel_mate/myMap/map_and_display_connector.dart';
-import 'package:travel_mate/myMap/map_data_class.dart';
 
 class AllRidesPage extends StatefulWidget {
   Function fetchAllRides;
   AllRidesList allRidesList;
+  int? selectedId;
 
   AllRidesPage(
-      {required this.fetchAllRides, required this.allRidesList, super.key});
+      {required this.fetchAllRides, required this.allRidesList, this.selectedId, super.key});
 
   @override
   State<AllRidesPage> createState() => _AllRidesPageState();
@@ -16,17 +16,29 @@ class AllRidesPage extends StatefulWidget {
 
 class _AllRidesPageState extends State<AllRidesPage> {
   int? expandedIndex;
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     AllRidesList.init();
     widget.fetchAllRides();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollToRideId(widget.selectedId); // Replace 2 with the desired rideId
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    // widget.allRidesList = AllRidesList(listOfRides: []);
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+        controller: _scrollController,
         shrinkWrap: true,
         itemCount: widget.allRidesList.listOfRides.length,
         itemBuilder: (context, index) {
@@ -60,9 +72,25 @@ class _AllRidesPageState extends State<AllRidesPage> {
               rideId: widget.allRidesList.listOfRides[index].rideId,
               selectedMarkerIndex1: widget.allRidesList.listOfRides[index].selectedMarkerIndex1,
               selectedMarkerIndex2: widget.allRidesList.listOfRides[index].selectedMarkerIndex2,
+              createdBy: widget.allRidesList.listOfRides[index].createdBy,
             ),
           );
         });
+  }
+
+  Future<void> _scrollToRideId(int? rideId) async {
+    final index = widget.allRidesList.listOfRides.indexWhere((ride) => ride.rideId == rideId);
+    if (index != -1) {
+      _scrollController.animateTo(
+        index * 375.0, // Assuming each item has a height of 350.0
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+      await Future.delayed(const Duration(milliseconds: 500));
+      setState(() {
+        expandedIndex = index;
+      });
+    }
   }
 
   DateTime epochToDataTime(double duration) {

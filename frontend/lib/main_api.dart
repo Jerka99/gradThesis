@@ -138,5 +138,46 @@ class MainApiClass {
     }
   }
 
+  Future<dynamic> deleteUserRoute(int rideId) async {
+    String? token = await StoreSecurity().getToken();
+
+    Response response = await http.post(Uri.parse(
+        "${AppConstants.backendUrl}/deleteUserRoute"),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(<String, dynamic>{
+          'rideId': rideId,
+        }));
+    if(response.statusCode == 200) {
+      return ResponseHandler(message: response.body, status: response.statusCode);
+    }
+    else{
+      ResponseHandler responseHandler = ResponseHandler.fromJson(jsonDecode(response.body));
+      return responseHandler;
+    }
+  }
+
+  Future<dynamic> deleteRideCreatedByDriver(int rideId) async {
+    String? token = await StoreSecurity().getToken();
+
+    Response response = await http.post(Uri.parse(
+        "${AppConstants.backendUrl}/deleteRideCreatedByDriver"),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(<String, dynamic>{
+          'rideId': rideId,
+        }));
+    if(response.statusCode == 200) {
+      return ResponseHandler(message: response.body, status: response.statusCode);
+    }
+    else{
+      ResponseHandler responseHandler = ResponseHandler.fromJson(jsonDecode(response.body));
+      return responseHandler;
+    }
+  }
 
 }

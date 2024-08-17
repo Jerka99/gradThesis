@@ -60,7 +60,7 @@ class CustomBarConnector extends StatelessWidget{
 //this will prevent going back to CustomBar screen
         return CustomBar(
             route: vm.route,
-            userHasRole: vm.userHasRole,
+            userRole: vm.userHasRole,
             routeChange: vm.routeChange
         );},
     );

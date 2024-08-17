@@ -63,4 +63,22 @@ public class RideDataController {
 
         return new ResponseEntity<>(rideData, headers, HttpStatus.OK);
     }
+
+    @PostMapping("/deleteUserRoute")
+    @PreAuthorize("hasAnyRole('CUSTOMER')")
+    public ResponseEntity<String> deleteUserRoute(@RequestBody UsersRideRouteDTO usersRideRouteDTO) {
+
+        ridesService.deleteUserRoute(usersRideRouteDTO.getRideId());
+
+        return new ResponseEntity<>("ride id " + usersRideRouteDTO.getRideId() + " is canceled successfully!", HttpStatus.OK);
+    }
+
+    @PostMapping("/deleteRideCreatedByDriver")
+    @PreAuthorize("hasAnyRole('DRIVER')")
+    public ResponseEntity<String> deleteRideCreatedByDriver(@RequestBody UsersRideRouteDTO usersRideRouteDTO) {
+
+        ridesService.deleteRide(usersRideRouteDTO.getRideId());
+
+        return new ResponseEntity<>("ride id " + usersRideRouteDTO.getRideId() + " is deleted successfully!", HttpStatus.OK);
+    }
 }

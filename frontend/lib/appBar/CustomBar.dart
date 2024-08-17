@@ -6,11 +6,11 @@ import '../role_handler.dart';
 class CustomBar extends StatefulWidget {
   final Function(String) routeChange;
   final String? route;
-  final UserRole? userHasRole;
+  final UserRole? userRole;
 
   const CustomBar({
     required this.routeChange,
-    this.userHasRole,
+    this.userRole,
     this.route,
     super.key,
   });
@@ -20,12 +20,27 @@ class CustomBar extends StatefulWidget {
 }
 
 class _CustomBarState extends State<CustomBar> {
-  Map<String, String> tabs = {
-    "/": "home",
-    "allRides": "All Rides",
-    "myProfile": "My Profile"
-  };
-  int current = 0;
+  late UserRole userRole;
+  late Map<String, String> tabs;
+  @override
+  initState(){
+    super.initState();
+    tabs = {
+      "/": widget.userRole == UserRole.customer ? "Desire ride" : "Create ride",
+      "allRides": "All Rides",
+      "myProfile": "My Profile"
+    };
+  }
+  @override
+  void didUpdateWidget(covariant CustomBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    tabs = {
+      "/": widget.userRole == UserRole.customer ? "Desire ride" : "Create ride",
+      "allRides": "All Rides",
+      "myProfile": "My Profile"
+    };
+  }
+    int current = 0;
 
   double changePosition(width, String? route) {
     int index = tabs.keys.contains(route) ? tabs.keys.toList().indexOf(route!) : 0;
@@ -45,7 +60,7 @@ class _CustomBarState extends State<CustomBar> {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return WidgetWithRole(
-      role: widget.userHasRole,
+      role: widget.userRole,
       widgetName: "Bar",
       child: Column(
         children: [

@@ -10,6 +10,7 @@ class MapData{
   int rideId;
   int? selectedMarkerIndex1;
   int? selectedMarkerIndex2;
+  int? createdBy;
 
   MapData({
     this.markerCoordinateList = const [],
@@ -18,7 +19,8 @@ class MapData{
     this.maxCapacity = 0,
     this.rideId = 0,
     this.selectedMarkerIndex1,
-    this.selectedMarkerIndex2
+    this.selectedMarkerIndex2,
+    this.createdBy,
   });
 
   MapData copyWith({
@@ -44,7 +46,8 @@ class MapData{
           maxCapacity == other.maxCapacity &&
           rideId == other.rideId &&
           selectedMarkerIndex1 == other.selectedMarkerIndex1 &&
-          selectedMarkerIndex2 == other.selectedMarkerIndex2;
+          selectedMarkerIndex2 == other.selectedMarkerIndex2 &&
+          createdBy == other.createdBy;
 
   @override
   int get hashCode =>
@@ -54,11 +57,12 @@ class MapData{
       maxCapacity.hashCode ^
       rideId.hashCode ^
       selectedMarkerIndex1.hashCode ^
-      selectedMarkerIndex2.hashCode;
+      selectedMarkerIndex2.hashCode ^
+      createdBy.hashCode;
 
   @override
   String toString() {
-    return 'MapData{markerCoordinateList2: $markerCoordinateList, polylineList2: $polylineList, addressesList: $addressesList maxCapacity: $maxCapacity rideId: $rideId, selectedMarkerIndex1 $selectedMarkerIndex1, selectedMarkerIndex2 $selectedMarkerIndex2}';
+    return 'MapData{markerCoordinateList2: $markerCoordinateList, polylineList2: $polylineList, addressesList: $addressesList maxCapacity: $maxCapacity rideId: $rideId, selectedMarkerIndex1 $selectedMarkerIndex1, selectedMarkerIndex2 $selectedMarkerIndex2, createdBy $createdBy}';
   }
 
   MapData.fromJson(Map<String, dynamic> json)
@@ -68,5 +72,6 @@ class MapData{
         maxCapacity = (json['maxCapacity'] as double),
         rideId = (json['rideId'] as int),
         selectedMarkerIndex1 = (json['selectedMarkerIndex1'] as int?),
-        selectedMarkerIndex2 = (json['selectedMarkerIndex2'] as int?);
+        selectedMarkerIndex2 = (json['selectedMarkerIndex2'] as int?),
+        createdBy = (json['createdBy'] as int);
 }

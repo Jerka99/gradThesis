@@ -146,7 +146,9 @@ class AppViewportState extends State<AppViewport> {
           content: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const CircularProgressIndicator(),
+              const CircularProgressIndicator(
+                color: Colors.black,
+              ),
               const SizedBox(width: 20),
               Text('Loading $content'),
             ],

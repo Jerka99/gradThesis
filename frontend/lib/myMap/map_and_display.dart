@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:travel_mate/model.dart';
-
 import '../pages/display/from_to_display.dart';
 import '../user_role.dart';
 import 'address_class.dart';
 import 'coordinates_api.dart';
 import 'my_map.dart';
+import 'package:async_redux/async_redux.dart';
 
 class MapAndDisplay extends StatefulWidget {
   List<LatLng>? markerCoordinateList;
@@ -25,6 +26,9 @@ class MapAndDisplay extends StatefulWidget {
   int? rideId;
   int? selectedMarkerIndex1;
   int? selectedMarkerIndex2;
+  Function(int rideId) deleteRide;
+  int? createdBy;
+  final Event<bool>? areMarkersFetched;
 
   MapAndDisplay(
       {this.markerCoordinateList,
@@ -43,6 +47,9 @@ class MapAndDisplay extends StatefulWidget {
       this.rideId,
       this.selectedMarkerIndex1,
       this.selectedMarkerIndex2,
+      required this.deleteRide,
+      this.createdBy,
+      this.areMarkersFetched,
       super.key});
 
   @override
@@ -60,7 +67,7 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
   late double maxCapacity;
   late int? selectedMarkerIndex1;
   late int? selectedMarkerIndex2;
-  late bool isMarkerAlteringEnabled;
+  late bool isRideCancelable;
 
   @override
   void initState() {
@@ -81,13 +88,13 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
     selectedMarkerIndex2 = widget.selectedMarkerIndex2;
 
     if(widget.userData?.role == UserRole.driver && !widget.mainMap){
-      isMarkerAlteringEnabled = false;
+      isRideCancelable = true;
     }
     else if(widget.selectedMarkerIndex1 == null) {
-      isMarkerAlteringEnabled = true;
+      isRideCancelable = false;
     }
     else {
-      isMarkerAlteringEnabled = false;
+      isRideCancelable = true;
     }
   }
 
@@ -96,8 +103,23 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
     if(widget.isExpanded != null && widget.isExpanded!) {
       fetchPolylineData();
     }
-    // selectedMarkerIndex1 = null;
-    // selectedMarkerIndex2 = null;
+    addressClassList = widget.addressesList?.map((address) => AddressClass(
+        city: address.city, // Copy each field from the original object
+        fullAddress: address.fullAddress,
+        dataBetweenTwoAddresses: address.dataBetweenTwoAddresses,
+        stationCapacity: address.stationCapacity
+    )).toList() ?? [];
+    selectedMarkerIndex1 = widget.selectedMarkerIndex1;
+    selectedMarkerIndex2 = widget.selectedMarkerIndex2;
+    if(widget.userData?.role == UserRole.driver && !widget.mainMap){
+      isRideCancelable = true;
+    }
+    else if(widget.selectedMarkerIndex1 == null) {
+      isRideCancelable = false;
+    }
+    else {
+      isRideCancelable = true;
+    }
     super.didUpdateWidget(oldWidget);
   }
 
@@ -111,11 +133,11 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
         flex: widget.mainMap ? 1 : 0,
         child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
-            height: widget.isExpanded == null ? 400 : widget.isExpanded! ? 300 : 0,
+            height: widget.mainMap ? 400 : widget.isExpanded! ? 300 : 0,
             child: ClipRect(
                 // removes unnecessary border from MyMap widget when its collapsed
-                child: MyMap(
-              userRole: widget.userData?.role,
+                child: (widget.mainMap || polylineList.isNotEmpty) ? MyMap(
+              userData: widget.userData,
               markerCoordinateList: markerCoordinateList,
               polylineList: polylineList,
               addMarker: widget.mainMap ? addMarker : null,
@@ -143,7 +165,18 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
               selectedMarkerIndex1: selectedMarkerIndex1,
               selectedMarkerIndex2: selectedMarkerIndex2,
               setSelectedMarkers: setSelectedMarkers,
-              isMarkerAlteringEnabled: isMarkerAlteringEnabled,
+              isRideCancelable: isRideCancelable,
+              deleteRide: () => {
+                widget.deleteRide(widget.rideId!),
+              },
+              createdBy: widget.createdBy,
+            ) :
+            Container(
+              color: Colors.white,
+              width: double.maxFinite,
+              child: const Center(child: CircularProgressIndicator(
+                color: Colors.black,
+              )),
             ))
         ),
       ),
@@ -161,6 +194,7 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
           }),
           expandButton: widget.expandButton,
           displayMore: widget.isExpanded ?? true,
+          isRideCancelable: isRideCancelable,
         ),
       )
     ]);
@@ -275,5 +309,4 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
       }
     });
   }
-
 }

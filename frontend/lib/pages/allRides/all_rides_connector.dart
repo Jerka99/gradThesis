@@ -14,15 +14,17 @@ class Factory extends VmFactory<AppState, AllRidesConnector, ViewModel> {
           fetchAllRides: () {
             dispatch(FetchMapData());
             },
-          allRidesList: state.allRidesList
+          allRidesList: state.allRidesList,
+        selectedId: state.selectedId
       );
 }
 
 class ViewModel extends Vm {
   final Function() fetchAllRides;
   final AllRidesList allRidesList;
+  final int? selectedId;
 
-  ViewModel({required this.fetchAllRides, required this.allRidesList});
+  ViewModel({required this.fetchAllRides, required this.allRidesList, required this.selectedId});
 
   @override
   bool operator ==(Object other) =>
@@ -31,15 +33,16 @@ class ViewModel extends Vm {
           other is ViewModel &&
           runtimeType == other.runtimeType &&
           fetchAllRides == other.fetchAllRides &&
-          allRidesList == other.allRidesList;
+          allRidesList == other.allRidesList &&
+          selectedId == other.selectedId;
 
   @override
   int get hashCode =>
-      super.hashCode ^ fetchAllRides.hashCode ^ allRidesList.hashCode;
+      super.hashCode ^ fetchAllRides.hashCode ^ allRidesList.hashCode ^ selectedId.hashCode;
 
   @override
   String toString() {
-    return 'ViewModel{fetchAllRides: $fetchAllRides, allRidesList: $allRidesList}';
+    return 'ViewModel{fetchAllRides: $fetchAllRides, allRidesList: $allRidesList, selectedId: $selectedId}';
   }
 }
 
@@ -54,7 +57,8 @@ class AllRidesConnector extends StatelessWidget {
 //this will prevent going back to login screen
         return AllRidesPage(
             fetchAllRides: vm.fetchAllRides,
-            allRidesList: vm.allRidesList
+            allRidesList: vm.allRidesList,
+            selectedId: vm.selectedId
         );
       },
     );

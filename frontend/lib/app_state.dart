@@ -18,6 +18,7 @@ class AppState {
   PlatformDto platformDto;
   AllRidesList allRidesList;
   LatLng? currentUserLocation;
+  int? selectedId;
 
   AppState({
     required this.routerDelegate,
@@ -29,6 +30,7 @@ class AppState {
     required this.platformDto,
     required this.allRidesList,
     required this.currentUserLocation,
+    required this.selectedId,
   });
 
   static AppState initialState() => AppState(
@@ -47,6 +49,7 @@ class AppState {
       ),
       allRidesList: AllRidesList.init(),
       currentUserLocation: null,
+      selectedId: null
   );
 
   AppState copy(
@@ -58,7 +61,8 @@ class AppState {
       ResponseHandler? responseHandler,
       PlatformDto? platformDto,
       AllRidesList? allRidesList,
-      LatLng? currentUserLocation
+      LatLng? currentUserLocation,
+      int? selectedId
       }) {
     return AppState(
         routerDelegate: routerDelegate ?? this.routerDelegate,
@@ -70,6 +74,7 @@ class AppState {
         platformDto: platformDto ?? this.platformDto,
         allRidesList: allRidesList ?? this.allRidesList,
         currentUserLocation: currentUserLocation ?? this.currentUserLocation,
+        selectedId: selectedId ?? this.selectedId,
     );
   }
 
@@ -87,7 +92,8 @@ class AppState {
           responseHandler == other.responseHandler &&
           platformDto == other.platformDto &&
           allRidesList == other.allRidesList &&
-          currentUserLocation == other.currentUserLocation;
+          currentUserLocation == other.currentUserLocation &&
+          selectedId == other.selectedId;
 
   @override
   int get hashCode =>
@@ -99,12 +105,13 @@ class AppState {
       responseHandler.hashCode ^
       platformDto.hashCode ^
       allRidesList.hashCode ^
-      currentUserLocation.hashCode;
+      currentUserLocation.hashCode ^
+      selectedId.hashCode;
 
 
   @override
   String toString() {
-    return 'AppState{routerDelegate: $routerDelegate, user: $user, route: $route, mapData: $mapData, dateTime: $dateTime, responseHandler: $responseHandler, platformDto: $platformDto, allRidesList: $allRidesList, currentUserLocation: $currentUserLocation}';
+    return 'AppState{routerDelegate: $routerDelegate, user: $user, route: $route, mapData: $mapData, dateTime: $dateTime, responseHandler: $responseHandler, platformDto: $platformDto, allRidesList: $allRidesList, currentUserLocation: $currentUserLocation, selectedId: $selectedId}';
   }
 
   DateTime setDateTime(AppState state) => state.dateTime.copyWith(

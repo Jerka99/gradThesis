@@ -15,6 +15,7 @@ import com.example.demo.Map.repository.RidesCounterRepository;
 import com.example.demo.Map.repository.RidesNumRepository;
 import com.example.demo.Map.repository.RidesRepository;
 import com.example.demo.Map.repository.UsersRouteRepository;
+import jakarta.transaction.SystemException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -98,6 +99,7 @@ public class RidesService {
         List<LatLng> markerCoordinateList = new ArrayList<>();
         double maxCapacity = 0.0;
         RideNum rideNum = null;
+        Long createdById = null;
 
         User user = (User) authService.getCurrentAuthentication().getPrincipal();
 
@@ -106,6 +108,7 @@ public class RidesService {
             markerCoordinateList.add(new LatLng(coordinates));
             maxCapacity = el.getRideNum().getMaxCapacity();
             rideNum = el.getRideNum();
+            createdById = el.getCreatedBy().getId();
             Long peopleOnStation = usersRouteRepository.countByRideNumAndSequence(el.getRideNum(), el.getSequence());
             Long capacityOnStation = (long) (el.getRideNum().getMaxCapacity() - peopleOnStation);
             addressesList.add(new AddressClass(el.getFullAddress(), el.getCity(), el.getDataBetweenTwoAddresses(), capacityOnStation));
@@ -115,9 +118,9 @@ public class RidesService {
         Integer lastMarker = null;
         if(!sequences.isEmpty()){
         firstMarker = sequences.get(0) - 1;
-        lastMarker = (sequences.get(sequences.size() - 1) + 1);
+        lastMarker = (sequences.get(sequences.size() - 1));
         }
-        return new RideData(addressesList, markerCoordinateList, maxCapacity, rideNum.getId(), firstMarker, lastMarker);
+        return new RideData(addressesList, markerCoordinateList, maxCapacity, rideNum.getId(), firstMarker, lastMarker, createdById);
     }
 
     private static RidesTable dataMapper(User user, LatLng markersCoordinates, AddressClass addressData, int sequence, RideNum newRide) {
@@ -139,6 +142,28 @@ public class RidesService {
                 .rideNum(ride)
                 .sequence(sequence)
                 .build();
+    }
+
+    public void deleteUserRoute(long rideId) {
+        User user = (User) authService.getCurrentAuthentication().getPrincipal();
+
+        try {
+        usersRouteRepository.deleteByUserIdAndRideId(user.getId(), rideId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void deleteRide(long rideId) {
+        User user = (User) authService.getCurrentAuthentication().getPrincipal();
+        RideNum rideNum = ridesNumRepository.getReferenceById(rideId);
+            try {
+                usersRouteRepository.deleteRideId(rideId);
+                ridesRepository.deleteByRideNum(rideNum);
+                ridesNumRepository.delete(rideNum);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
     }
 }
 

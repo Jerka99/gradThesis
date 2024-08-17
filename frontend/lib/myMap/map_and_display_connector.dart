@@ -26,7 +26,12 @@ class Factory extends VmFactory<AppState, MapAndDisplayConnector, ViewModel> {
         currentUserLocation: state.currentUserLocation,
         saveUserRoute: (int rideId, int? firstMarker, int? lastMarker){
           dispatch(SaveUserRoute(rideId: rideId, firstMarker: firstMarker, lastMarker: lastMarker));
-        }
+        },
+        deleteRide: (int rideId){
+          state.user.role == UserRole.customer ? dispatch(DeleteCustomerRoute(rideId: rideId)) :
+          dispatch(DeleteRideCreatedByDriver(rideId: rideId));
+        },
+        areMarkersFetched: state.allRidesList.areMarkersFetched
       );
 }
 
@@ -38,6 +43,9 @@ class ViewModel extends Vm {
   UserData? userData;
   LatLng? currentUserLocation;
   Function(int rideId, int? firstMarker, int? lastMarker)? saveUserRoute;
+  Function(int rideId) deleteRide;
+  final Event<bool>? areMarkersFetched;
+
 
   ViewModel({
     required this.saveMapData,
@@ -45,7 +53,9 @@ class ViewModel extends Vm {
     this.removeLastMarkerFun,
     this.userData,
     this.currentUserLocation,
-    this.saveUserRoute});
+    this.saveUserRoute,
+    required this.deleteRide,
+    required this.areMarkersFetched});
 
   @override
   bool operator ==(Object other) =>
@@ -57,7 +67,8 @@ class ViewModel extends Vm {
               removeLastMarkerFun == other.removeLastMarkerFun &&
               saveMapData == other.saveMapData &&
               userData == other.userData &&
-              currentUserLocation == other.currentUserLocation;
+              currentUserLocation == other.currentUserLocation &&
+              areMarkersFetched == other.areMarkersFetched;
 
   @override
   int get hashCode =>
@@ -66,11 +77,12 @@ class ViewModel extends Vm {
       removeLastMarkerFun.hashCode ^
       saveMapData.hashCode ^
       userData.hashCode ^
-      currentUserLocation.hashCode;
+      currentUserLocation.hashCode ^
+      areMarkersFetched.hashCode;
 
   @override
   String toString() {
-    return 'ViewModel{addMapData: $addMapData, removeLastMarkerFun: $removeLastMarkerFun, saveMapData: $saveMapData, userData: $userData, currentUserLocation: $currentUserLocation}';
+    return 'ViewModel{addMapData: $addMapData, removeLastMarkerFun: $removeLastMarkerFun, saveMapData: $saveMapData, userData: $userData, currentUserLocation: $currentUserLocation, areMarkersFetched $areMarkersFetched}';
   }
 }
 
@@ -86,8 +98,9 @@ class MapAndDisplayConnector extends StatelessWidget {
   bool mainMap;
   double maxCapacity;
   int? rideId;
-  final int? selectedMarkerIndex1;
-  final int? selectedMarkerIndex2;
+  int? selectedMarkerIndex1;
+  int? selectedMarkerIndex2;
+  int? createdBy;
 
   MapAndDisplayConnector({
     this.polylineList,
@@ -103,6 +116,7 @@ class MapAndDisplayConnector extends StatelessWidget {
     this.rideId,
     this.selectedMarkerIndex1,
     this.selectedMarkerIndex2,
+    this.createdBy,
     super.key});
 
   @override
@@ -127,6 +141,9 @@ class MapAndDisplayConnector extends StatelessWidget {
           rideId: rideId,
           selectedMarkerIndex1: selectedMarkerIndex1,
           selectedMarkerIndex2: selectedMarkerIndex2,
+          deleteRide: vm.deleteRide,
+          createdBy: createdBy,
+          areMarkersFetched: vm.areMarkersFetched,
         );
       },
     );

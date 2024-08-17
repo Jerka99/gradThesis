@@ -96,7 +96,7 @@ Future<void> createAddressObject(address, stationNumber, callback) async {
   String? cityOrDistrict = address?.address.city == null
       ? null
       : address.address.city == ""
-          ? (address.address.district == ""
+        ? (address.address.district == ""
               ? "Unknown Station Name"
               : address.address.district)
           : address.address.city;

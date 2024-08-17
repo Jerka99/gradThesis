@@ -99,3 +99,55 @@ class FetchMapData extends ReduxAction<AppState> {
     }
   }
 }
+
+class DeleteCustomerRoute extends ReduxAction<AppState> {
+    int rideId;
+
+  DeleteCustomerRoute({
+    required this.rideId,
+  });
+
+  @override
+  Future<AppState?> reduce() async {
+
+    ResponseHandler? response =
+    await MainApiClass().deleteUserRoute(rideId);
+    if (response?.status == 200) {
+      appViewportKey.currentState?.informUser(response!.message, Colors.green);
+    } else {
+      appViewportKey.currentState?.informUser(response!.message, Colors.red);
+    }
+
+      List<MapData> ridesList = await MainApiClass().fetchAllRides();
+
+      return state.copy(allRidesList: state.allRidesList.copyWith(listOfRides: ridesList, areMarkersFetched: Event<bool>(true)));
+  }
+}
+
+class DeleteRideCreatedByDriver extends ReduxAction<AppState> {
+  int rideId;
+
+  DeleteRideCreatedByDriver({
+    required this.rideId,
+  });
+
+  @override
+  Future<AppState?> reduce() async {
+    ResponseHandler? response =
+    await MainApiClass().deleteRideCreatedByDriver(rideId);
+    if (response?.status == 200) {
+      appViewportKey.currentState?.informUser(response!.message, Colors.green);
+    } else {
+      appViewportKey.currentState?.informUser(response!.message, Colors.red);
+    }
+    final index = state.allRidesList.listOfRides.indexWhere((element) =>
+    element.rideId == rideId);
+
+    if (index != -1) {
+      state.allRidesList.listOfRides.removeAt(index);
+
+      return state.copy(allRidesList: state.allRidesList);
+    }
+  }
+}
+

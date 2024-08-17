@@ -2,6 +2,7 @@ import 'package:customizable_counter/customizable_counter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:travel_mate/model.dart';
 import 'package:travel_mate/myMap/address_class.dart';
 import 'package:travel_mate/user_role.dart';
 
@@ -11,7 +12,7 @@ class MyMap extends StatefulWidget {
   final List<LatLng>? markerCoordinateList;
   final List<LatLng>? polylineList;
   final Function() floatingSaveButton;
-  final UserRole? userRole;
+  final UserData? userData;
   final bool enableScrollWheel;
   final LatLng? currentUserLocation;
   final Function(LatLng)? addMarker;
@@ -24,14 +25,16 @@ class MyMap extends StatefulWidget {
   final int? selectedMarkerIndex1;
   final int? selectedMarkerIndex2;
   final Function(int index)? setSelectedMarkers;
-  final bool isMarkerAlteringEnabled;
+  final bool isRideCancelable;
+  final Function() deleteRide;
+  final int? createdBy;
 
   const MyMap({
     super.key,
     this.markerCoordinateList,
     this.polylineList,
     required this.floatingSaveButton,
-    this.userRole,
+    this.userData,
     this.enableScrollWheel = false,
     required this.currentUserLocation,
     this.addMarker,
@@ -44,7 +47,9 @@ class MyMap extends StatefulWidget {
     this.selectedMarkerIndex1,
     this.selectedMarkerIndex2,
     this.setSelectedMarkers,
-    this.isMarkerAlteringEnabled = true,
+    this.isRideCancelable = false,
+    required this.deleteRide,
+    this.createdBy,
   });
 
   @override
@@ -56,6 +61,7 @@ class _MyMap extends State<MyMap> {
   final MapController _mapController = MapController();
   late List<LatLng> markerCoordinateList;
   late List<LatLng> polylineList;
+  late bool isRideCancelable;
 
   @override
   void initState() {
@@ -63,6 +69,7 @@ class _MyMap extends State<MyMap> {
     markerCoordinateList = widget.markerCoordinateList ?? <LatLng>[];
     polylineList = widget.polylineList ?? [];
     enableScrollWheel = widget.enableScrollWheel;
+    isRideCancelable = widget.isRideCancelable;
   }
 
   @override
@@ -156,7 +163,7 @@ class _MyMap extends State<MyMap> {
                       markersNumber: markerCoordinateList.length,
                       deleteOrSelectFunction: (int index) {
                               toggleScrolling(true);
-                              if (widget.isMarkerAlteringEnabled && (widget.mainMap || isAllStationsCapacityGood(index))) {
+                              if (!isRideCancelable && (widget.mainMap || isAllStationsCapacityGood(index))) {
                                 if (widget.removeMarker != null) {
                                   widget.removeMarker!(index);
                                 }
@@ -173,22 +180,52 @@ class _MyMap extends State<MyMap> {
                       markerColor: getMarkerColor(markerCoordinate.key, markerCoordinateList.length),
                   ))
                       .toList()),
-              Align(
-                  alignment: Alignment.bottomRight,
-                  child: Container(
-                      margin: const EdgeInsets.all(5.0),
-                      child: FloatingActionButton(
-                          backgroundColor: Colors.blue,
-                          onPressed: () {
-                            widget.floatingSaveButton();
-                          },
-                          child: const Text(
-                            "Save",
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
-                          )))),
-              Align(
+               Align(
+                    alignment: Alignment.bottomRight,
+                    child: Container(
+                        margin: const EdgeInsets.all(5.0),
+                        child: Flex(
+                          direction: Axis.vertical,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            if (!isRideCancelable)
+                              Flexible(
+                                child: FloatingActionButton(
+                                  backgroundColor: Colors.blue,
+                                  onPressed: () {
+                                    setState(() {
+                                      if(!widget.mainMap && widget.userData!.role == UserRole.customer && widget.selectedMarkerIndex1 != null && widget.selectedMarkerIndex2 != null) isRideCancelable = true;
+                                    });
+                                    widget.floatingSaveButton();
+                                  },
+                                  child: const Text(
+                                    "Save",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                            if (isRideCancelable && !widget.mainMap && (widget.userData?.id == widget.createdBy || widget.userData?.role == UserRole.customer && isRideCancelable))
+                              Flexible(
+                                child: FloatingActionButton(
+                                  backgroundColor: Colors.blue,
+                                  onPressed: () {
+                                    setState(() {
+                                      if(widget.userData!.role == UserRole.customer) isRideCancelable = false;
+                                    });
+                                    widget.deleteRide();
+                                  },
+                                  child: const Icon(
+                                    Icons.delete,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                          ],
+                        ),
+                    )),
+              if(widget.userData!.role == UserRole.driver || !widget.mainMap) Align(
                 alignment: Alignment.topLeft,
                 child: widget.mainMap ? Container(
                   margin: const EdgeInsets.all(5.0),
