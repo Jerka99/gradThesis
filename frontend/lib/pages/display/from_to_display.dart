@@ -126,11 +126,6 @@ class _FromToDisplayState extends State<FromToDisplay> {
                     child: Padding(
                       padding: const EdgeInsets.all(2.0),
                       child:
-                          // AutoScrollingText(
-                          //     text: " ${widget.addressesList[index - 1].fullAddress ?? "-"}",
-                          //     fontSize: 14,
-                          //     fontWeight: FontWeight.bold,
-                          //     offset: Offset(100, 100))
                           Text(
                         "${widget.addressesList[index - 1].fullAddress} ${widget.addressesList[index - 1].city}" ??
                             "-",

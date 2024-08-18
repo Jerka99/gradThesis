@@ -28,7 +28,6 @@ class MapAndDisplay extends StatefulWidget {
   int? selectedMarkerIndex2;
   Function(int rideId) deleteRide;
   int? createdBy;
-  final Event<bool>? areMarkersFetched;
 
   MapAndDisplay(
       {this.markerCoordinateList,
@@ -49,7 +48,6 @@ class MapAndDisplay extends StatefulWidget {
       this.selectedMarkerIndex2,
       required this.deleteRide,
       this.createdBy,
-      this.areMarkersFetched,
       super.key});
 
   @override

@@ -129,8 +129,6 @@ public class RidesService {
                 }
             }
         }
-
-
     }
 
     public List<RideData> fetchAllRides() {
@@ -147,6 +145,61 @@ public class RidesService {
 
         return rideDataList;
     }
+
+    public List<PersonalRide> fetchCustomersRidesById() {
+        User user = (User) authService.getCurrentAuthentication().getPrincipal();
+        List<PersonalRide> personalRideList = new ArrayList<>();
+        List<UsersRideRoute> numberOfRides = usersRouteRepository.findAllByUserId(user.getId());
+
+        Map<Long, List<UsersRideRoute>> groupedById = numberOfRides.stream()
+                .collect(Collectors.groupingBy(ride -> ride.getRideNum().getId()));
+
+        List<List<UsersRideRoute>> listOfLists = new ArrayList<>(groupedById.values());
+
+        listOfLists.forEach(el->{
+            RidesTable firstFetch = ridesRepository.findBySequenceAndRideNum(el.getFirst().getSequence(), el.getFirst().getRideNum());
+            String firstLocation = firstFetch.getFullAddress() + firstFetch.getCity();
+
+            RidesTable secondFetch = ridesRepository.findBySequenceAndRideNum(el.getLast().getSequence() + 1, el.getFirst().getRideNum());
+            String secondLocation = secondFetch.getFullAddress() + secondFetch.getCity();
+            PersonalRide personalRide = new PersonalRide(
+                    el.getFirst().getRideNum().getId(),
+                    firstLocation,
+                    secondLocation
+            );
+            personalRideList.add(personalRide);
+        });
+
+        return personalRideList;
+    }
+
+    public List<PersonalRide> fetchDriversRidesById() {
+        User user = (User) authService.getCurrentAuthentication().getPrincipal();
+        List<PersonalRide> personalRideList = new ArrayList<>();
+        List<RidesTable> numberOfRides = ridesRepository.findAllByCreatedBy(user);
+
+        Map<Long, List<RidesTable>> groupedById = numberOfRides.stream()
+                .collect(Collectors.groupingBy(ride -> ride.getRideNum().getId()));
+
+        List<List<RidesTable>> listOfLists = new ArrayList<>(groupedById.values());
+
+        listOfLists.forEach(el->{
+            String firstLocation = el.getFirst().getFullAddress() + el.getFirst().getCity();
+
+            String lastLocation = el.getLast().getFullAddress() + el.getLast().getCity();
+            PersonalRide personalRide = new PersonalRide(
+                    el.getFirst().getRideNum().getId(),
+                    firstLocation,
+                    lastLocation
+            );
+            personalRideList.add(personalRide);
+        });
+
+
+        return personalRideList;
+    }
+
+
 
     public void deleteUserRoute(long rideId) {
         User user = (User) authService.getCurrentAuthentication().getPrincipal();

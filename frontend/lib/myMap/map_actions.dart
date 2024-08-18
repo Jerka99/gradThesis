@@ -6,7 +6,9 @@ import 'package:travel_mate/app_state.dart';
 import 'package:travel_mate/main.dart';
 import 'package:travel_mate/myMap/map_data_class.dart';
 import 'package:travel_mate/myMap/address_class.dart';
+import 'package:travel_mate/myMap/personal_rides_list.dart';
 import 'package:travel_mate/pages/auth/response_handler_dto.dart';
+import 'package:travel_mate/user_role.dart';
 import '../main_api.dart';
 
 class SaveRideData extends ReduxAction<AppState> {
@@ -133,6 +135,32 @@ class FetchMapData extends ReduxAction<AppState> {
   }
 }
 
+class FetchPersonalMapData extends ReduxAction<AppState> {
+  FetchPersonalMapData();
+
+  @override
+  Future<AppState?> reduce() async {
+    try {
+      appViewportKey.currentState?.showLoading("personal rides");
+      List<PersonalRide> personalRidesList;
+      if(state.user.role == UserRole.driver)
+        personalRidesList = await MainApiClass().fetchPersonalRidesByDriver();
+      else
+        personalRidesList = await MainApiClass().fetchPersonalRidesByCustomer();
+
+      return state.copy(
+          personalRidesList: state.personalRidesList.copyWith(listOfRides: personalRidesList));
+    } catch (e) {
+      appViewportKey.currentState
+          ?.informUser('Failed to fetch rides: $e', Colors.red);
+      return null;
+    } finally {
+      Navigator.of(appViewportKey.currentState!.context).pop();
+    }
+  }
+}
+
+
 class DeleteCustomerRoute extends ReduxAction<AppState> {
     int rideId;
 
@@ -153,7 +181,7 @@ class DeleteCustomerRoute extends ReduxAction<AppState> {
 
       List<MapData> ridesList = await MainApiClass().fetchAllRides();
 
-      return state.copy(allRidesList: state.allRidesList.copyWith(listOfRides: ridesList, areMarkersFetched: Event<bool>(true)));
+      return state.copy(allRidesList: state.allRidesList.copyWith(listOfRides: ridesList));
   }
 }
 

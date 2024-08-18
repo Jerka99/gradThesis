@@ -1,5 +1,6 @@
 package com.example.demo.Map.controllers;
 
+import com.example.demo.Map.dto.PersonalRide;
 import com.example.demo.Map.dto.RideData;
 import com.example.demo.Map.dto.UsersRideRouteDTO;
 import com.example.demo.Map.services.RidesService;
@@ -59,6 +60,29 @@ public class RideDataController {
 
         return new ResponseEntity<>(rideData, headers, HttpStatus.OK);
     }
+
+    @GetMapping("/fetchPersonalRidesForCustomer")
+    @PreAuthorize("hasAnyRole('CUSTOMER')")
+    public ResponseEntity<List<PersonalRide>> fetchPersonalRidesForCustomer() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8); // Ensure UTF-8 encoding
+
+        List<PersonalRide> personalRideList = ridesService.fetchCustomersRidesById();
+
+        return new ResponseEntity<>(personalRideList, headers, HttpStatus.OK);
+    }
+
+    @GetMapping("/fetchPersonalRidesForDriver")
+    @PreAuthorize("hasAnyRole('DRIVER')")
+    public ResponseEntity<List<PersonalRide>> fetchPersonalRidesForDriver() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON_UTF8); // Ensure UTF-8 encoding
+
+        List<PersonalRide> personalRideList = ridesService.fetchDriversRidesById();
+
+        return new ResponseEntity<>(personalRideList, headers, HttpStatus.OK);
+    }
+
 
     @PostMapping("/deleteUserRoute")
     @PreAuthorize("hasAnyRole('CUSTOMER')")

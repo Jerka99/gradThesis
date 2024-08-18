@@ -83,7 +83,7 @@ public class DirectionsService {
 
         LocalDateTime futureDateTime = currentDateTime.plus(7, ChronoUnit.DAYS);
 
-        double epochSeconds = (double) futureDateTime.toEpochSecond(ZoneOffset.UTC);
+        double epochSeconds = (double) futureDateTime.toEpochSecond(ZoneOffset.UTC) * 1000;
 
         return epochSeconds;
     }

@@ -16,7 +16,7 @@ class Factory extends VmFactory<AppState, LoginConnector, ViewModel> {
             dispatch(LoginAction(authDto: auth));
           },
           routeChange: (path) {
-            dispatch(MyNavigateAction(path));
+            dispatch(MyNavigateAction(route: path));
             },
         responseHandler: state.responseHandler
       );

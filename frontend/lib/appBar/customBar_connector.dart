@@ -12,7 +12,7 @@ class Factory extends VmFactory<AppState, CustomBarConnector, ViewModel> {
       ViewModel(
         route: state.route,
         userHasRole: state.user.role,
-        routeChange: (String route){ dispatch(MyNavigateAction(route));},
+        routeChange: (String route){ dispatch(MyNavigateAction(route: route));},
       );
 }
 

@@ -63,7 +63,7 @@ class GetUserData extends ReduxAction<AppState> {
   Future<AppState?> reduce() async {
     ResponseHandler? responseHandler = await MainApiClass().logIn(token);
     if (responseHandler?.data != null) {
-      dispatch(MyNavigateAction("/"));
+      dispatch(MyNavigateAction(route: "/"));
       return store.state.copy(user: responseHandler!.data);
     } else {
       return store.state.copy(
@@ -83,7 +83,7 @@ class RegisterAction extends ReduxAction<AppState> {
 
     if(response?.message == "Successfully Registered") {
       appViewportKey.currentState?.informUser(response?.message);
-      dispatch(MyNavigateAction("login"));
+      dispatch(MyNavigateAction(route: "login"));
     }
     return state.copy(
         responseHandler: state.responseHandler?.copyWith(
@@ -97,7 +97,7 @@ class LogOutAction extends ReduxAction<AppState> {
   @override
   Future<AppState?> reduce() async {
     StoreSecurity().deleteToken();
-    dispatch(MyNavigateAction("login"));
+    dispatch(MyNavigateAction(route: "login"));
     return state.copy(
       user: UserData.init(),
       route: null,

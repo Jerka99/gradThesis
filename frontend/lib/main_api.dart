@@ -1,24 +1,17 @@
 import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:platform_detector/enums.dart';
 import 'package:travel_mate/StoreSecurity.dart';
 import 'package:travel_mate/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:travel_mate/model.dart';
-import 'package:travel_mate/myMap/coordinates_api.dart';
 import 'package:travel_mate/myMap/map_data_class.dart';
+import 'package:travel_mate/myMap/personal_rides_list.dart';
 import 'package:travel_mate/pages/auth/auth_dto.dart';
 import 'package:travel_mate/pages/auth/response_handler_dto.dart';
-import 'package:travel_mate/platform_dto.dart';
 import 'myMap/address_class.dart';
 
 class MainApiClass {
-  // static late PlatformDto platformDto; // Define static variable
-  //
-  // static void initializePlatform(PlatformDto platform) {
-  //   platformDto = platform;
-  // }
 
   Future<String?> getToken(AuthDto authDto) async {
     Response response;
@@ -93,6 +86,46 @@ class MainApiClass {
       }
     }
     return mapDataList;
+  }
+
+  Future<List<PersonalRide>> fetchPersonalRidesByDriver() async {
+    String? token = await StoreSecurity().getToken();
+
+    Response response = await http.get(Uri.parse(
+        "${AppConstants.backendUrl}/fetchPersonalRidesForDriver"),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token'
+        });
+    List<PersonalRide> personalDataList = [];
+    if (response.statusCode == 200) {
+      List<dynamic> decoded = jsonDecode(response.body);
+      for (var element in decoded) {
+        PersonalRide newRide = PersonalRide.fromJson(element);
+        personalDataList.add(newRide);
+      }
+    }
+    return personalDataList;
+  }
+
+  Future<List<PersonalRide>> fetchPersonalRidesByCustomer() async {
+    String? token = await StoreSecurity().getToken();
+
+    Response response = await http.get(Uri.parse(
+        "${AppConstants.backendUrl}/fetchPersonalRidesForCustomer"),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer $token'
+        });
+    List<PersonalRide> personalDataList = [];
+    if (response.statusCode == 200) {
+      List<dynamic> decoded = jsonDecode(response.body);
+      for (var element in decoded) {
+        PersonalRide newRide = PersonalRide.fromJson(element);
+        personalDataList.add(newRide);
+      }
+    }
+    return personalDataList;
   }
 
   Future saveRideData(List<AddressClass> addressesList,
@@ -200,5 +233,4 @@ class MainApiClass {
       return responseHandler;
     }
   }
-
 }

@@ -27,6 +27,5 @@ public interface UsersRouteRepository extends JpaRepository<UsersRideRoute, Long
     @Query("DELETE FROM UsersRideRoute urr WHERE urr.rideNum.id = :rideId")
     void deleteRideId(@Param("rideId") Long rideId);
 
-    List<UsersRideRoute> findByUserAndRideNum(User user, RideNum rideNum);
-
+    List<UsersRideRoute> findAllByUserId(Long userId);
 }

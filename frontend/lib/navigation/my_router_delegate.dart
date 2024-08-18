@@ -62,7 +62,7 @@ class MyRouterDelegate extends RouterDelegate<String>
           String);
       _currentRoute = route;
     }
-    StoreProvider.dispatch<AppState>(context, MyNavigateAction(_currentRoute!));
+    StoreProvider.dispatch<AppState>(context, MyNavigateAction(route: _currentRoute!));
 
     notifyListeners();
   }

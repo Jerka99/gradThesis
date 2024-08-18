@@ -31,7 +31,6 @@ class Factory extends VmFactory<AppState, MapAndDisplayConnector, ViewModel> {
           state.user.role == UserRole.customer ? dispatch(DeleteCustomerRoute(rideId: rideId)) :
           dispatch(DeleteRideCreatedByDriver(rideId: rideId));
         },
-        areMarkersFetched: state.allRidesList.areMarkersFetched
       );
 }
 
@@ -44,7 +43,6 @@ class ViewModel extends Vm {
   LatLng? currentUserLocation;
   Function(int rideId, int? firstMarker, int? lastMarker)? saveUserRoute;
   Function(int rideId) deleteRide;
-  final Event<bool>? areMarkersFetched;
 
 
   ViewModel({
@@ -55,7 +53,7 @@ class ViewModel extends Vm {
     this.currentUserLocation,
     this.saveUserRoute,
     required this.deleteRide,
-    required this.areMarkersFetched});
+    });
 
   @override
   bool operator ==(Object other) =>
@@ -67,8 +65,7 @@ class ViewModel extends Vm {
               removeLastMarkerFun == other.removeLastMarkerFun &&
               saveMapData == other.saveMapData &&
               userData == other.userData &&
-              currentUserLocation == other.currentUserLocation &&
-              areMarkersFetched == other.areMarkersFetched;
+              currentUserLocation == other.currentUserLocation;
 
   @override
   int get hashCode =>
@@ -77,12 +74,11 @@ class ViewModel extends Vm {
       removeLastMarkerFun.hashCode ^
       saveMapData.hashCode ^
       userData.hashCode ^
-      currentUserLocation.hashCode ^
-      areMarkersFetched.hashCode;
+      currentUserLocation.hashCode;
 
   @override
   String toString() {
-    return 'ViewModel{addMapData: $addMapData, removeLastMarkerFun: $removeLastMarkerFun, saveMapData: $saveMapData, userData: $userData, currentUserLocation: $currentUserLocation, areMarkersFetched $areMarkersFetched}';
+    return 'ViewModel{addMapData: $addMapData, removeLastMarkerFun: $removeLastMarkerFun, saveMapData: $saveMapData, userData: $userData, currentUserLocation: $currentUserLocation}';
   }
 }
 
@@ -143,7 +139,6 @@ class MapAndDisplayConnector extends StatelessWidget {
           selectedMarkerIndex2: selectedMarkerIndex2,
           deleteRide: vm.deleteRide,
           createdBy: createdBy,
-          areMarkersFetched: vm.areMarkersFetched,
         );
       },
     );

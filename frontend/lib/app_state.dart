@@ -5,6 +5,7 @@ import 'package:travel_mate/pages/auth/response_handler_dto.dart';
 import 'package:travel_mate/platform_dto.dart';
 import 'myMap/map_data_class.dart';
 import 'myMap/all_rides_list.dart';
+import 'myMap/personal_rides_list.dart';
 import 'navigation/app_routes.dart';
 import 'navigation/my_router_delegate.dart';
 
@@ -17,6 +18,7 @@ class AppState {
   ResponseHandler? responseHandler;
   PlatformDto platformDto;
   AllRidesList allRidesList;
+  PersonalRidesList personalRidesList;
   LatLng? currentUserLocation;
   int? selectedId;
 
@@ -29,6 +31,7 @@ class AppState {
     required this.responseHandler,
     required this.platformDto,
     required this.allRidesList,
+    required this.personalRidesList,
     required this.currentUserLocation,
     required this.selectedId,
   });
@@ -48,6 +51,7 @@ class AppState {
         currentPlatformType: PlatformDetector.platform.type,
       ),
       allRidesList: AllRidesList.init(),
+      personalRidesList: PersonalRidesList.init(),
       currentUserLocation: null,
       selectedId: null
   );
@@ -61,6 +65,7 @@ class AppState {
       ResponseHandler? responseHandler,
       PlatformDto? platformDto,
       AllRidesList? allRidesList,
+      PersonalRidesList? personalRidesList,
       LatLng? currentUserLocation,
       int? selectedId
       }) {
@@ -73,6 +78,7 @@ class AppState {
         responseHandler: responseHandler ?? this.responseHandler,
         platformDto: platformDto ?? this.platformDto,
         allRidesList: allRidesList ?? this.allRidesList,
+        personalRidesList: personalRidesList ?? this.personalRidesList,
         currentUserLocation: currentUserLocation ?? this.currentUserLocation,
         selectedId: selectedId ?? this.selectedId,
     );
@@ -92,6 +98,7 @@ class AppState {
           responseHandler == other.responseHandler &&
           platformDto == other.platformDto &&
           allRidesList == other.allRidesList &&
+          personalRidesList == other.personalRidesList &&
           currentUserLocation == other.currentUserLocation &&
           selectedId == other.selectedId;
 
@@ -105,19 +112,13 @@ class AppState {
       responseHandler.hashCode ^
       platformDto.hashCode ^
       allRidesList.hashCode ^
+      personalRidesList.hashCode ^
       currentUserLocation.hashCode ^
       selectedId.hashCode;
 
 
   @override
   String toString() {
-    return 'AppState{routerDelegate: $routerDelegate, user: $user, route: $route, mapData: $mapData, dateTime: $dateTime, responseHandler: $responseHandler, platformDto: $platformDto, allRidesList: $allRidesList, currentUserLocation: $currentUserLocation, selectedId: $selectedId}';
+    return 'AppState{routerDelegate: $routerDelegate, user: $user, route: $route, mapData: $mapData, dateTime: $dateTime, responseHandler: $responseHandler, platformDto: $platformDto, allRidesList: $allRidesList, personalRidesList: $personalRidesList, currentUserLocation: $currentUserLocation, selectedId: $selectedId}';
   }
-
-  DateTime setDateTime(AppState state) => state.dateTime.copyWith(
-        year: dateTime.year,
-        month: dateTime.month,
-        hour: dateTime.hour,
-        minute: dateTime.minute,
-      );
 }
