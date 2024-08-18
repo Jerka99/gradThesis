@@ -269,8 +269,20 @@ class _MapAndDisplayState extends State<MapAndDisplay> {
   }
 
   void addMarker(LatLng latLng) {
-    tempMarkerCoordinateList.add(latLng);
-    getPolyline(false);
+    if (widget.userData!.role == UserRole.customer) {
+      if (markerCoordinateList.length < 2) {
+        tempMarkerCoordinateList.add(latLng);
+        getPolyline(false);
+      } else if(!whileLoopTriggered){
+        removeMarker(markerCoordinateList.length - 1);
+        tempMarkerCoordinateList.add(latLng);
+        getPolyline(false);
+      }
+    }
+    else{
+      tempMarkerCoordinateList.add(latLng);
+      getPolyline(false);
+    }
   }
 
   void removeMarker(int index) {

@@ -4,25 +4,17 @@ import com.example.demo.Auth.entities.User;
 import com.example.demo.Auth.exceptions.DuplicateRouteException;
 import com.example.demo.Auth.repository.UserRepository;
 import com.example.demo.Auth.services.AuthService;
-import com.example.demo.Map.dto.AddressClass;
-import com.example.demo.Map.dto.LatLng;
-import com.example.demo.Map.dto.RideData;
-import com.example.demo.Map.dto.UsersRideRouteDTO;
+import com.example.demo.Map.dto.*;
+import com.example.demo.Map.entities.DesiredRide;
 import com.example.demo.Map.entities.RideNum;
 import com.example.demo.Map.entities.RidesTable;
 import com.example.demo.Map.entities.UsersRideRoute;
-import com.example.demo.Map.repository.RidesCounterRepository;
-import com.example.demo.Map.repository.RidesNumRepository;
-import com.example.demo.Map.repository.RidesRepository;
-import com.example.demo.Map.repository.UsersRouteRepository;
-import jakarta.transaction.SystemException;
+import com.example.demo.Map.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,13 +24,10 @@ public class RidesService {
     RidesRepository ridesRepository;
 
     @Autowired
-    AuthService authService;
-
-    @Autowired
     UserRepository userRepository;
 
-//    @Autowired
-//    RidesCounterRepository ridesCounterRepository;
+    @Autowired
+    AuthService authService;
 
     @Autowired
     RidesNumRepository ridesNumRepository;
@@ -46,12 +35,17 @@ public class RidesService {
     @Autowired
     UsersRouteRepository usersRouteRepository;
 
+    @Autowired
+    DesiredRidesRepository desiredRidesRepository;
 
     @Autowired
-    private WebClient.Builder webClientBuilder;
+    DirectionsService directionsService;
 
-    public void saveRideData(RideData rideData) {
-        User user = (User) authService.getCurrentAuthentication().getPrincipal();
+
+    public void saveRideData(RideData rideData, User user) {
+        if(user == null) {
+            user = (User) authService.getCurrentAuthentication().getPrincipal();
+        }
         RideNum newRide = RideNum.builder()
                 .maxCapacity(rideData.getMaxCapacity())
                 .build();
@@ -59,24 +53,84 @@ public class RidesService {
         newRide = ridesNumRepository.save(newRide);
 
         for (int i = 0; i < rideData.getMarkerCoordinateList().size(); i++) {
-            RidesTable ridesTable = dataMapper(user, rideData.getMarkerCoordinateList().get(i), rideData.getAddressesList().get(i), i, newRide);
+            RidesTable ridesTable = ridesTableMapper(user, rideData.getMarkerCoordinateList().get(i), rideData.getAddressesList().get(i), i, newRide);
             ridesRepository.save(ridesTable);
         }
     }
 
-    public void saveUserRoute(UsersRideRouteDTO usersRideRouteDTO) {
-        User user = (User) authService.getCurrentAuthentication().getPrincipal();
-        user.getId();
-
+    public void saveUserRoute(UsersRideRouteDTO usersRideRouteDTO, User user) {
+        if(user == null) {
+            user = (User) authService.getCurrentAuthentication().getPrincipal();
+        }
         RideNum rideNum = ridesNumRepository.getReferenceById(usersRideRouteDTO.getRideId());
 
         try {
+            User finalUser = user;
             usersRideRouteDTO.getSequence().forEach(number ->
-                    usersRouteRepository.save(routeMapper(user, rideNum, number))
+                    usersRouteRepository.save(routeMapper(finalUser, rideNum, number))
             );
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateRouteException("You have already scheduled this ride, ride id: " + rideNum.getId());
         }
+    }
+
+    public void saveDesiredRideData(RideData rideData) {
+        User user = (User) authService.getCurrentAuthentication().getPrincipal();
+
+        desiredRidesRepository.save(desiredRideMapper(rideData, user));
+
+        List<DesiredRide> allDesiredRides = desiredRidesRepository.findAll();
+
+        Map<String, List<DesiredRide>> groupedByFirstLocation = allDesiredRides.stream()
+                .collect(Collectors.groupingBy(DesiredRide::getFirstLocationCity));
+
+        for (Map.Entry<String, List<DesiredRide>> entry : groupedByFirstLocation.entrySet()) {
+            List<DesiredRide> ridesWithSameFirstLocation = entry.getValue();
+
+            if (ridesWithSameFirstLocation.size() >= 3) {
+
+                Map<String, List<DesiredRide>> groupedBySecondLocation = ridesWithSameFirstLocation.stream()
+                        .filter(ride -> !ride.getFirstLocationCity().equals(ride.getSecondLocationCity())) // Ensure locations are different
+                        .collect(Collectors.groupingBy(DesiredRide::getSecondLocationCity));
+
+
+                for (Map.Entry<String, List<DesiredRide>> secondEntry : groupedBySecondLocation.entrySet()) {
+                    List<DesiredRide> ridesWithSameSecondLocation = secondEntry.getValue();
+
+                    if (ridesWithSameSecondLocation.size() >= 3) {
+
+                        List<Double> durationsList = directionsService.getDurations(ridesWithSameSecondLocation);
+
+                        RideData newRideData = createNewRideData(ridesWithSameSecondLocation, durationsList);
+
+                        saveRideData(newRideData, userRepository.getReferenceById(1L));
+
+                        List<RideNum> rideNum = ridesNumRepository.findAll();
+
+
+                        for(int i = 0; i < ridesWithSameSecondLocation.size(); i ++) {
+                            List<Integer> sequences = new ArrayList<>();
+                            for (int j = 1; j <= 4; j++) {
+                                sequences.add(i + j); //for i = 0 - 1,2,3,4 for i = 1 - 2,3,4,5 and i = 2 - 3,4,5,6
+                            }
+                            UsersRideRouteDTO usersRideRouteDTO = new UsersRideRouteDTO(
+                                    rideNum.getLast().getId(),
+                                    ridesWithSameSecondLocation.get(i).getCreatedBy().getId(),
+                                    sequences
+                            );
+                            saveUserRoute(usersRideRouteDTO, ridesWithSameSecondLocation.get(i).getCreatedBy());
+                        }
+                        int size = ridesWithSameSecondLocation.size();
+                        for(int i = 0; i < size; i ++) {
+                            desiredRidesRepository.delete(ridesWithSameFirstLocation.get(i));
+                        }
+
+                    }
+                }
+            }
+        }
+
+
     }
 
     public List<RideData> fetchAllRides() {
@@ -93,6 +147,28 @@ public class RidesService {
 
         return rideDataList;
     }
+
+    public void deleteUserRoute(long rideId) {
+        User user = (User) authService.getCurrentAuthentication().getPrincipal();
+
+        try {
+            usersRouteRepository.deleteByUserIdAndRideId(user.getId(), rideId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void deleteRide(long rideId) {
+        RideNum rideNum = ridesNumRepository.getReferenceById(rideId);
+        try {
+            usersRouteRepository.deleteRideId(rideId);
+            ridesRepository.deleteByRideNum(rideNum);
+            ridesNumRepository.delete(rideNum);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     private RideData RideDataMapper(List<RidesTable> oneRide) {
         List<AddressClass> addressesList = new ArrayList<>();
@@ -123,7 +199,7 @@ public class RidesService {
         return new RideData(addressesList, markerCoordinateList, maxCapacity, rideNum.getId(), firstMarker, lastMarker, createdById);
     }
 
-    private static RidesTable dataMapper(User user, LatLng markersCoordinates, AddressClass addressData, int sequence, RideNum newRide) {
+    private static RidesTable ridesTableMapper(User user, LatLng markersCoordinates, AddressClass addressData, int sequence, RideNum newRide) {
         return RidesTable.builder()
                 .createdBy(user)
                 .fullAddress(addressData.getFullAddress())
@@ -144,26 +220,66 @@ public class RidesService {
                 .build();
     }
 
-    public void deleteUserRoute(long rideId) {
-        User user = (User) authService.getCurrentAuthentication().getPrincipal();
+    private DesiredRide desiredRideMapper(RideData rideData, User user) {
+        AddressClass firstAddress = rideData.getAddressesList().getFirst();
+        AddressClass lastAddress = rideData.getAddressesList().getLast();
 
-        try {
-        usersRouteRepository.deleteByUserIdAndRideId(user.getId(), rideId);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        LatLng firstCoordinates = rideData.getMarkerCoordinateList().getFirst();
+        LatLng secondCoordinates = rideData.getMarkerCoordinateList().getLast();
+
+        return DesiredRide.builder().
+                firstLocationCity(firstAddress.getCity()).
+                firstLocationAddress(firstAddress.getFullAddress()).
+                firstLatitude(firstCoordinates.getCoordinates().getFirst()).
+                firstLongitude(firstCoordinates.getCoordinates().getLast()).
+                secondLocationCity(lastAddress.getCity()).
+                secondLocationAddress(lastAddress.getFullAddress()).
+                secondLatitude(secondCoordinates.getCoordinates().getFirst()).
+                secondLongitude(secondCoordinates.getCoordinates().getLast()).
+                date(firstAddress.getDataBetweenTwoAddresses().getDuration()).
+                createdBy(user).
+                build();
+    }
+
+    private static RideData createNewRideData(List<DesiredRide> ridesWithSameSecondLocation, List<Double> durationsList) {
+        Long stationCapacity = 3L;
+        List<LatLng> markerCoordinateList = new ArrayList<>();
+        List<AddressClass> addressClassList = new ArrayList<>();
+        for(int i = 0; i < ridesWithSameSecondLocation.size(); i++) {
+            DataBetweenTwoAddresses dataBetweenTwoAddresses =
+                    new DataBetweenTwoAddresses(durationsList.get(i), 0);
+
+            AddressClass addressClass = new AddressClass(
+                    ridesWithSameSecondLocation.get(i).getFirstLocationCity(),
+                    ridesWithSameSecondLocation.get(i).getFirstLocationAddress(),
+                    dataBetweenTwoAddresses,
+                    stationCapacity
+            );
+            addressClassList.add(addressClass);
+            List<Double> coordinates = Arrays.asList(ridesWithSameSecondLocation.get(i).getFirstLatitude(), ridesWithSameSecondLocation.get(i).getFirstLongitude());
+            markerCoordinateList.add(new LatLng(coordinates));
         }
+        for(int i = 0; i < ridesWithSameSecondLocation.size(); i++) {
+            DataBetweenTwoAddresses dataBetweenTwoAddresses =
+                    new DataBetweenTwoAddresses(durationsList.get(i + 3), 0);
+
+            AddressClass addressClass = new AddressClass(
+                    ridesWithSameSecondLocation.get(i).getSecondLocationCity(),
+                    ridesWithSameSecondLocation.get(i).getSecondLocationAddress(),
+                    dataBetweenTwoAddresses,
+                    stationCapacity
+            );
+            addressClassList.add(addressClass);
+            List<Double> coordinates = Arrays.asList(ridesWithSameSecondLocation.get(i).getSecondLatitude(), ridesWithSameSecondLocation.get(i).getSecondLongitude());
+            markerCoordinateList.add(new LatLng(coordinates));
+        }
+        return RideData.builder()
+                .addressesList(addressClassList)
+                .markerCoordinateList(markerCoordinateList)
+                .maxCapacity(3)
+                .createdBy(3L)
+                .build();
     }
 
-    public void deleteRide(long rideId) {
-        User user = (User) authService.getCurrentAuthentication().getPrincipal();
-        RideNum rideNum = ridesNumRepository.getReferenceById(rideId);
-            try {
-                usersRouteRepository.deleteRideId(rideId);
-                ridesRepository.deleteByRideNum(rideNum);
-                ridesNumRepository.delete(rideNum);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-    }
 }
 

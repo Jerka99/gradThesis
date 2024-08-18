@@ -1,9 +1,6 @@
 package com.example.demo.Map.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
@@ -11,6 +8,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class RideData {
     private List<AddressClass> addressesList;
     private List<LatLng> markerCoordinateList;

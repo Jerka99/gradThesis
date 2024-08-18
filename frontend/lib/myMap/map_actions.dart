@@ -9,13 +9,13 @@ import 'package:travel_mate/myMap/address_class.dart';
 import 'package:travel_mate/pages/auth/response_handler_dto.dart';
 import '../main_api.dart';
 
-class SaveMapData extends ReduxAction<AppState> {
+class SaveRideData extends ReduxAction<AppState> {
   List<AddressClass> addressClassList;
   List<LatLng> markerCoordinateList;
   DateTime dateTime;
   double maxCapacity;
 
-  SaveMapData({
+  SaveRideData({
     required this.addressClassList,
     required this.markerCoordinateList,
     required this.dateTime,
@@ -40,13 +40,46 @@ class SaveMapData extends ReduxAction<AppState> {
         startTimeInMillisecond.toDouble();
 
     String? response = await MainApiClass()
-        .saveMapData(addressClassList, markerCoordinateList, maxCapacity);
+        .saveRideData(addressClassList, markerCoordinateList, maxCapacity);
 
     if (response != null) {
       appViewportKey.currentState?.informUser(response);
     }
   }
 }
+
+class SaveDesiredRideData extends ReduxAction<AppState> {
+  List<AddressClass> addressClassList;
+  List<LatLng> markerCoordinateList;
+  DateTime dateTime;
+
+  SaveDesiredRideData({
+    required this.addressClassList,
+    required this.markerCoordinateList,
+    required this.dateTime,
+  });
+
+  @override
+  Future<AppState?> reduce() async {
+    if (addressClassList.length < 2) {
+      appViewportKey.currentState
+          ?.informUser("Choose minimal 2 marker points!", Colors.red);
+      return null;
+    }
+    DateTime startTime = dateTime;
+    int startTimeInMillisecond = startTime.millisecondsSinceEpoch;
+    addressClassList.first.dataBetweenTwoAddresses?.duration =
+        startTimeInMillisecond.toDouble();
+
+    String? response = await MainApiClass()
+        .saveDesiredRideData(addressClassList, markerCoordinateList);
+
+    if (response != null) {
+      appViewportKey.currentState?.informUser(response);
+    }
+  }
+}
+
 
 class SaveUserRoute extends ReduxAction<AppState> {
   int rideId;

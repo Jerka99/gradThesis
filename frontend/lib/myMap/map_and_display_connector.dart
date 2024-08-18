@@ -14,12 +14,12 @@ class Factory extends VmFactory<AppState, MapAndDisplayConnector, ViewModel> {
   ViewModel fromStore() =>
       ViewModel(
         saveMapData: (List<AddressClass> addressClassList,
-            List<LatLng> markerCoordinateList, DateTime dateTime, double maxCapacity) {
+            List<LatLng> markerCoordinateList, DateTime dateTime, [double? maxCapacity]) {
           state.user.role == UserRole.driver ?
-          dispatch(SaveMapData(addressClassList: addressClassList,
-              markerCoordinateList: markerCoordinateList, dateTime: dateTime, maxCapacity: maxCapacity)) :
-          dispatch(SaveMapData(addressClassList: addressClassList, //desiredRides
-              markerCoordinateList: markerCoordinateList, dateTime: dateTime, maxCapacity: maxCapacity)
+          dispatch(SaveRideData(addressClassList: addressClassList,
+              markerCoordinateList: markerCoordinateList, dateTime: dateTime, maxCapacity: maxCapacity!)) :
+          dispatch(SaveDesiredRideData(addressClassList: addressClassList, //desiredRides
+              markerCoordinateList: markerCoordinateList, dateTime: dateTime)
           );
         },
         userData: state.user,

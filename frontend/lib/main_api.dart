@@ -95,7 +95,7 @@ class MainApiClass {
     return mapDataList;
   }
 
-  Future saveMapData(List<AddressClass> addressesList,
+  Future saveRideData(List<AddressClass> addressesList,
       List<LatLng> markerCoordinateList, double maxCapacity) async {
     String? token = await StoreSecurity().getToken();
 
@@ -115,6 +115,27 @@ class MainApiClass {
     }
     return null;
   }
+
+  Future saveDesiredRideData(List<AddressClass> addressesList,
+      List<LatLng> markerCoordinateList) async {
+    String? token = await StoreSecurity().getToken();
+
+    Response response = await http.post(Uri.parse(
+        "${AppConstants.backendUrl}/saveDesiredRideData"),
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token'
+        },
+        body: jsonEncode(<String, dynamic>{
+          'addressesList': addressesList,
+          'markerCoordinateList': markerCoordinateList,
+        }));
+    if(response.statusCode == 200) {
+      return response.body;
+    }
+    return null;
+  }
+
 
   Future<dynamic> saveUserRoute(int rideId, List<int> sequence) async {
     String? token = await StoreSecurity().getToken();
