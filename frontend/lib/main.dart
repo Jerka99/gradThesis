@@ -167,16 +167,18 @@ class AppViewportState extends State<AppViewport> {
       resizeToAvoidBottomInset: true,
       // Set to true to resize the UI to avoid bottom overflow
       body: SafeArea(
-        child: SizedBox(
+        child: Container(
             width: size.width,
             height: size.height,
+            color: Colors.cyan[50],
             child: Column(
               children: [
-                Container(
-                    color: Colors.cyan[50],
-                    child: const CustomBarConnector()),
+                const CustomBarConnector(),
                 Expanded(
                   child: Container(
+                      constraints: const BoxConstraints(
+                        maxWidth: 700, // Set the maximum width here
+                      ),
                       width: size.width,
                       height: size.height - 106,
                       color: Colors.cyan[50],
