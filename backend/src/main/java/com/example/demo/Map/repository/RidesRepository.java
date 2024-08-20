@@ -14,9 +14,7 @@ import java.util.List;
 
 public interface RidesRepository extends JpaRepository<RidesTable, Long> {
 
-    @Modifying
     @Transactional
-    @Query("DELETE FROM RidesTable r WHERE r.rideNum = :rideNum")
     void deleteByRideNum(RideNum rideNum);
 
     List<RidesTable> findAllByCreatedBy(User user);

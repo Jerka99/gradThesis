@@ -17,15 +17,11 @@ public interface UsersRouteRepository extends JpaRepository<UsersRideRoute, Long
     @Query("SELECT u.sequence FROM UsersRideRoute u WHERE u.user = :user AND u.rideNum = :rideNum")
     List<Integer> findSequenceByUserAndRideNum(@Param("user") User user, @Param("rideNum") RideNum rideNum);
 
-    @Modifying
     @Transactional
-    @Query("DELETE FROM UsersRideRoute urr WHERE urr.user.id = :userId AND urr.rideNum.id = :rideId")
-    void deleteByUserIdAndRideId(@Param("userId") Long userId, @Param("rideId") Long rideId);
+    void deleteByUserAndRideNum(User user, RideNum rideNum);
 
-    @Modifying
     @Transactional
-    @Query("DELETE FROM UsersRideRoute urr WHERE urr.rideNum.id = :rideId")
-    void deleteRideId(@Param("rideId") Long rideId);
+    void deleteByRideNum(RideNum rideNum);
 
     List<UsersRideRoute> findAllByUserId(Long userId);
 }

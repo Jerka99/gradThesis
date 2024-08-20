@@ -203,9 +203,10 @@ public class RidesService {
 
     public void deleteUserRoute(long rideId) {
         User user = (User) authService.getCurrentAuthentication().getPrincipal();
+        RideNum rideNum = ridesNumRepository.getReferenceById(rideId);
 
         try {
-            usersRouteRepository.deleteByUserIdAndRideId(user.getId(), rideId);
+            usersRouteRepository.deleteByUserAndRideNum(user, rideNum);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -214,7 +215,7 @@ public class RidesService {
     public void deleteRide(long rideId) {
         RideNum rideNum = ridesNumRepository.getReferenceById(rideId);
         try {
-            usersRouteRepository.deleteRideId(rideId);
+            usersRouteRepository.deleteByRideNum(rideNum);
             ridesRepository.deleteByRideNum(rideNum);
             ridesNumRepository.delete(rideNum);
         } catch (Exception e) {
