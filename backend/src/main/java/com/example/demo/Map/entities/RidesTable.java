@@ -23,7 +23,7 @@ public class RidesTable {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER)// also default parameter
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "created_by_user_id")
     private User createdBy;
 
@@ -31,7 +31,6 @@ public class RidesTable {
     @JoinColumn(name = "ride_id")
     private RideNum rideNum;
 
-    //    private Coordinate coordinates; //won't be used
     private String fullAddress;
     private String city;
     private Integer sequence;

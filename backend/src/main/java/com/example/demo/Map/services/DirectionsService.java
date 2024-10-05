@@ -26,7 +26,7 @@ public class DirectionsService {
     private static final String API_URL = "https://api.openrouteservice.org/v2/directions/driving-car/geojson";
     private static final String API_KEY = "5b3ce3597851110001cf62487adb1559612143eda0724256da26f388";
 
-    public List<Double> getDurations(List<DesiredRide> desiredRideList) {
+    public List<Double> getDirections(List<DesiredRide> desiredRideList) {
         List<List<Double>> markerPoints;
         List<Double> durationList = new ArrayList<>();
 

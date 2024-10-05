@@ -53,7 +53,8 @@ public class RidesService {
         newRide = ridesNumRepository.save(newRide);
 
         for (int i = 0; i < rideData.getMarkerCoordinateList().size(); i++) {
-            RidesTable ridesTable = ridesTableMapper(user, rideData.getMarkerCoordinateList().get(i), rideData.getAddressesList().get(i), i, newRide);
+            RidesTable ridesTable = ridesTableMapper(user, rideData.getMarkerCoordinateList().get(i),
+                    rideData.getAddressesList().get(i), i, newRide);
             ridesRepository.save(ridesTable);
         }
     }
@@ -99,7 +100,7 @@ public class RidesService {
 
                     if (ridesWithSameSecondLocation.size() >= 3) {
 
-                        List<Double> durationsList = directionsService.getDurations(ridesWithSameSecondLocation);
+                        List<Double> durationsList = directionsService.getDirections(ridesWithSameSecondLocation);
 
                         RideData newRideData = createNewRideData(ridesWithSameSecondLocation, durationsList);
 

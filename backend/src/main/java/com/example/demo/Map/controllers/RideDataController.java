@@ -26,7 +26,6 @@ public class RideDataController {
     @PostMapping("/saveRideData")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<String> saveRideData(@RequestBody RideData rideData) {
-        //related to AuthenticationManager
             ridesService.saveRideData(rideData, null);
 
         return ResponseEntity.ok("Ride is saved successfully");
