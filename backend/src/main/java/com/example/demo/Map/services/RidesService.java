@@ -240,6 +240,7 @@ public class RidesService {
             maxCapacity = el.getRideNum().getMaxCapacity();
             rideNum = el.getRideNum();
             createdById = el.getCreatedBy().getId();
+            System.out.println(STR."created By Id: \{createdById}");
             Long peopleOnStation = usersRouteRepository.countByRideNumAndSequence(el.getRideNum(), el.getSequence());
             Long capacityOnStation = (long) (el.getRideNum().getMaxCapacity() - peopleOnStation);
             addressesList.add(new AddressClass(el.getFullAddress(), el.getCity(), el.getDataBetweenTwoAddresses(), capacityOnStation));

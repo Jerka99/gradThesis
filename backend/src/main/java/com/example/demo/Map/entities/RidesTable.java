@@ -27,7 +27,7 @@ public class RidesTable {
     @JoinColumn(name = "created_by_user_id")
     private User createdBy;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "ride_id")
     private RideNum rideNum;
 
