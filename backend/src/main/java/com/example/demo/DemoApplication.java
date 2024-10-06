@@ -8,7 +8,7 @@ import java.security.SecureRandom;
 import java.util.Base64;
 
 @SpringBootApplication
-@EnableWebSecurity(debug = true)
+//@EnableWebSecurity(debug = true)
 public class DemoApplication {
 
 	public static void main(String[] args) {
