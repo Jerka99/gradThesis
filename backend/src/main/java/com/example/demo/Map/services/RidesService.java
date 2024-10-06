@@ -1,4 +1,8 @@
 package com.example.demo.Map.services;
+import com.example.demo.config.LoggingInterceptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 import com.example.demo.Auth.entities.User;
 import com.example.demo.Auth.exceptions.DuplicateRouteException;
@@ -18,7 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class RidesService {
+public class RidesService implements HandlerInterceptor{
 
     @Autowired
     RidesRepository ridesRepository;
@@ -41,6 +45,7 @@ public class RidesService {
     @Autowired
     DirectionsService directionsService;
 
+    private static final Logger logger = LoggerFactory.getLogger(LoggingInterceptor.class);
 
     public void saveRideData(RideData rideData, User user) {
         if(user == null) {
@@ -241,6 +246,7 @@ public class RidesService {
             rideNum = el.getRideNum();
             createdById = el.getCreatedBy().getId();
             System.out.println(STR."created By Id: \{createdById}");
+            logger.info("\"created By Id: {}", createdById);
             Long peopleOnStation = usersRouteRepository.countByRideNumAndSequence(el.getRideNum(), el.getSequence());
             Long capacityOnStation = (long) (el.getRideNum().getMaxCapacity() - peopleOnStation);
             addressesList.add(new AddressClass(el.getFullAddress(), el.getCity(), el.getDataBetweenTwoAddresses(), capacityOnStation));
