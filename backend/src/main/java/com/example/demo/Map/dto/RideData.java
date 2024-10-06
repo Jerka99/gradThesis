@@ -16,5 +16,5 @@ public class RideData {
     private Long rideId;
     private Integer selectedMarkerIndex1;
     private Integer selectedMarkerIndex2;
-    private Integer createdBy;
+    private Long createdBy;
 }

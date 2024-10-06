@@ -235,7 +235,7 @@ public class RidesService implements HandlerInterceptor{
         List<LatLng> markerCoordinateList = new ArrayList<>();
         double maxCapacity = 0.0;
         RideNum rideNum = null;
-        Integer createdById = null;
+        Long createdById = null;
 
         User user = (User) authService.getCurrentAuthentication().getPrincipal();
 
@@ -244,8 +244,8 @@ public class RidesService implements HandlerInterceptor{
             markerCoordinateList.add(new LatLng(coordinates));
             maxCapacity = el.getRideNum().getMaxCapacity();
             rideNum = el.getRideNum();
-            createdById = el.getCreatedBy().getId().intValue();
-            System.out.println(STR."created By Id: \{createdById}");
+            createdById = 1L;
+            System.out.println("created By Id: " + createdById);
             logger.info("\"created By Id: {}", createdById);
             Long peopleOnStation = usersRouteRepository.countByRideNumAndSequence(el.getRideNum(), el.getSequence());
             Long capacityOnStation = (long) (el.getRideNum().getMaxCapacity() - peopleOnStation);
@@ -265,7 +265,7 @@ public class RidesService implements HandlerInterceptor{
                 .rideId(rideNum.getId())
                 .selectedMarkerIndex1(firstMarker)
                 .selectedMarkerIndex2(lastMarker)
-                .createdBy(createdById)
+                .createdBy(1L)
                 .build();
     }
 
@@ -347,7 +347,7 @@ public class RidesService implements HandlerInterceptor{
                 .addressesList(addressClassList)
                 .markerCoordinateList(markerCoordinateList)
                 .maxCapacity(3)
-                .createdBy(3)
+                .createdBy(3L)
                 .build();
     }
 
