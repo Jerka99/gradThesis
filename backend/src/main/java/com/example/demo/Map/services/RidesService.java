@@ -258,7 +258,15 @@ public class RidesService implements HandlerInterceptor{
         firstMarker = sequences.get(0) - 1;
         lastMarker = (sequences.get(sequences.size() - 1));
         }
-        return new RideData(addressesList, markerCoordinateList, maxCapacity, rideNum.getId(), firstMarker, lastMarker, createdById);
+        return RideData.builder()
+                .addressesList(addressesList)
+                .markerCoordinateList(markerCoordinateList)
+                .maxCapacity(maxCapacity)
+                .rideId(rideNum.getId())
+                .selectedMarkerIndex1(firstMarker)
+                .selectedMarkerIndex2(lastMarker)
+                .createdBy(createdById)
+                .build();
     }
 
     private static RidesTable ridesTableMapper(User user, LatLng markersCoordinates, AddressClass addressData, int sequence, RideNum newRide) {
