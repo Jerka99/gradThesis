@@ -73,5 +73,5 @@ class MapData{
         rideId = (json['rideId'] as int),
         selectedMarkerIndex1 = (json['selectedMarkerIndex1'] as int?),
         selectedMarkerIndex2 = (json['selectedMarkerIndex2'] as int?),
-        createdBy = (json['createdBy'] as int);
+        createdBy = (json['createdBy'] as int?);
 }

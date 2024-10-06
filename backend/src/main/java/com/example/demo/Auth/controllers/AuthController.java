@@ -49,6 +49,11 @@ public class AuthController {
 
         return ResponseEntity.ok("Successfully Registered");
     }
+
+    @GetMapping("/checkBackendStatus")
+    public ResponseEntity<String> checkBackendStatus() {
+        return ResponseEntity.ok("Services Are Up!");
+    }
 }
 
 //The process begins when a user sends a sign-in request to the Service. An Authentication object called UsernamePasswordAuthenticationToken is then generated, using the provided username and password.

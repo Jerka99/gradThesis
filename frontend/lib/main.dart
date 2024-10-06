@@ -83,11 +83,19 @@ class LoadingScreen extends StatelessWidget {
       body: Container(
         color: Colors.cyan[50],
         child: const Center(
-            child: Text(
-          "TravelMate",
-          style: TextStyle(
-              color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 40),
-        )),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                          "TravelMate",
+                          style: TextStyle(
+                  color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 40),
+                        ),
+                CircularProgressIndicator(
+                  color: Colors.blue,
+                )
+              ],
+            )),
       ),
     );
   }
