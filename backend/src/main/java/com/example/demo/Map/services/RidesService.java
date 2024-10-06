@@ -260,12 +260,12 @@ public class RidesService implements HandlerInterceptor{
         }
         return RideData.builder()
                 .createdBy(createdById)
-                .addressesList(addressesList)
-                .markerCoordinateList(markerCoordinateList)
-                .maxCapacity(maxCapacity)
-                .rideId(rideNum.getId())
-                .selectedMarkerIndex1(firstMarker)
-                .selectedMarkerIndex2(lastMarker)
+//                .addressesList(addressesList)
+//                .markerCoordinateList(markerCoordinateList)
+//                .maxCapacity(maxCapacity)
+//                .rideId(rideNum.getId())
+//                .selectedMarkerIndex1(firstMarker)
+//                .selectedMarkerIndex2(lastMarker)
                 .build();
     }
 
