@@ -17,12 +17,4 @@ public class RideData {
     private Integer selectedMarkerIndex1;
     private Integer selectedMarkerIndex2;
     private Long createdBy;
-
-    public void setCreatedBy(Long createdBy) {
-        this.createdBy = createdBy;
-    }
-
-    public Long getCreatedBy() {
-        return createdBy;
-    }
 }
